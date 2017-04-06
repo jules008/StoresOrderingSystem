@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 '===============================================================
 ' Module ModUIStoresScreen
 ' v0,0 - Initial Version
+' v0,1 - Added build Order Switch Button
 '---------------------------------------------------------------
-' Date - 31 Mar 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -53,6 +54,49 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' BuildOrderSwitchBtn
+' Adds the button to switch order list between open and closed orders
+' ---------------------------------------------------------------
+Private Function BuildOrderSwitchBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildOrderSwitchBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnOrderSwitch
+        
+        .Height = BTN_ORDER_SWITCH_HEIGHT
+        .Left = BTN_ORDER_SWITCH_LEFT
+        .Top = BTN_ORDER_SWITCH_TOP
+        .Width = BTN_ORDER_SWITCH_WIDTH
+        .Name = "BtnOrderSwitch"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(9)'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Show Closed Orders"
+    End With
+
+    MainScreen.Menu.AddItem BtnOrderSwitch
+    
+    BuildOrderSwitchBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildOrderSwitchBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 
 ' ===============================================================
 ' BuildStoresFrame1
@@ -62,7 +106,6 @@ Public Function BuildStoresFrame1() As Boolean
     Dim CommentBox As ClsUIDashObj
     Dim CommentBtn As ClsUIMenuItem
     Dim UILineItem As ClsUILineitem
-    Dim RowTitles() As String
     Dim i As Integer
     
     Const StrPROCEDURE As String = "BuildStoresFrame1()"
@@ -99,9 +142,6 @@ Public Function BuildStoresFrame1() As Boolean
         End With
     End With
     
-    ReDim RowTitles(0 To ORDER_LINEITEM_NOCOLS - 1)
-    RowTitles = Split(ORDER_LINEITEM_TITLES, ":")
-    
     With StoresFrame1.LineItems
         .NoColumns = ORDER_LINEITEM_NOCOLS
         .Top = ORDER_LINEITEM_TOP
@@ -109,17 +149,8 @@ Public Function BuildStoresFrame1() As Boolean
         .Height = ORDER_LINEITEM_HEIGHT
         .Columns = ORDER_LINEITEM_COL_WIDTHS
         .RowOffset = ORDER_LINEITEM_ROWOFFSET
-        
-        .Style = GENERIC_LINEITEM_HEADER
-        
-        For i = 0 To ORDER_LINEITEM_NOCOLS - 1
-            .Text 0, i, RowTitles(i)
-        Next
-        
-        .Style = GENERIC_LINEITEM
-    
+            
     End With
-    
     
     StoresFrame1.ReOrder
     
@@ -157,10 +188,14 @@ Public Function BuildStoresScreen() As Boolean
     
     Set StoresFrame1 = New ClsUIFrame
     Set BtnUserMangt = New ClsUIMenuItem
+    Set BtnOrderSwitch = New ClsUIMenuItem
     
+    If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildStoresFrame1 Then Err.Raise HANDLED_ERROR
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
-    If Not RefreshOrderList Then Err.Raise HANDLED_ERROR
+    If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
+    If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+    
     BuildStoresScreen = True
        
 Exit Function
@@ -168,6 +203,7 @@ Exit Function
 ErrorExit:
     Set StoresFrame1 = Nothing
     Set BtnUserMangt = Nothing
+    Set BtnOrderSwitch = Nothing
     
     Terminate
     
@@ -201,11 +237,15 @@ Restart:
         
             Case EnumUserMngt
             
-                If Not BtnUserManagement Then Err.Raise HANDLED_ERROR
+                If Not BtnUserManagementSel Then Err.Raise HANDLED_ERROR
                         
+            Case EnumOrderSwitch
+            
+                If Not BtnOrderSwitchSel Then Err.Raise HANDLED_ERROR
+        
         End Select
     
-GracefulExit:
+gracefulexit:
 
     ProcessBtnPress = True
 
@@ -225,7 +265,7 @@ ErrorHandler:
          If Err.Number = SYSTEM_RESTART Then
             Resume Restart
         Else
-            Resume GracefulExit
+            Resume gracefulexit
         End If
     End If
     
@@ -238,12 +278,12 @@ ErrorHandler:
 End Function
 
 ' ===============================================================
-' BtnUserManagement
+' BtnUserManagementSel
 ' Manages system users
 ' ---------------------------------------------------------------
-Private Function BtnUserManagement() As Boolean
+Private Function BtnUserManagementSel() As Boolean
 
-    Const StrPROCEDURE As String = "BtnUserManagement()"
+    Const StrPROCEDURE As String = "BtnUserManagementSel()"
 
     On Error GoTo ErrorHandler
 
@@ -258,15 +298,15 @@ Restart:
     If Not FrmUserAdmin.ShowForm Then Err.Raise HANDLED_ERROR
     
     
-GracefulExit:
+gracefulexit:
 
-    BtnUserManagement = True
+    BtnUserManagementSel = True
 
 Exit Function
 
 ErrorExit:
     
-    BtnUserManagement = False
+    BtnUserManagementSel = False
 
 '    ***CleanUpCode***
 
@@ -277,7 +317,7 @@ ErrorHandler:
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         If Err.Number = ACCESS_DENIED Then
             CustomErrorHandler (Err.Number)
-            Resume GracefulExit
+            Resume gracefulexit
         Else
             CustomErrorHandler (Err.Number)
             Resume Restart
@@ -296,22 +336,56 @@ End Function
 ' RefreshOrderList
 ' Refreshes the list of open orders from the database
 ' ---------------------------------------------------------------
-Public Function RefreshOrderList() As Boolean
+Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     Const StrPROCEDURE As String = "RefreshOrderList()"
     
     Dim Orders As ClsOrders
     Dim Order As ClsOrder
+    Dim LineItem As ClsUILineitem
     Dim i As Integer
     Dim OnAction As String
+    Dim RowTitles() As String
 
     On Error GoTo ErrorHandler
     
     Set Orders = New ClsOrders
+
+    ShtMain.Unprotect
     
-    Orders.GetOpenOrders
+    ModLibrary.PerfSettingsOn
+    
+    With StoresFrame1
+        For Each LineItem In .LineItems
+            .LineItems.RemoveItem LineItem.Name
+            LineItem.ShpLineItem.Delete
+            Set LineItem = Nothing
+        Next
+        
+        ReDim RowTitles(0 To ORDER_LINEITEM_NOCOLS - 1)
+        RowTitles = Split(ORDER_LINEITEM_TITLES, ":")
+
+        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        
+        For i = 0 To ORDER_LINEITEM_NOCOLS - 1
+            .LineItems.Text 0, i, RowTitles(i)
+        Next
+        
+        .LineItems.Style = GENERIC_LINEITEM
+
+    End With
+    
+    If ClosedOrders Then
+        Orders.GetClosedOrders
+        StoresFrame1.Header.Text = "Closed Orders"
+        BtnOrderSwitch.Text = "Show Open Orders"
+    Else
+        Orders.GetOpenOrders
+        StoresFrame1.Header.Text = "Open Orders"
+        BtnOrderSwitch.Text = "Show Closed Orders"
+    End If
     
     StoresFrame1.Height = Orders.Count * ORDER_LINEITEM_ROWOFFSET + (ORDER_LINEITEM_TOP * 2)
-    
+
     i = 1
     For Each Order In Orders
         With StoresFrame1.LineItems
@@ -325,6 +399,9 @@ Public Function RefreshOrderList() As Boolean
         i = i + 1
     Next
     
+    ModLibrary.PerfSettingsOff
+                
+    ShtMain.Protect
     
     RefreshOrderList = True
     
@@ -390,6 +467,64 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+' ===============================================================
+' BtnOrderSwitchSel
+' Switches between open orders and closed orders
+' ---------------------------------------------------------------
+Private Function BtnOrderSwitchSel() As Boolean
+
+    Const StrPROCEDURE As String = "BtnOrderSwitchSel()"
+
+    On Error GoTo ErrorHandler
+
+Restart:
+    
+    Application.StatusBar = ""
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    If StoresFrame1.Header.Text = "Open Orders" Then
+        If Not RefreshOrderList(True) Then Err.Raise HANDLED_ERROR
+   Else
+        If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+    
+    End If
+    
+gracefulexit:
+
+    BtnOrderSwitchSel = True
+
+Exit Function
+
+ErrorExit:
+    
+    BtnOrderSwitchSel = False
+
+'    ***CleanUpCode***
+
+Exit Function
+
+ErrorHandler:
+
+'    If Err.Number >= 1000 And Err.Number <= 1500 Then
+'        If Err.Number = ACCESS_DENIED Then
+'            CustomErrorHandler (Err.Number)
+'            Resume gracefulexit
+'        Else
+'            CustomErrorHandler (Err.Number)
+'            Resume Restart
+'        End If
+'    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 
 
 

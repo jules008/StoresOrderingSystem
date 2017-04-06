@@ -5,7 +5,7 @@ Public Sub ExportModules()
     Dim SourceBook As Excel.Workbook
     Dim SourceBookName As String
     Dim ExportFilePath As String
-    Dim ExportFileName As String
+    Dim EmportFileName As String
     Dim VBModule As VBIDE.VBComponent
    
     'open files
@@ -20,38 +20,33 @@ Public Sub ExportModules()
 
     ''' NOTE: This workbook must be open in Excel.
     SourceBookName = ActiveWorkbook.Name
-Debug.Print SourceBookName
     Set SourceBook = Application.Workbooks(SourceBookName)
     
     ExportFilePath = ExportFilePath & "\"
     
     For Each VBModule In SourceBook.VBProject.VBComponents
-
-Debug.Print SourceBook.VBProject.VBComponents.Count
         
         ExportYN = True
-        ExportFileName = VBModule.Name
+        EmportFileName = VBModule.Name
 
         ''' Concatenate the correct filename for export.
         Select Case VBModule.Type
             Case vbext_ct_ClassModule
-                ExportFileName = ExportFileName & ".cls"
+                EmportFileName = EmportFileName & ".cls"
             Case vbext_ct_MSForm
-                ExportFileName = ExportFileName & ".frm"
+                EmportFileName = EmportFileName & ".frm"
             Case vbext_ct_StdModule
-                ExportFileName = ExportFileName & ".bas"
+                EmportFileName = EmportFileName & ".bas"
             Case vbext_ct_Document
-                ExportFileName = ExportFileName & ".cls"
+                EmportFileName = EmportFileName & ".cls"
+                ''' This is a worksheet or workbook object.
+                ''' Don't try to export.
+'                ExportYN = False
         End Select
         
         If ExportYN Then
             ''' Export the component to a text file.
-            VBModule.Export ExportFilePath & ExportFileName
-            
-            ''' remove it from the project if you want
-            If VBModule.Type <> vbext_ct_Document Then
-                SourceBook.VBProject.VBComponents.Remove VBModule
-            End If
+            VBModule.Export ExportFilePath & EmportFileName
             
         End If
    
@@ -62,81 +57,77 @@ Debug.Print SourceBook.VBProject.VBComponents.Count
     MsgBox "Export is ready"
 End Sub
 
-
 Public Sub ImportModules()
-    Dim wkbTarget As Excel.Workbook
-    Dim objFSO As Scripting.FileSystemObject
-    Dim objFile As Scripting.File
-    Dim szTargetWorkbook As String
-    Dim szImportPath As String
-    Dim ExportFileName As String
+    Dim TargetBook As Excel.Workbook
+    Dim FSO As Scripting.FileSystemObject
+    Dim FileObj As Scripting.File
+    Dim TargetBookName As String
+    Dim DlgOpen As FileDialog
+    Dim ImportFilePath As String
+    Dim ImportFileName As String
     Dim VBModules As VBIDE.VBComponents
 
-    If ActiveWorkbook.Name = ThisWorkbook.Name Then
-        MsgBox "Select another destination workbook" & _
-        "Not possible to import in this workbook "
-        Exit Sub
-    End If
-
-    'Get the path to the folder with modules
-    If FolderWithVBAProjectFiles = "Error" Then
-        MsgBox "Import Folder not exist"
-        Exit Sub
-    End If
-
-    ''' NOTE: This workbook must be open in Excel.
-    szTargetWorkbook = ActiveWorkbook.Name
-    Set wkbTarget = Application.Workbooks(szTargetWorkbook)
+    'open files
+    Set DlgOpen = Application.FileDialog(msoFileDialogFolderPicker)
     
-    If wkbTarget.VBProject.Protection = 1 Then
-    MsgBox "The VBA in this workbook is protected," & _
-        "not possible to Import the code"
-    Exit Sub
-    End If
-
-    ''' NOTE: Path where the code modules are located.
-    szImportPath = FolderWithVBAProjectFiles & "\"
+     With DlgOpen
+        .Title = "Select Import Folder"
+        .Show
+    End With
         
-    Set objFSO = New Scripting.FileSystemObject
-    If objFSO.GetFolder(szImportPath).Files.Count = 0 Then
+    ImportFilePath = DlgOpen.SelectedItems(1) & "\"
+    ''' NOTE: This workbook must be open in Excel.
+    TargetBookName = ActiveWorkbook.Name
+    Set TargetBook = Application.Workbooks(TargetBookName)
+            
+    Set FSO = New Scripting.FileSystemObject
+    If FSO.GetFolder(ImportFilePath).Files.Count = 0 Then
        MsgBox "There are no files to import"
        Exit Sub
     End If
 
-    'Delete all modules/Userforms from the ActiveWorkbook
-    Call DeleteVBAModulesAndUserForms
-
-    Set VBModules = wkbTarget.VBProject.VBComponents
+    Set VBModules = TargetBook.VBProject.VBComponents
     
     ''' Import all the code modules in the specified path
     ''' to the ActiveWorkbook.
-    For Each objFile In objFSO.GetFolder(szImportPath).Files
+    For Each FileObj In FSO.GetFolder(ImportFilePath).Files
     
-        If (objFSO.GetExtensionName(objFile.Name) = "cls") Or _
-            (objFSO.GetExtensionName(objFile.Name) = "frm") Or _
-            (objFSO.GetExtensionName(objFile.Name) = "bas") Then
-            VBModules.Import objFile.Path
+        If (FSO.GetExtensionName(FileObj.Name) = "cls") Or _
+            (FSO.GetExtensionName(FileObj.Name) = "frm") Or _
+            (FSO.GetExtensionName(FileObj.Name) = "bas") Then
+            VBModules.Import FileObj.Path
         End If
         
-    Next objFile
+    Next FileObj
     
     MsgBox "Import is ready"
 End Sub
-
-Function DeleteVBAModulesAndUserForms()
-        Dim VBProj As VBIDE.VBProject
-        Dim VBComp As VBIDE.VBComponent
-        
-        Set VBProj = ActiveWorkbook.VBProject
-        
-        For Each VBComp In VBProj.VBComponents
-            If VBComp.Type = vbext_ct_Document Then
-                'Thisworkbook or worksheet module
-                'We do nothing
-            Else
-                VBProj.VBComponents.Remove VBComp
-            End If
-        Next VBComp
-End Function
  
+Public Sub RemoveAllModules()
+    Dim ExportYN As Boolean
+    Dim DlgOpen As FileDialog
+    Dim SourceBook As Excel.Workbook
+    Dim SourceBookName As String
+    Dim ExportFilePath As String
+    Dim ImportFileName As String
+    Dim VBModule As VBIDE.VBComponent
+   
+    ''' NOTE: This workbook must be open in Excel.
+    SourceBookName = ActiveWorkbook.Name
+    Set SourceBook = Application.Workbooks(SourceBookName)
+        
+    For Each VBModule In SourceBook.VBProject.VBComponents
+        
+        ''' remove it from the project if you want
+        If VBModule.Type <> vbext_ct_Document Then SourceBook.VBProject.VBComponents.Remove VBModule
+        
+        End If
+   
+    Next VBModule
+    
+    Set DlgOpen = Nothing
+
+End Sub
+
+
 

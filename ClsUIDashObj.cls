@@ -182,5 +182,3 @@ Private Sub Class_Initialize()
     Set pShpDashObj = ActiveSheet.Shapes.AddShape(msoShapeRectangle, 0, 0, 10, 10)
 End Sub
 
-Private Sub Class_Terminate()
-End Sub

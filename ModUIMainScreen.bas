@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUIMainScreen"
 '===============================================================
 ' Module ModUIMainScreen
 ' v0,0 - Initial Version
+' v0,1 - added performance mode switching 
 '---------------------------------------------------------------
-' Date - 09 Feb 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -219,7 +220,10 @@ Public Function BuildMainScreen() As Boolean
     Set LeftFrame = New ClsUIFrame
     Set RightFrame = New ClsUIFrame
     Set BtnNewOrder = New ClsUIMenuItem
+                
+    ModLibrary.PerfSettingsOn
     
+    If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildMainFrame Then Err.Raise HANDLED_ERROR
     If Not BuildLeftFrame Then Err.Raise HANDLED_ERROR
     If Not BuildRightFrame Then Err.Raise HANDLED_ERROR
@@ -227,6 +231,8 @@ Public Function BuildMainScreen() As Boolean
     
     MainScreen.ReOrder
     
+    ModLibrary.PerfSettingsOff
+                    
     BuildMainScreen = True
        
 Exit Function

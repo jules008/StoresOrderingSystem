@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class LINEITEMs
 ' v0,0 - Initial Version
+' v0,1 - Bug fix to Width Property
 '---------------------------------------------------------------
-' Date - 03 Apr 17
+' Date - 06 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -90,12 +91,11 @@ End Property
 
 '---------------------------------------------------------------
 Public Property Get Width() As Integer
-    Width = pShpLineItem.Width
+    Width = pWidth
 End Property
 
 Public Property Let Width(ByVal VnewValue As Integer)
     pWidth = VnewValue
-    pShpLineItem.Width = pWidth
 End Property
 
 '---------------------------------------------------------------

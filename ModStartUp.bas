@@ -3,6 +3,7 @@ Attribute VB_Name = "ModStartUp"
 ' Module ModStartUp
 ' v0,0 - Initial Version
 ' v0,1 - Added maintenance flag start up option
+' v0,2 - Bug fix for maintenance flag
 '---------------------------------------------------------------
 ' Date - 06 Apr 17
 '===============================================================
@@ -208,7 +209,7 @@ Private Function ReadINIFile() As Boolean
     
     If StopFlag = True Then Stop
     
-    If MaintMsg <> "" Then
+    If MaintMsg <> 0 Then
         MsgBox MaintMsg
         ActiveWorkbook.Close
     End If

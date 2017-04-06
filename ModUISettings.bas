@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUISettings"
 '===============================================================
 ' Module ModUISettings
 ' v0,0 - Initial Version
+' v0,1 - Added Order Switch Button
 '---------------------------------------------------------------
-' Date - 09 Feb 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -85,6 +86,11 @@ Public Const BTN_USER_MANGT_HEIGHT As Integer = 30
 Public Const BTN_USER_MANGT_WIDTH As Integer = 175
 Public Const BTN_USER_MANGT_LEFT As Integer = 850
 Public Const BTN_USER_MANGT_TOP As Integer = 20
+
+Public Const BTN_ORDER_SWITCH_HEIGHT As Integer = 30
+Public Const BTN_ORDER_SWITCH_WIDTH As Integer = 175
+Public Const BTN_ORDER_SWITCH_LEFT As Integer = 850
+Public Const BTN_ORDER_SWITCH_TOP As Integer = 60
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550

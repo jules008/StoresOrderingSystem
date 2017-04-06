@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsUiLineItem
 ' v0,0 - Initial Version
+' v0,1 - Remove dashobjs
 '---------------------------------------------------------------
-' Date - 03 Apr 17
+' Date - 06 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -123,15 +124,7 @@ Public Property Let Visible(ByVal VnewValue As Boolean)
     pVisible = VnewValue
     
     pShpLineItem.Visible = pVisible
-    
-    For Each DashObj In pDashObjs
-        DashObj.Visible = pVisible
-    Next
-    
-    If pEnableHeader Then pHeader.Visible = pVisible
-    
-    pMenu.Visible = pVisible
-    
+       
 End Property
 
 '---------------------------------------------------------------
@@ -196,11 +189,6 @@ Public Sub ReOrder()
     Dim DashObj As ClsUIDashObj
     
     pShpLineItem.ZOrder msoBringToFront
-    pHeader.ReOrder
-    
-    For Each DashObj In pDashObjs
-        DashObj.ShpDashObj.ZOrder msoBringToFront
-    Next
     
     pMenu.ReOrder
 End Sub

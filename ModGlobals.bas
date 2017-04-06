@@ -3,8 +3,9 @@ Attribute VB_Name = "ModGlobals"
 ' Module ModGlobals
 ' v0,0 - Initial Version
 ' v0,1 - Added no ini file error
+' v0,2 - Added Order Switch Button
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -84,6 +85,7 @@ Public StoresFrame1 As ClsUIFrame
 Public Header As ClsUIHeader
 Public BtnNewOrder As ClsUIMenuItem
 Public BtnUserMangt As ClsUIMenuItem
+Public BtnOrderSwitch As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -284,6 +286,7 @@ Enum EnumBtnNo
     EnumNewOrder = 6
     EnumSupportMsg = 7
     EnumUserMngt = 8
+    EnumOrderSwitch = 9
 End Enum
 
 ' ===============================================================

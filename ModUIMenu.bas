@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUIMenu"
 '===============================================================
 ' Module ModUIMenu
 ' v0,0 - Initial Version
+' v0,1 - changes to performance mode switching
 '---------------------------------------------------------------
-' Date - 30 Mar 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -276,9 +277,6 @@ Restart:
                 
                 [menuitemno] = 1
 
-                ModLibrary.PerfSettingsOn
-                
-                If Not ResetScreen Then Err.Raise HANDLED_ERROR
                 If Not ModUIMainScreen.BuildMainScreen Then Err.Raise HANDLED_ERROR
                                 
                 With MenuBar
@@ -289,18 +287,15 @@ Restart:
                     .Menu(5).Selected = False
                 End With
                 
-                ModLibrary.PerfSettingsOff
-                
             Case EnumStores
                 
                 [menuitemno] = 2
                 
                 If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
                 
-                ModLibrary.PerfSettingsOn
-                
-                If Not ResetScreen Then Err.Raise HANDLED_ERROR
                 If Not ModUIStoresScreen.BuildStoresScreen Then Err.Raise HANDLED_ERROR
+                
+                ShtMain.Unprotect
                                                                 
                 With MenuBar
                     .Menu(1).Selected = False
@@ -310,10 +305,10 @@ Restart:
                     .Menu(5).Selected = False
                 End With
                 
-                ModLibrary.PerfSettingsOff
-                
             Case EnumReports
-                                
+                                                
+                ShtMain.Unprotect
+                
                 [menuitemno] = 3
                 
                 If CurrentUser.AccessLvl < ManagerLvl_4 Then Err.Raise ACCESS_DENIED
@@ -335,7 +330,9 @@ Restart:
                 ModLibrary.PerfSettingsOff
                 
             Case EnumMyProfile
-                                
+                 
+                ShtMain.Unprotect
+                               
                 [menuitemno] = 4
                 
                 ModLibrary.PerfSettingsOn
@@ -355,6 +352,8 @@ Restart:
                 ModLibrary.PerfSettingsOff
                 
             Case EnumSupport
+                
+                ShtMain.Unprotect
                                 
                 [menuitemno] = 5
                 
@@ -403,7 +402,7 @@ ErrorHandler:
          If Err.Number = SYSTEM_RESTART Then
             Resume Restart
         Else
-            Resume GracefulExit
+            Resume gracefulexit
         End If
     End If
     
