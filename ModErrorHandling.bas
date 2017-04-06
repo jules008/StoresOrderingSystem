@@ -2,8 +2,9 @@ Attribute VB_Name = "ModErrorHandling"
 '===============================================================
 ' Module ModErrorHandling
 ' v0,0 - Initial Version
+' v0,1 - Added no ini file error
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -220,8 +221,14 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
         Case ACCESS_DENIED
             MsgBox "Sorry you do not have the required Access Level.  " _
                 & "Please send a Support Mail if you require access", vbCritical
+        
         Case NO_ORDER_MESSAGE
             MsgBox Message
+            
+        Case NO_INI_FILE
+            MsgBox "No INI file has been found, so system cannot continue. This can occur if the file " _
+                    & "is copied from its location on the T Drive.  Please delete file and create a shortcut instead"
+            Err.Raise SYSTEM_FAILURE
     End Select
     
     Set MailSystem = Nothing

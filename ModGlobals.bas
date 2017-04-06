@@ -2,6 +2,7 @@ Attribute VB_Name = "ModGlobals"
 '===============================================================
 ' Module ModGlobals
 ' v0,0 - Initial Version
+' v0,1 - Added no ini file error
 '---------------------------------------------------------------
 ' Date - 17 Jan 17
 '===============================================================
@@ -38,6 +39,7 @@ Public Const NO_NAMES_SELECTED As Long = 1012
 Public Const FORM_INPUT_EMPTY As Long = 1013
 Public Const ACCESS_DENIED As Long = 1014
 Public Const NO_ORDER_MESSAGE As Long = 1015
+Public Const NO_INI_FILE As Long = 1016
 
 Public Const NO_ASSET_ON_ORDER As Long = 1501
 Public Const NO_LINE_ITEM As Long = 1502

@@ -2,8 +2,9 @@ Attribute VB_Name = "ModStartUp"
 '===============================================================
 ' Module ModStartUp
 ' v0,0 - Initial Version
+' v0,1 - Added maintenance flag start up option
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 06 Apr 17
 '===============================================================
 
 Option Explicit
@@ -54,13 +55,13 @@ Public Function Initialise() As Boolean
     'Build menu and backdrop
     If Not ModUIMenu.BuildMenu Then Err.Raise HANDLED_ERROR
     
-    If [menuitemno] = "" Then
+    If ShtMain.Range("menuitemno") = "" Then
            
         ModUIMenu.ProcessBtnPress (1)
-        [menuitemno] = 1
+        ShtMain.Range("menuitemno") = 1
         
     Else
-        ModUIMenu.ProcessBtnPress ([menuitemno])
+        ModUIMenu.ProcessBtnPress (ShtMain.Range("menuitemno"))
     End If
         
     ActiveSheet.Range("A1").Select
@@ -127,7 +128,7 @@ Public Function GetUserName() As Boolean
 
     GetUserName = True
 
-GracefulExit:
+gracefulexit:
 
 Exit Function
 
@@ -141,7 +142,7 @@ ErrorHandler:
         
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume GracefulExit
+        Resume gracefulexit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
@@ -169,6 +170,7 @@ Private Function ReadINIFile() As Boolean
     Dim INIFile As Integer
     Dim TmpFPath As String
     Dim StopFlag As String
+    Dim MaintMsg As String
     
     Const StrPROCEDURE As String = "ReadINIFile()"
 
@@ -177,6 +179,8 @@ Private Function ReadINIFile() As Boolean
     AppFPath = ThisWorkbook.Path
     IniFPath = AppFPath & INI_FILE_PATH
     INIFile = FreeFile()
+    
+    If Dir(IniFPath & INI_FILE) = "" Then Err.Raise NO_INI_FILE
     
     Open IniFPath & INI_FILE For Input As #INIFile
     
@@ -189,6 +193,7 @@ Private Function ReadINIFile() As Boolean
     Line Input #INIFile, DevMode
     Line Input #INIFile, TmpFPath
     Line Input #INIFile, StopFlag
+    Line Input #INIFile, MaintMsg
     
     Close #INIFile
     
@@ -203,6 +208,14 @@ Private Function ReadINIFile() As Boolean
     
     If StopFlag = True Then Stop
     
+    If MaintMsg <> "" Then
+        MsgBox MaintMsg
+        ActiveWorkbook.Close
+    End If
+    
+    
+gracefulexit:
+    
    ReadINIFile = True
 
 Exit Function
@@ -214,7 +227,14 @@ ErrorExit:
 
 Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume ErrorExit
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
