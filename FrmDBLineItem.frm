@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -24,7 +25,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmDBLineItem"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -39,7 +40,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     If LocLineItem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="LineItem unavailable"
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -83,7 +84,7 @@ Private Function PopulateForm() As Boolean
     
     On Error GoTo ErrorHandler
     
-    With LineItem
+    With Lineitem
         TxtAsset = .Asset.Description
         TxtOnHoldReason = .OnHoldReason
         ChkReturned = .itemsReturned
@@ -105,7 +106,7 @@ Private Function PopulateForm() As Boolean
         End If
         
         With TxtLossRepStatus
-            Select Case LineItem.LossReport.Status
+            Select Case Lineitem.LossReport.Status
                 Case Is = 0
                     .Value = "Open"
                 Case Is = 1
@@ -216,7 +217,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 
 End Function
@@ -236,21 +237,21 @@ Private Sub BtnAsset_Click()
         
     On Error GoTo ErrorHandler
     
-    If LineItem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
     
-    If LineItem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No asset on Order"
+    If Lineitem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No asset on Order"
     
-    If Not FrmDBAsset.ShowForm(LineItem.Asset) Then Err.Raise HANDLED_ERROR
+    If Not FrmDBAsset.ShowForm(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
 
 GracefulExit:
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
 
 Exit Sub
 
 ErrorExit:
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     FormTerminate
     Terminate
 
@@ -300,7 +301,7 @@ Private Sub BtnIssue_Click()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
         .Status = LineIssued
         ChkIssued = True
         .DBSave
@@ -333,7 +334,8 @@ Private Sub BtnPutOnHold_Click()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
+        .Parent.AssignedTo = CurrentUser
         .Status = LineOnHold
         .DBSave
     End With
@@ -369,7 +371,7 @@ Private Sub BtnViewDelivery_Click()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
         Select Case .Asset.AllocationType
             Case Is = Person
                 If Not FrmDBPerson.ShowForm(.ForPerson) Then Err.Raise HANDLED_ERROR
@@ -411,7 +413,7 @@ Private Sub BtnViewLossRep_Click()
     On Error GoTo ErrorHandler
 
     If ChkLossReport Then
-        If Not FrmDBLossReport.ShowForm(LineItem.LossReport) Then Err.Raise HANDLED_ERROR
+        If Not FrmDBLossReport.ShowForm(Lineitem.LossReport) Then Err.Raise HANDLED_ERROR
     
         If Not ProcessStatus Then Err.Raise HANDLED_ERROR
         
@@ -441,7 +443,7 @@ Private Sub BtnViewRequestor_Click()
 
     On Error GoTo ErrorHandler
 
-    If Not FrmDBPerson.ShowForm(LineItem.Parent.Requestor) Then Err.Raise HANDLED_ERROR
+    If Not FrmDBPerson.ShowForm(Lineitem.Parent.Requestor) Then Err.Raise HANDLED_ERROR
 
 Exit Sub
 
@@ -472,7 +474,7 @@ Private Sub ChkDelivered_Click()
 
     On Error GoTo ErrorHandler
     
-    With LineItem
+    With Lineitem
         If ChkDelivered Then .ItemsDelivered = True Else .ItemsDelivered = False
     End With
     
@@ -506,9 +508,10 @@ Private Sub ChkIssued_Click()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
         If ChkIssued Then
             .ItemsIssued = True
+            .Parent.AssignedTo = CurrentUser
         Else
             .ItemsIssued = False
             .ItemsDelivered = False
@@ -549,7 +552,7 @@ Private Sub ChkReturned_Click()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
         If ChkReturned Then .itemsReturned = True Else .itemsReturned = False
     End With
     
@@ -584,7 +587,7 @@ Private Sub CmoReqReason_Change()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
         .ReqReason = CmoReqReason.ListIndex
         .DBSave
     End With
@@ -612,7 +615,8 @@ Private Sub TxtOnHoldReason_Change()
 
     On Error GoTo ErrorHandler
 
-    With LineItem
+    With Lineitem
+        .Parent.AssignedTo = CurrentUser
         .OnHoldReason = TxtOnHoldReason
         .DBSave
     End With
@@ -655,7 +659,7 @@ Private Function ProcessStatus() As Boolean
 
     On Error GoTo ErrorHandler
     
-    With LineItem
+    With Lineitem
     
         If .LossReport.LossReportNo = 0 Then
             LossReport = False
