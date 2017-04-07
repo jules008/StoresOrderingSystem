@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Auto assign Order and improved printing
 '---------------------------------------------------------------
-' Date - 10 Mar 17
+' Date - 07 Apr 17
 '===============================================================
 Option Explicit
 
@@ -357,7 +358,7 @@ Private Sub BtnPrint_Click()
     
     Order.DBSave
     
-    If Not ModPrint.PrintOrderReceipt(Order) Then Err.Raise HANDLED_ERROR
+    If Not ModPrint.PrintOrderList(Order) Then Err.Raise HANDLED_ERROR
 
 Exit Sub
 
@@ -387,8 +388,13 @@ Private Sub CmoStatus_Change()
     If Order Is Nothing Then Err.Raise NO_ORDER, Description:="System failure, no Order"
 
     With Order
-        If CmoStatus.ListIndex <> -1 Then .Status = CmoStatus.ListIndex
-        .DBSave
+        If CmoStatus.ListIndex <> -1 Then
+            If CmoStatus.ListIndex = 0 Then .AssignedTo = New ClsPerson
+            .Status = CmoStatus.ListIndex
+            .DBSave
+            
+            If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        End If
     End With
 
 Exit Sub

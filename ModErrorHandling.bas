@@ -3,8 +3,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' Module ModErrorHandling
 ' v0,0 - Initial Version
 ' v0,1 - Added no ini file error
+' v0,2 - User Administration changes
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 07 Apr 17
 '===============================================================
 
 Option Explicit
@@ -137,9 +138,10 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             MsgBox "Sorry, the system does not recognise you.  Please continue with " _
                     & "the order as a guest.  Your name has been forwarded onto the " _
                     & "Administrator so that you can be added to the system"
-                    
-            
+                               
             CurrentUser.AddTempAccount
+            
+            CurrentUser.DBSave
             
             Set MailSystem = New ClsMailSystem
             

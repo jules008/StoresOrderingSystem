@@ -2,8 +2,9 @@ Attribute VB_Name = "ModPrint"
 '===============================================================
 ' Module ModPrint
 ' v0,0 - Initial Version
+' v0,1 - added PrintOrderList procedure
 '---------------------------------------------------------------
-' Date - 20 Mar 17
+' Date - 07 Apr 17
 '===============================================================
 
 Option Explicit
@@ -126,3 +127,78 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' PrintOrderList
+' Populates form with order items
+' ---------------------------------------------------------------
+Public Function PrintOrderList(Order As ClsOrder) As Boolean
+    Dim RngOrderNo As Range
+    Dim RngReqBy As Range
+    Dim RngStation As Range
+    Dim RngItemsRefPnt As Range
+    Dim Lineitem As ClsLineItem
+    Dim i As Integer
+    
+    Const StrPROCEDURE As String = "PrintOrderList()"
+
+    On Error GoTo ErrorHandler
+
+    ShtOrderList.ClearForm
+    
+    Set RngOrderNo = ShtOrderList.Range("C3")
+    Set RngReqBy = ShtOrderList.Range("E3")
+    Set RngStation = ShtOrderList.Range("G3")
+    Set RngItemsRefPnt = ShtOrderList.Range("B6")
+
+    With Order
+        RngOrderNo = .OrderNo
+        RngReqBy = .Requestor.UserName
+        RngStation = .Requestor.Station.Name
+        
+        For i = 0 To .LineItems.Count - 1
+
+            RngItemsRefPnt.Offset(i, 0) = .LineItems(i + 1).Asset.Description
+            RngItemsRefPnt.Offset(i, 2) = .LineItems(i + 1).Quantity
+            RngItemsRefPnt.Offset(i, 3) = .LineItems(i + 1).Asset.Size1
+            RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Asset.Size2
+            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Location.Name
+        Next
+    End With
+    
+    If ENABLE_PRINT Then
+        ShtOrderList.Visible = xlSheetVisible
+        ShtOrderList.PrintOut
+        ShtOrderList.Visible = xlSheetHidden
+    End If
+    
+    PrintOrderList = True
+    
+    Set RngOrderNo = Nothing
+    Set RngReqBy = Nothing
+    Set RngStation = Nothing
+    Set RngItemsRefPnt = Nothing
+    Set Lineitem = Nothing
+
+Exit Function
+
+ErrorExit:
+    Set RngOrderNo = Nothing
+    Set RngReqBy = Nothing
+    Set RngStation = Nothing
+    Set RngItemsRefPnt = Nothing
+    Set Lineitem = Nothing
+
+'    ***CleanUpCode***
+    PrintOrderList = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+

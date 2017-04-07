@@ -16,6 +16,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -204,7 +205,7 @@ ErrorHandler:
     
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume gracefulexit
+        Resume GracefulExit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -440,7 +441,7 @@ Private Function ValidateForm() As EnumFormValidation
     
     ValidateForm = FormOK
 
-gracefulexit:
+GracefulExit:
 
 
 Exit Function
@@ -457,7 +458,7 @@ ErrorHandler:
     
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume gracefulexit
+        Resume GracefulExit
     End If
 
 If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then

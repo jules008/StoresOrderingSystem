@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsPerson
 ' v0,0 - Initial Version
+' v0,1 - Changes to Username functionality
 '---------------------------------------------------------------
-' Date - 20 Feb 17
+' Date - 07 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -75,7 +76,6 @@ End Property
 
 '---------------------------------------------------------------
 Public Property Get UserName() As String
-    pUsername = Trim(pForename) & " " & Trim(pSurname)
     UserName = pUsername
 End Property
 
@@ -199,8 +199,9 @@ Public Sub DBSave()
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE UserName = '" & pUsername & "' AND Deleted IS NULL")
+    Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE crewno = '" & pCrewNo & "' AND Deleted IS NULL")
 
+    
     With RstPerson
         If .RecordCount = 0 Then
             .addnew
@@ -210,7 +211,7 @@ Public Sub DBSave()
         If pCrewNo <> "" Then !CrewNo = pCrewNo
         If pForename <> "" Then !Forename = pForename
         If pSurname <> "" Then !Surname = pSurname
-        If pUsername <> "" Then !UserName = pUsername
+        If pUsername <> "" Then !UserName = pUsername Else !UserName = pForename & " " & pSurname
         If pRankGrade <> "" Then !RankGrade = pRankGrade
         If pRole <> "" Then !Role = pRole
         If pWatch <> "" Then !Watch = pWatch
@@ -232,7 +233,7 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
     Dim RstPerson As Recordset
     Dim i As Integer
 
-    Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE UserName = '" & pUsername & "' AND Deleted IS NULL")
+    Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE crewno = '" & pCrewNo & "' AND Deleted IS NULL")
     With RstPerson
         For i = .RecordCount To 1 Step -1
             If FullDelete Then
@@ -254,7 +255,6 @@ End Sub
 ' adds a temporary account in the database if user not recognised
 '---------------------------------------------------------------
 Public Sub AddTempAccount()
-    Dim UserName As String
     Dim LocName As String
     Dim Persons As ClsPersons
     
@@ -262,9 +262,17 @@ Public Sub AddTempAccount()
     
     Set Persons = New ClsPersons
     
-    UserName = Application.UserName
+    If TEST_MODE Then
+        If ShtSettings.Range("C15") = True Then
+            pUsername = ShtSettings.Range("Test_User")
+        Else
+            pUsername = Application.UserName
+        End If
+    Else
+        pUsername = Application.UserName
+    End If
     
-    If UserName = "" Then Err.Raise NO_USER_AVAILABLE, Description:="The system cannot find a username from the application"
+    If pUsername = "" Then Err.Raise NO_USER_AVAILABLE, Description:="The system cannot find a username from the application"
 
     For i = 9999 To 1 Step -1
         pCrewNo = i
@@ -273,8 +281,6 @@ Public Sub AddTempAccount()
     Next
     
     pAccessLvl = BasicLvl_1
-    pUsername = UserName
-    DBSave
     
     Set Persons = Nothing
     

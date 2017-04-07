@@ -120,9 +120,7 @@ Public Sub RemoveAllModules()
         
         ''' remove it from the project if you want
         If VBModule.Type <> vbext_ct_Document Then SourceBook.VBProject.VBComponents.Remove VBModule
-        
-        End If
-   
+           
     Next VBModule
     
     Set DlgOpen = Nothing

@@ -2,7 +2,7 @@ Attribute VB_Name = "ModUIMainScreen"
 '===============================================================
 ' Module ModUIMainScreen
 ' v0,0 - Initial Version
-' v0,1 - added performance mode switching 
+' v0,1 - added performance mode switching
 '---------------------------------------------------------------
 ' Date - 06 Apr 17
 '===============================================================

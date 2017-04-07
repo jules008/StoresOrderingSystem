@@ -2,54 +2,52 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ThisWorkbook"
+Attribute VB_Name = "ShtOrderList"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '===============================================================
-' v0,0 - Initial version
+' Module ShtOrderList
+' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 07 Apr 17
 '===============================================================
 
 Option Explicit
 
-Private Const StrMODULE As String = "ThisWorkbook"
+Private Const StrMODULE As String = "ShtOrderList"
+
 
 ' ===============================================================
-' Workbook_Open
-' Start up processing
+' ClearForm
+' Clears all orders from form
 ' ---------------------------------------------------------------
-Private Sub Workbook_Open()
-    Const StrPROCEDURE As String = "Workbook_Open()"
+Public Function ClearForm() As Boolean
+    
+    Const StrPROCEDURE As String = "ClearForm()"
 
     On Error GoTo ErrorHandler
+
+    Range("RngClear").ClearContents
+
+    ClearForm = True
     
-    ShtMain.Unprotect
-    [menuitemno] = 1
-    ShtMain.Protect
-    
-    If MainScreen Is Nothing Then
-        ShtMain.Activate
-        If Not ModStartUp.Initialise Then Err.Raise HANDLED_ERROR
-    End If
-Exit Sub
+
+Exit Function
 
 ErrorExit:
 
-'    ***CleanUpCode***
+    
+    ClearForm = False
 
-Exit Sub
+Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
         Resume ErrorExit
     End If
-End Sub
-
-
-
+End Function
 

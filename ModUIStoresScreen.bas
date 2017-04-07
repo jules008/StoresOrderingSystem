@@ -245,7 +245,7 @@ Restart:
         
         End Select
     
-gracefulexit:
+GracefulExit:
 
     ProcessBtnPress = True
 
@@ -265,7 +265,7 @@ ErrorHandler:
          If Err.Number = SYSTEM_RESTART Then
             Resume Restart
         Else
-            Resume gracefulexit
+            Resume GracefulExit
         End If
     End If
     
@@ -298,7 +298,7 @@ Restart:
     If Not FrmUserAdmin.ShowForm Then Err.Raise HANDLED_ERROR
     
     
-gracefulexit:
+GracefulExit:
 
     BtnUserManagementSel = True
 
@@ -317,7 +317,7 @@ ErrorHandler:
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         If Err.Number = ACCESS_DENIED Then
             CustomErrorHandler (Err.Number)
-            Resume gracefulexit
+            Resume GracefulExit
         Else
             CustomErrorHandler (Err.Number)
             Resume Restart
@@ -341,7 +341,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     
     Dim Orders As ClsOrders
     Dim Order As ClsOrder
-    Dim LineItem As ClsUILineitem
+    Dim Lineitem As ClsUILineitem
     Dim i As Integer
     Dim OnAction As String
     Dim RowTitles() As String
@@ -355,10 +355,10 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     ModLibrary.PerfSettingsOn
     
     With StoresFrame1
-        For Each LineItem In .LineItems
-            .LineItems.RemoveItem LineItem.Name
-            LineItem.ShpLineItem.Delete
-            Set LineItem = Nothing
+        For Each Lineitem In .LineItems
+            .LineItems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineItem.Delete
+            Set Lineitem = Nothing
         Next
         
         ReDim RowTitles(0 To ORDER_LINEITEM_NOCOLS - 1)
@@ -491,7 +491,7 @@ Restart:
     
     End If
     
-gracefulexit:
+GracefulExit:
 
     BtnOrderSwitchSel = True
 

@@ -15,10 +15,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - User administration fixes
 '---------------------------------------------------------------
-' Date - 20 Mar 17
+' Date - 07 Apr 17
 '===============================================================
 Option Explicit
 
@@ -76,6 +78,7 @@ Private Sub BtnDel_Click()
     Dim Response As Integer
     Dim SelUser As Integer
     Dim UserName As String
+    Dim CrewNo As String
     
     Const StrPROCEDURE As String = "BtnDel_Click()"
     
@@ -84,7 +87,8 @@ Private Sub BtnDel_Click()
     SelUser = LstAccessList.ListIndex
     
     If SelUser <> -1 Then
-        UserName = LstAccessList.List(SelUser, 0)
+        CrewNo = LstAccessList.List(SelUser, 0)
+        UserName = LstAccessList.List(SelUser, 1)
         Response = MsgBox("Are you sure you want to remove " _
                             & UserName & " from the system? ", 36)
     

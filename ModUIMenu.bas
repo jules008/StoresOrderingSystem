@@ -402,7 +402,7 @@ ErrorHandler:
          If Err.Number = SYSTEM_RESTART Then
             Resume Restart
         Else
-            Resume gracefulexit
+            Resume GracefulExit
         End If
     End If
     

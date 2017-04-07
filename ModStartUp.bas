@@ -4,8 +4,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,0 - Initial Version
 ' v0,1 - Added maintenance flag start up option
 ' v0,2 - Bug fix for maintenance flag
+' v0,3 - Hide more sheets plus bug fixes
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 07 Apr 17
 '===============================================================
 
 Option Explicit
@@ -38,8 +39,13 @@ Public Function Initialise() As Boolean
     
     If DEV_MODE Then
         ShtSettings.Visible = xlSheetVisible
+        ShtLists.Visible = xlSheetVisible
+        ShtOrderList.Visible = xlSheetVisible
+    
     Else
         ShtSettings.Visible = xlSheetHidden
+        ShtLists.Visible = xlSheetHidden
+        ShtOrderList.Visible = xlSheetHidden
     End If
         
     'build collections
@@ -127,9 +133,9 @@ Public Function GetUserName() As Boolean
     
     If CurrentUser.CrewNo = "" Then Err.Raise UNKNOWN_USER
 
+GracefulExit:
+    
     GetUserName = True
-
-gracefulexit:
 
 Exit Function
 
@@ -143,7 +149,7 @@ ErrorHandler:
         
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume gracefulexit
+        Resume GracefulExit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
@@ -209,15 +215,19 @@ Private Function ReadINIFile() As Boolean
     
     If StopFlag = True Then Stop
     
-    If MaintMsg <> 0 Then
+    If MaintMsg <> "Online" Then
         MsgBox MaintMsg
+        Application.DisplayAlerts = False
         ActiveWorkbook.Close
+        Application.DisplayAlerts = True
+        
     End If
     
     
-gracefulexit:
+GracefulExit:
     
-   ReadINIFile = True
+    ReadINIFile = True
+    Application.DisplayAlerts = True
 
 Exit Function
 
@@ -225,6 +235,7 @@ ErrorExit:
 
 '    ***CleanUpCode***
     ReadINIFile = False
+    Application.DisplayAlerts = True
 
 Exit Function
 
