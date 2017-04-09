@@ -3,8 +3,9 @@ Attribute VB_Name = "ModPrint"
 ' Module ModPrint
 ' v0,0 - Initial Version
 ' v0,1 - added PrintOrderList procedure
+' v0,2 - Change from Location object to string
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 09 Apr 17
 '===============================================================
 
 Option Explicit
@@ -64,7 +65,7 @@ End Function
 Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
     Dim PrintFilePath As String
     Dim iFile As Integer
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     Const StrPROCEDURE As String = "PrintOrderReceipt()"
 
@@ -84,8 +85,8 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
             Print #iFile, "Station: " & .Requestor.Station.Name
             Print #iFile,
                         
-            For Each LineItem In .LineItems
-                With LineItem
+            For Each Lineitem In .LineItems
+                With Lineitem
                     Print #iFile,
                     Print #iFile, "---------------------------------------------------"
                     Print #iFile, "Desc: " & .Asset.Description
@@ -105,7 +106,7 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
         
         Kill PrintFilePath
         
-        Set LineItem = Nothing
+        Set Lineitem = Nothing
     End With
     
     PrintOrderReceipt = True
@@ -115,7 +116,7 @@ Exit Function
 ErrorExit:
 
 '    ***CleanUpCode***
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     PrintOrderReceipt = False
 
 Exit Function
@@ -162,7 +163,7 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
             RngItemsRefPnt.Offset(i, 2) = .LineItems(i + 1).Quantity
             RngItemsRefPnt.Offset(i, 3) = .LineItems(i + 1).Asset.Size1
             RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Asset.Size2
-            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Location.Name
+            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Location
         Next
     End With
     

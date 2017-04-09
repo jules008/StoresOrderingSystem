@@ -205,11 +205,11 @@ End Sub
 ' re-orders the shapes so that the LineItems sit on top of the screen
 '---------------------------------------------------------------
 Public Sub ReOrder()
-    Dim LineItem As ClsUILineitem
+    Dim Lineitem As ClsUILineitem
         
-    For Each LineItem In PUILineItems
-        LineItem.ShpLineItem.ZOrder msoBringToFront
-        LineItem.ReOrder
+    For Each Lineitem In PUILineItems
+        Lineitem.ShpLineItem.ZOrder msoBringToFront
+        Lineitem.ReOrder
     Next
     
 End Sub

@@ -14,6 +14,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -23,7 +24,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmLossReport"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -38,7 +39,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     If LocLineItem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="No Line Item Passed to ShowForm Function"
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -83,7 +84,7 @@ Private Function PopulateForm() As Boolean
 
     On Error GoTo ErrorHandler
 
-    AllowedRns = Split(LineItem.Asset.AllowedOrderReasons, ":")
+    AllowedRns = Split(Lineitem.Asset.AllowedOrderReasons, ":")
     
     x = 0
     With CmoReason
@@ -139,7 +140,7 @@ Private Function PopulateForm() As Boolean
         End If
     End With
                     
-    With LineItem
+    With Lineitem
         If .ReqReason <> 0 Then
             For i = 0 To CmoReason.ListCount - 1
                 If CmoReason.List(i, 1) = .ReqReason Then
@@ -179,7 +180,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 
 End Function
@@ -214,13 +215,13 @@ Private Sub BtnNext_Click()
             
             Case Is = FormOK
 
-                If LineItem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
+                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
                                 
-                If LineItem.LossReport Is Nothing Then Err.Raise NO_LOSS_REPORT, Description:="Loss Report is missing"
+                If Lineitem.LossReport Is Nothing Then Err.Raise NO_LOSS_REPORT, Description:="Loss Report is missing"
                                      
                 If Not BuildLossReport Then Err.Raise HANDLED_ERROR
                 
-                If Not FrmOrder.AddLineItem(LineItem) Then Err.Raise HANDLED_ERROR
+                If Not FrmOrder.AddLineItem(Lineitem) Then Err.Raise HANDLED_ERROR
                 
                 Unload Me
         
@@ -302,7 +303,7 @@ Private Sub CmoReason_Change()
         Select Case Reason
             
             Case Is = DamagedOpTraining
-                LineItem.ReturnReqd = True
+                Lineitem.ReturnReqd = True
                 TxtCrimeNo.Visible = False
                 TxtComments1.Visible = True
                 TxtCrimeNo.Value = ""
@@ -313,7 +314,7 @@ Private Sub CmoReason_Change()
                 LblText3.Caption = ""
                 
             Case Is = DamagedOther
-                LineItem.ReturnReqd = True
+                Lineitem.ReturnReqd = True
                 TxtCrimeNo.Visible = False
                 TxtComments1.Visible = True
                 TxtCrimeNo.Value = ""
@@ -324,7 +325,7 @@ Private Sub CmoReason_Change()
                 LblText3.Caption = ""
             
             Case Is = lost
-                LineItem.ReturnReqd = False
+                Lineitem.ReturnReqd = False
                 TxtCrimeNo.Visible = False
                 TxtComments1.Visible = True
                 TxtCrimeNo.Value = ""
@@ -335,7 +336,7 @@ Private Sub CmoReason_Change()
                 LblText3.Caption = ""
            
             Case Is = Malfunction
-                LineItem.ReturnReqd = True
+                Lineitem.ReturnReqd = True
                 TxtCrimeNo.Visible = False
                 TxtComments1.Visible = True
                 TxtCrimeNo.Value = ""
@@ -346,7 +347,7 @@ Private Sub CmoReason_Change()
                 LblText3.Caption = ""
           
             Case Is = NewIssue
-                LineItem.ReturnReqd = False
+                Lineitem.ReturnReqd = False
                 TxtCrimeNo.Visible = False
                 TxtComments1.Visible = False
                 TxtCrimeNo.Value = ""
@@ -357,7 +358,7 @@ Private Sub CmoReason_Change()
                 LblText3.Caption = ""
             
             Case Is = Stolen
-                LineItem.ReturnReqd = False
+                Lineitem.ReturnReqd = False
                 TxtCrimeNo.Visible = True
                 TxtComments1.Visible = True
                 TxtCrimeNo.Value = ""
@@ -368,7 +369,7 @@ Private Sub CmoReason_Change()
                 LblText3.Visible = True
           
             Case Is = UsedConsumed
-                LineItem.ReturnReqd = False
+                Lineitem.ReturnReqd = False
                 TxtComments1.Visible = False
                 TxtCrimeNo.Value = ""
                 TxtComments1.Value = ""
@@ -555,25 +556,25 @@ Private Function SelectPrevForm() As Boolean
 
     On Error GoTo ErrorHandler
     
-    If LineItem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:=" No Line Item available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:=" No Line Item available"
 
-    If LineItem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset is on the order"
+    If Lineitem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset is on the order"
     
-    Select Case LineItem.Asset.AllocationType
+    Select Case Lineitem.Asset.AllocationType
         Case Is = Person
             
             Hide
-            If Not FrmPerson.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
             Hide
         Case Is = Vehicle
             Hide
-            If Not FrmVehicle.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
         Case Is = Station
-            If Not FrmStation.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmStation.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
     
     End Select
@@ -612,11 +613,11 @@ Private Function BuildLossReport() As Boolean
         Reason = .List(.ListIndex, 1)
     End With
     
-    With LineItem
+    With Lineitem
         .ReqReason = Reason
     End With
     
-    With LineItem.LossReport
+    With Lineitem.LossReport
         Select Case Reason
         
             Case Is = DamagedOpTraining

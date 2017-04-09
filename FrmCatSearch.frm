@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -24,7 +25,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmCatSearch"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -37,15 +38,15 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     On Error GoTo ErrorHandler
     
     If LocLineItem Is Nothing Then
-        Set LineItem = New ClsLineItem
+        Set Lineitem = New ClsLineItem
         
-        With LineItem
+        With Lineitem
             .Status = OrderOpen
         End With
         
         BtnPrev.Enabled = False
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -161,9 +162,9 @@ Private Function PopulateForm() As Boolean
 
     On Error GoTo ErrorHandler
     
-    If LineItem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset on Order"
+    If Lineitem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset on Order"
     
-    With LineItem.Asset
+    With Lineitem.Asset
         CmoCategory1 = .Category1
         CmoCategory2 = .Category2
         CmoCategory3 = .Category3
@@ -172,7 +173,7 @@ Private Function PopulateForm() As Boolean
         CmoSize2 = .Size2
     End With
     
-    With LineItem
+    With Lineitem
         CmoQuantity = .Quantity
     End With
     PopulateForm = True
@@ -229,10 +230,10 @@ Private Sub BtnNext_Click()
 
         Case Is = FormOK
             
-            If LineItem Is Nothing Then
+            If Lineitem Is Nothing Then
                 Err.Raise NO_LINE_ITEM, Description:=" No Line Item available"
             Else
-                With LineItem
+                With Lineitem
                     .Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
                     
                     If .Asset.AssetNo = 0 Then
@@ -267,7 +268,7 @@ ErrorHandler:
     
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         Dim ErrMessage As String
-        If Err.Number = NO_ORDER_MESSAGE Then ErrMessage = LineItem.Asset.NoOrderMessage
+        If Err.Number = NO_ORDER_MESSAGE Then ErrMessage = Lineitem.Asset.NoOrderMessage
         CustomErrorHandler Err.Number, ErrMessage
         Resume GracefulExit
     End If
@@ -290,7 +291,7 @@ Private Sub BtnPrev_Click()
     On Error GoTo ErrorHandler
 
     Hide
-    If Not FrmTextSearch.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+    If Not FrmTextSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
     Unload Me
     
 Exit Sub
@@ -553,7 +554,7 @@ Private Sub CmoItem_Change()
     
     If CmoItem <> "" Then
         
-        If LineItem Is Nothing Then Err.Raise SYSTEM_RESTART
+        If Lineitem Is Nothing Then Err.Raise SYSTEM_RESTART
         
         Set Assets = New ClsAssets
         
@@ -651,9 +652,9 @@ Private Sub CmoSize1_Change()
     
     CmoSize1.BackColor = COLOUR_3
     
-    LineItem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
+    Lineitem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
     
-    If Not UpdateStockMessage(LineItem.Asset) Then Err.Raise HANDLED_ERROR
+    If Not UpdateStockMessage(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
     
     If CmoSize1 = "" Then CmoSize2 = ""
 
@@ -691,9 +692,9 @@ Private Sub CmoSize2_Change()
     
     CmoSize2.BackColor = COLOUR_3
     
-    LineItem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
+    Lineitem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
     
-    If Not UpdateStockMessage(LineItem.Asset) Then Err.Raise HANDLED_ERROR
+    If Not UpdateStockMessage(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
     
     Set Assets = Nothing
 
@@ -826,7 +827,7 @@ End Function
 Public Sub FormTerminate()
     On Error Resume Next
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
     
 End Sub
@@ -915,7 +916,7 @@ Private Function UpdateStockMessage(Asset As ClsAsset) As Boolean
                 .ForeColor = COLOUR_8
                 UpdateStockMessage = True
                 Exit Function
-            Case Is < LineItem.Asset.OrderLevel
+            Case Is < Lineitem.Asset.OrderLevel
                 .Caption = "Low Stock"
                 .BackColor = COLOUR_11
                 .BorderColor = COLOUR_1
@@ -961,19 +962,19 @@ Private Function SelectNextForm() As Boolean
 
     On Error GoTo ErrorHandler
     
-    If LineItem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:=" No Line Item available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:=" No Line Item available"
     
     Hide
     
-    Select Case LineItem.Asset.AllocationType
+    Select Case Lineitem.Asset.AllocationType
         Case Is = Person
-            If Not FrmPerson.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Is = Vehicle
-            If Not FrmVehicle.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Else
-            If Not FrmStation.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmStation.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
     End Select
 

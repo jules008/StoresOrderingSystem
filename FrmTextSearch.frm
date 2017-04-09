@@ -18,6 +18,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -41,7 +42,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmTextSearch"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -56,10 +57,10 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     ResetForm
     
     If LocLineItem Is Nothing Then
-        Set LineItem = New ClsLineItem
+        Set Lineitem = New ClsLineItem
     Else
-        Set LineItem = LocLineItem
-        TxtSearch = LineItem.Asset.Description
+        Set Lineitem = LocLineItem
+        TxtSearch = Lineitem.Asset.Description
     End If
     
     Show
@@ -136,9 +137,9 @@ Private Sub BtnNext_Click()
         
         Case Is = FormOK
             
-            If LineItem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Line Item on Order"
+            If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Line Item on Order"
             
-            With LineItem
+            With Lineitem
                 
                 .Asset.DBGet (Assets.FindAssetNo(TxtSearch.Value, "", ""))
                 If .Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset on current Order"
@@ -147,7 +148,7 @@ Private Sub BtnNext_Click()
                           
             'next page
             Hide
-            If Not FrmCatSearch.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
     End Select
 
@@ -296,7 +297,7 @@ End Function
 Public Sub FormTerminate()
     On Error Resume Next
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 End Sub
 

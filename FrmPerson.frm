@@ -16,6 +16,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -25,7 +26,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmPerson"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -39,7 +40,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     If LocLineItem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="No Line Item Passed to ShowForm Function    "
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -50,7 +51,7 @@ Exit Function
 
 ErrorExit:
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
 
     FormTerminate
     Terminate
@@ -83,7 +84,7 @@ Private Function PopulateForm() As Boolean
     
     On Error GoTo ErrorHandler
     
-    CrewNo = LineItem.ForPerson.CrewNo
+    CrewNo = Lineitem.ForPerson.CrewNo
     
     If CrewNo = "" Or CrewNo = CurrentUser.CrewNo Then
         OptMe.Value = True
@@ -119,7 +120,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 
 End Function
@@ -155,13 +156,13 @@ Private Sub BtnNext_Click()
         Case Is = FormOK
                            
             If OptMe.Value = True Then
-                LineItem.ForPerson = CurrentUser
+                Lineitem.ForPerson = CurrentUser
             End If
             
-            If LineItem.ForPerson.CrewNo = 0 Then Err.Raise NO_NAMES_SELECTED
+            If Lineitem.ForPerson.CrewNo = 0 Then Err.Raise NO_NAMES_SELECTED
             
             Hide
-            If Not FrmLossReport.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+            If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
     End Select
         
@@ -200,7 +201,7 @@ Private Sub BtnPrev_Click()
     On Error GoTo ErrorHandler
 
     Unload Me
-    If Not FrmCatSearch.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+    If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 Exit Sub
 
 ErrorExit:
@@ -562,7 +563,7 @@ Private Sub LstNames_Click()
         Me.TxtSearch.Value = .List(.ListIndex, 1)
         .ListIndex = 0
         
-        LineItem.ForPerson.DBGet TxtSearch
+        Lineitem.ForPerson.DBGet TxtSearch
         
     End With
 End Sub

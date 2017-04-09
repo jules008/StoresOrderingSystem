@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -82,7 +83,7 @@ Private Function PopulateForm() As Boolean
     Const StrPROCEDURE As String = "PopulateForm()"
 
     Dim i As Integer
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     On Error GoTo ErrorHandler
 

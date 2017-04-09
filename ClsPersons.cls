@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsPersons
 ' v0,0 - Initial Version
+' v0,1 - change GetMailAlertUsers
 '---------------------------------------------------------------
-' Date - 22 Mar 17
+' Date - 09 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -119,10 +120,15 @@ Public Function GetMailAlertUsers() As Recordset
     Dim i As Integer
 
     Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE mailalert = True")
+    
     With RstPerson
-        .MoveLast
-        .MoveFirst
-        Set GetMailAlertUsers = RstPerson
+        If .RecordCount > 0 Then
+            .MoveLast
+            .MoveFirst
+            Set GetMailAlertUsers = RstPerson
+        Else
+            Set GetMailAlertUsers = Nothing
+        End If
     End With
 End Function
 

@@ -59,9 +59,9 @@ End Function
 ' Add item to Collection
 '---------------------------------------------------------------
 
-Public Sub AddItem(LineItem As ClsLineItem)
-    LineItem.SetParent ObjPtr(Me.Parent)
-    pLineItems.Add LineItem, Key:=CStr(LineItem.LineItemNo)
+Public Sub AddItem(Lineitem As ClsLineItem)
+    Lineitem.SetParent ObjPtr(Me.Parent)
+    pLineItems.Add Lineitem, Key:=CStr(Lineitem.LineItemNo)
 End Sub
 
 ' ===============================================================
@@ -89,7 +89,7 @@ End Function
 
 Public Sub GetCollection()
     Dim RstLineItem As Recordset
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     Dim i As Integer
 
     Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE OrderNo = " & Parent.OrderNo _
@@ -98,10 +98,10 @@ Public Sub GetCollection()
         If .RecordCount > 0 Then
             .MoveFirst
             Do While Not .EOF
-                Set LineItem = New ClsLineItem
-                LineItem.LineItemNo = !LineItemNo
-                LineItem.DBGet
-                Me.AddItem LineItem
+                Set Lineitem = New ClsLineItem
+                Lineitem.LineItemNo = !LineItemNo
+                Lineitem.DBGet
+                Me.AddItem Lineitem
                 .MoveNext
             Loop
         End If
@@ -115,10 +115,10 @@ End Sub
 '---------------------------------------------------------------
 
 Public Sub DeleteCollection()
-    Dim LineItem As ClsLineItem
-    For Each LineItem In pLineItems
-        pLineItems.Remove CStr(LineItem.LineItemNo)
-        LineItem.DBDelete
+    Dim Lineitem As ClsLineItem
+    For Each Lineitem In pLineItems
+        pLineItems.Remove CStr(Lineitem.LineItemNo)
+        Lineitem.DBDelete
     Next
 End Sub
 

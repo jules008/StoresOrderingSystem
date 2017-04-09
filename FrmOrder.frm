@@ -17,10 +17,12 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - bug fix SendEmailAlerts
 '---------------------------------------------------------------
-' Date - 07 Mar 17
+' Date - 09 Apr 17
 '===============================================================
 Option Explicit
 
@@ -88,33 +90,33 @@ Private Function PopulateForm() As Boolean
     Const StrPROCEDURE As String = "PopulateForm()"
 
     Dim i As Integer
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     On Error GoTo ErrorHandler
     
-    Set LineItem = New ClsLineItem
+    Set Lineitem = New ClsLineItem
         
     With LstItems
         .Clear
         
         i = 0
-        For Each LineItem In Order.LineItems
+        For Each Lineitem In Order.LineItems
             .AddItem
-            .List(i, 0) = LineItem.LineItemNo
+            .List(i, 0) = Lineitem.LineItemNo
             .List(i, 1) = i + 1
-            .List(i, 2) = LineItem.Asset.Description
-            .List(i, 3) = LineItem.Quantity
-            .List(i, 4) = LineItem.Asset.Size1
-            .List(i, 5) = LineItem.Asset.Size2
-            If LineItem.ReturnReqd = True Then .List(i, 6) = "Yes" Else .List(i, 6) = "No"
-            If LineItem.LossReport.LossReportNo <> 0 Then .List(i, 7) = "Yes" Else .List(i, 7) = "No"
+            .List(i, 2) = Lineitem.Asset.Description
+            .List(i, 3) = Lineitem.Quantity
+            .List(i, 4) = Lineitem.Asset.Size1
+            .List(i, 5) = Lineitem.Asset.Size2
+            If Lineitem.ReturnReqd = True Then .List(i, 6) = "Yes" Else .List(i, 6) = "No"
+            If Lineitem.LossReport.LossReportNo <> 0 Then .List(i, 7) = "Yes" Else .List(i, 7) = "No"
             i = i + 1
         Next
     End With
     
     If Order.OrderNo = 0 Then TxtOrderNo = "New" Else TxtOrderNo = Order.OrderNo
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     
     PopulateForm = True
 
@@ -122,7 +124,7 @@ Exit Function
 
 ErrorExit:
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
         
     PopulateForm = False
     FormTerminate
@@ -559,17 +561,17 @@ End Function
 ' AddLineItem
 ' Adds lineitem to active order
 ' ---------------------------------------------------------------
-Public Function AddLineItem(LineItem As ClsLineItem) As Boolean
+Public Function AddLineItem(Lineitem As ClsLineItem) As Boolean
     Const StrPROCEDURE As String = "AddLineItem()"
 
     On Error GoTo ErrorHandler
 
     If Order Is Nothing Then Err.Raise NO_ORDER, Description:="Cannot find active Order"
     
-    LineItem.DBSave
+    Lineitem.DBSave
     
     With Order
-        .LineItems.AddItem LineItem
+        .LineItems.AddItem Lineitem
         
     End With
     
@@ -612,35 +614,36 @@ Private Function SendEmailAlerts() As Boolean
     Set Persons = New ClsPersons
     Set RstUsers = Persons.GetMailAlertUsers
     
-    With RstUsers
-        .MoveFirst
-        For i = 1 To .RecordCount - 1
-            ToList = ToList & !UserName & "; "
-            .MoveNext
-        Next
+    If Not RstUsers Is Nothing Then
+        With RstUsers
+            .MoveFirst
+            For i = 1 To .RecordCount - 1
+                ToList = ToList & !UserName & "; "
+                .MoveNext
+            Next
+            
+            ToList = ToList & !UserName
         
-        ToList = ToList & !UserName
+        End With
+        If TEST_MODE Then
+            TestFlag = TEST_PREFIX
+        Else
+            TestFlag = ""
+        End If
     
-    End With
+        If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
         
-    If TEST_MODE Then
-        TestFlag = TEST_PREFIX
-    Else
-        TestFlag = ""
+        With MailSystem.MailItem
+            .To = ToList
+            .Subject = TestFlag & "New Order Alert"
+            .Body = TestFlag & "A new Stores Order has been received from " & Order.Requestor.UserName
+            .Importance = olImportanceHigh
+        End With
+        
+        With MailSystem
+            If SEND_EMAILS Then .MailItem.Send
+        End With
     End If
-
-    If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
-    
-    With MailSystem.MailItem
-        .To = ToList
-        .Subject = TestFlag & "New Order Alert"
-        .Body = TestFlag & "A new Stores Order has been received from " & Order.Requestor.UserName
-        .Importance = olImportanceHigh
-    End With
-    
-    With MailSystem
-        If SEND_EMAILS Then .MailItem.Send
-    End With
     
     Set MailSystem = Nothing
     Set Persons = Nothing

@@ -1,10 +1,11 @@
 Attribute VB_Name = "ModProjectInOut"
+Dim ExportFilePath As String
+
 Public Sub ExportModules()
     Dim ExportYN As Boolean
     Dim DlgOpen As FileDialog
     Dim SourceBook As Excel.Workbook
     Dim SourceBookName As String
-    Dim ExportFilePath As String
     Dim EmportFileName As String
     Dim VBModule As VBIDE.VBComponent
    
@@ -51,6 +52,8 @@ Public Sub ExportModules()
         End If
    
     Next VBModule
+    
+    ExportDBTables
     
     Set DlgOpen = Nothing
 
@@ -100,6 +103,7 @@ Public Sub ImportModules()
         
     Next FileObj
     
+    
     MsgBox "Import is ready"
 End Sub
  
@@ -127,5 +131,95 @@ Public Sub RemoveAllModules()
 
 End Sub
 
-
-
+Public Sub ExportDBTables()
+    Dim iFile As Integer
+    Dim Fld As Field
+    Dim FieldType As String
+    Dim TableExport As TableDef
+    Dim ExportFldr As String
+        
+    For Each TableExport In DB.TableDefs
+        If Not (TableExport.Name Like "MSys*" Or TableExport.Name Like "~*") Then
+            
+            Debug.Print TableExport.Name
+            
+            PrintFilePath = ExportFilePath & TableExport.Name & ".txt"
+        
+            iFile = FreeFile()
+            
+            Open PrintFilePath For Append As #iFile
+            
+            For Each Fld In TableExport.Fields
+                Select Case Fld.Type
+                    Case Is = 1
+                        FieldType = "dbBoolean"
+                    Case Is = 2
+                        FieldType = "dbByte"
+                    Case Is = 3
+                        FieldType = "dbInteger"
+                    Case Is = 4
+                        FieldType = "dbLong"
+                    Case Is = 5
+                        FieldType = "dbCurrency"
+                    Case Is = 6
+                        FieldType = "dbSingle"
+                    Case Is = 7
+                        FieldType = "dbDouble"
+                    Case Is = 8
+                        FieldType = "dbDate"
+                    Case Is = 9
+                        FieldType = "dbBinary"
+                    Case Is = 10
+                        FieldType = "dbText"
+                    Case Is = 11
+                        FieldType = "dbLongBinary"
+                    Case Is = 12
+                        FieldType = "dbMemo"
+                    Case Is = 15
+                        FieldType = "dbGUID"
+                    Case Is = 16
+                        FieldType = "dbBigInt"
+                    Case Is = 17
+                        FieldType = "dbVarBinary"
+                    Case Is = 18
+                        FieldType = "dbChar"
+                    Case Is = 19
+                        FieldType = "dbNumeric"
+                    Case Is = 20
+                        FieldType = "dbDecimal"
+                    Case Is = 21
+                        FieldType = "dbFloat"
+                    Case Is = 22
+                        FieldType = "dbTime"
+                    Case Is = 23
+                        FieldType = "dbTimeStamp"
+                    Case Is = 101
+                        FieldType = "dbAttachment"
+                    Case Is = 102
+                        FieldType = "dbComplexByte"
+                    Case Is = 103
+                        FieldType = "dbComplexInteger"
+                    Case Is = 104
+                        FieldType = "dbComplexLong"
+                    Case Is = 105
+                        FieldType = "dbComplexSingle"
+                    Case Is = 106
+                        FieldType = "dbComplexDouble"
+                    Case Is = 107
+                        FieldType = "dbComplexGUID"
+                    Case Is = 108
+                        FieldType = "dbComplexDecimal"
+                    Case Is = 109
+                        FieldType = "dbComplexText"
+                End Select
+                
+                Print #iFile, Fld.Name & ",  " & FieldType
+            
+            Next
+                    
+            Close #iFile
+        End If
+    
+    
+    Next
+End Sub

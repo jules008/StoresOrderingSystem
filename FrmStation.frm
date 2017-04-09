@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -26,7 +27,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmStation"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -41,7 +42,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     If LocLineItem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="No Line Item Passed to ShowForm Function"
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -139,7 +140,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 
 End Function
@@ -174,23 +175,23 @@ Private Sub BtnNext_Click()
             
             Case Is = FormOK
         
-                If LineItem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
+                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
                 
                 If OptMe = True Then
-                    LineItem.ForStation = CurrentUser.Station
+                    Lineitem.ForStation = CurrentUser.Station
                 Else
-                    LineItem.ForStation = Stations(CStr(LstStations.ListIndex))
+                    Lineitem.ForStation = Stations(CStr(LstStations.ListIndex))
                 End If
                 
-                If LineItem.ForStation Is Nothing Then Err.Raise HANDLED_ERROR
+                If Lineitem.ForStation Is Nothing Then Err.Raise HANDLED_ERROR
                       
                 Hide
-                If Not FrmLossReport.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+                If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
                 Unload Me
                  
         End Select
         
-gracefulexit:
+GracefulExit:
 
 Exit Sub
 
@@ -226,7 +227,7 @@ Private Sub BtnPrev_Click()
     On Error GoTo ErrorHandler
 
     Unload Me
-    If Not FrmCatSearch.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+    If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 Exit Sub
 
 ErrorExit:
@@ -255,7 +256,7 @@ Private Sub LstStations_Click()
     On Error GoTo ErrorHandler
     
     With LstStations
-        LineItem.ForStation = Stations(.List(.ListIndex, 0))
+        Lineitem.ForStation = Stations(.List(.ListIndex, 0))
     End With
 
 Exit Sub

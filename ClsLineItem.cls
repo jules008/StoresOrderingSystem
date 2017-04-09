@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsLineItem
 ' v0,0 - Initial Version
+' v0,1 - Save Asset with Line item
 '---------------------------------------------------------------
-' Date - 20 Feb 17
+' Date - 09 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -261,6 +262,7 @@ Public Sub DBSave()
         !OnHoldReason = pOnHoldReason
         .Update
    
+        pAsset.DBSave
         
     End With
     Set RstLineItem = Nothing

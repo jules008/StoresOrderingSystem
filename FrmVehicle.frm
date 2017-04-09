@@ -18,6 +18,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -27,7 +28,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "FrmVehicle"
 
-Private LineItem As ClsLineItem
+Private Lineitem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -42,7 +43,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     If LocLineItem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="No LineItem Passed to ShowForm Function"
     Else
-        Set LineItem = LocLineItem
+        Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     Debug.Print Me.Visible
@@ -158,7 +159,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Unload Me
 
 End Function
@@ -193,12 +194,12 @@ Private Sub BtnNext_Click()
             
             Case Is = FormOK
 
-                If LineItem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
+                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
                                 
-                If LineItem.ForVehicle Is Nothing Then Err.Raise NO_VEHICLE_SELECTED
+                If Lineitem.ForVehicle Is Nothing Then Err.Raise NO_VEHICLE_SELECTED
                 
                 Hide
-                If Not FrmLossReport.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+                If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
                 Unload Me
                     
         End Select
@@ -238,7 +239,7 @@ Private Sub BtnPrev_Click()
     On Error GoTo ErrorHandler
 
     Hide
-    If Not FrmCatSearch.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+    If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
     Unload Me
     
 Exit Sub
@@ -332,7 +333,7 @@ Private Sub LstOtherVehs_Click()
         
     With LstOtherVehs
         .BackColor = COLOUR_3
-        LineItem.ForVehicle = Vehicles(.List(.ListIndex, 0))
+        Lineitem.ForVehicle = Vehicles(.List(.ListIndex, 0))
     End With
 
 Exit Sub
@@ -371,7 +372,7 @@ Private Sub LstVehicles_Click()
             LblText2.Visible = True
             CmoVehicleTypes.Visible = True
             VehNotShown = True
-            LineItem.ForVehicle = Nothing
+            Lineitem.ForVehicle = Nothing
         Else
             LblText2.Visible = False
             CmoVehicleTypes.Visible = False
@@ -379,7 +380,7 @@ Private Sub LstVehicles_Click()
             LblText3.Visible = False
             VehNotShown = False
             
-            LineItem.ForVehicle = Vehicles(.List(.ListIndex, 0))
+            Lineitem.ForVehicle = Vehicles(.List(.ListIndex, 0))
             
         End If
     

@@ -18,7 +18,7 @@ Keywords,  dbText
 AllowedOrderReasons,  dbText
 AdditInfo,  dbText
 NoOrderMessage,  dbText
-LocationID,  dbLong
+Location,  dbText
 Status,  dbText
 Deleted,  dbText
 Cost,  dbDouble

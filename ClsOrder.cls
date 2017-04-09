@@ -141,7 +141,7 @@ Public Sub DBSave()
     Dim RstOrder As Recordset
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
 
     Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & pOrderNo & " AND Deleted IS NULL")
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(OrderNo) FROM TblOrder ")
@@ -167,12 +167,12 @@ Public Sub DBSave()
         !Status = pStatus
         .Update
         
-        For Each LineItem In pLineItems
-            LineItem.DBSave
+        For Each Lineitem In pLineItems
+            Lineitem.DBSave
         Next
 
     End With
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     Set RstOrder = Nothing
     Set RstMaxNo = Nothing
 End Sub

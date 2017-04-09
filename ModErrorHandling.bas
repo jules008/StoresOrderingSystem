@@ -4,8 +4,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,0 - Initial Version
 ' v0,1 - Added no ini file error
 ' v0,2 - User Administration changes
+' v0,3 - Add no stock available error
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 09 Apr 17
 '===============================================================
 
 Option Explicit
@@ -231,6 +232,10 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             MsgBox "No INI file has been found, so system cannot continue. This can occur if the file " _
                     & "is copied from its location on the T Drive.  Please delete file and create a shortcut instead"
             Err.Raise SYSTEM_FAILURE
+        
+        Case NO_STOCK_AVAIL
+            MsgBox "You cannot issue this item as there insuficient stock available"
+            
     End Select
     
     Set MailSystem = Nothing

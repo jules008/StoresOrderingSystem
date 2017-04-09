@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign
+' v0,2 - Update stock qty on issue
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 09 Apr 17
 '===============================================================
 Option Explicit
 
@@ -243,8 +244,6 @@ Private Sub BtnAsset_Click()
 
 GracefulExit:
 
-    Set Lineitem = Nothing
-
 Exit Sub
 
 ErrorExit:
@@ -299,6 +298,8 @@ Private Sub BtnIssue_Click()
 
     On Error GoTo ErrorHandler
 
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem loaded"
+    
     With Lineitem
         .Status = LineIssued
         ChkIssued = True
@@ -502,17 +503,34 @@ End Sub
 ' Mark item as Issued
 ' ---------------------------------------------------------------
 Private Sub ChkIssued_Click()
+    Dim InStock As Integer
+    Dim IssueQty As Integer
+    Dim Response As Integer
+    
     Const StrPROCEDURE As String = "ChkIssued_Click()"
 
     On Error GoTo ErrorHandler
-
+    
     With Lineitem
-        If ChkIssued Then
-            .ItemsIssued = True
-            .Parent.AssignedTo = CurrentUser
+        InStock = .Asset.QtyInStock
+        IssueQty = .Quantity
+        
+        If .ItemsIssued Then
+                    
+            If Not ChkIssued Then
+                .Asset.QtyInStock = InStock + .Quantity
+                .ItemsIssued = False
+                .ItemsDelivered = False
+                .DBSave
+            End If
         Else
-            .ItemsIssued = False
-            .ItemsDelivered = False
+            If ChkIssued Then
+                If IssueQty > InStock Then Err.Raise NO_STOCK_AVAIL
+                .Asset.QtyInStock = InStock - .Quantity
+                .ItemsIssued = True
+                .Parent.AssignedTo = CurrentUser
+                .DBSave
+            End If
         End If
     End With
 
@@ -522,7 +540,7 @@ Private Sub ChkIssued_Click()
 
 
 
-
+GracefulExit:
 
 
 Exit Sub
@@ -533,7 +551,14 @@ ErrorExit:
 
 Exit Sub
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else

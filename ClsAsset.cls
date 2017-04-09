@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsAsset
 ' v0,0 - Initial Version
+' v0,1 - Change location to string
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 09 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -45,7 +46,7 @@ Private pSupplier2 As ClsSupplier
 Private pKeywords As String
 Private pAllowedOrderReasons As String
 Private pAllocationType As EnumAllocationType
-Private pLocation As ClsStation
+Private pLocation As String
 Private pAdditInfo As String
 Private pNoOrderMessage As String
 
@@ -269,12 +270,12 @@ Public Property Let AllocationType(ByVal VnewValue As EnumAllocationType)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Location() As ClsStation
-    Set Location = pLocation
+Public Property Get Location() As String
+    Location = pLocation
 End Property
 
-Public Property Let Location(ByVal VnewValue As ClsStation)
-    Set pLocation = VnewValue
+Public Property Let Location(ByVal VnewValue As String)
+    pLocation = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -328,13 +329,12 @@ Public Sub DBGet(AssetNo As Integer)
             If Not IsNull(!Keywords) Then pKeywords = !Keywords
             If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = !AllowedOrderReasons
             If Not IsNull(!AllocationType) Then pAllocationType = !AllocationType
-            If Not IsNull(!LocationID) Then pLocation.StationID = !LocationID
+            If Not IsNull(!Location) Then pLocation = !Location
             If Not IsNull(!AdditInfo) Then pAdditInfo = !AdditInfo
             If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = !NoOrderMessage Else pNoOrderMessage = ""
 
 '            pSupplier1.DBGet
 '            pSupplier2.DBGet
-            If Not IsNull(!LocationID) Then pLocation.DBGet !LocationID
         End If
     End With
     Set RstAsset = Nothing
@@ -362,10 +362,10 @@ Public Sub DBSave()
         If .RecordCount = 0 Then
             .addnew
             pAssetNo = LastNo + 1
+            !AssetNo = pAssetNo
         Else
             .Edit
         End If
-        !AssetNo = pAssetNo
         !Brand = pBrand
         !Description = pDescription
         !cost = pCost
@@ -386,7 +386,7 @@ Public Sub DBSave()
         !Keywords = pKeywords
         !AllowedOrderReasons = pAllowedOrderReasons
         !AllocationType = pAllocationType
-        !LocationID = pLocation.StationID
+        !Location = pLocation
         !AdditInfo = pAdditInfo
         !NoOrderMessage = pNoOrderMessage
         .Update
@@ -446,7 +446,6 @@ End Function
 Private Sub Class_Initialize()
     Set pSupplier1 = New ClsSupplier
     Set pSupplier2 = New ClsSupplier
-    Set pLocation = New ClsStation
 
 End Sub
 
@@ -454,7 +453,6 @@ End Sub
 Private Sub Class_Terminate()
     Set pSupplier1 = Nothing
     Set pSupplier2 = Nothing
-    Set pLocation = Nothing
 
 End Sub
 

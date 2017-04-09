@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign Order and improved printing
@@ -81,11 +82,11 @@ Private Function PopulateForm() As Boolean
     Const StrPROCEDURE As String = "PopulateForm()"
     
     Dim i As Integer
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     On Error GoTo ErrorHandler
     
-    Set LineItem = New ClsLineItem
+    Set Lineitem = New ClsLineItem
 
     If Not ProcessStatus Then Err.Raise HANDLED_ERROR
 
@@ -107,17 +108,17 @@ Private Function PopulateForm() As Boolean
         .Clear
         
         i = 0
-        For Each LineItem In Order.LineItems
+        For Each Lineitem In Order.LineItems
             .AddItem
-            .List(i, 0) = LineItem.LineItemNo
+            .List(i, 0) = Lineitem.LineItemNo
             .List(i, 1) = i + 1
-            .List(i, 2) = LineItem.Asset.Description
-            .List(i, 3) = LineItem.Quantity
-            .List(i, 4) = LineItem.Asset.Size1
-            .List(i, 5) = LineItem.Asset.Size2
-            If LineItem.ReturnReqd = True Then .List(i, 6) = "Yes" Else .List(i, 6) = "No"
-            If LineItem.LossReport.LossReportNo <> 0 Then .List(i, 7) = "Yes" Else .List(i, 6) = "No"
-            .List(i, 8) = LineItem.ReturnLineItemStatus
+            .List(i, 2) = Lineitem.Asset.Description
+            .List(i, 3) = Lineitem.Quantity
+            .List(i, 4) = Lineitem.Asset.Size1
+            .List(i, 5) = Lineitem.Asset.Size2
+            If Lineitem.ReturnReqd = True Then .List(i, 6) = "Yes" Else .List(i, 6) = "No"
+            If Lineitem.LossReport.LossReportNo <> 0 Then .List(i, 7) = "Yes" Else .List(i, 6) = "No"
+            .List(i, 8) = Lineitem.ReturnLineItemStatus
             i = i + 1
         Next
     End With
@@ -141,7 +142,7 @@ Private Function PopulateForm() As Boolean
         TxtAssignedTo = .AssignedTo.UserName
     End With
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     
     PopulateForm = True
 
@@ -149,7 +150,7 @@ Exit Function
 
 ErrorExit:
     
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
         
     PopulateForm = False
     FormTerminate
@@ -301,32 +302,32 @@ End Sub
 Private Sub BtnLineItem_Click()
     Const StrPROCEDURE As String = "BtnLineItem_Click()"
     
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     On Error GoTo ErrorHandler
 
-    Set LineItem = New ClsLineItem
+    Set Lineitem = New ClsLineItem
     
     If LstItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
     
-    Set LineItem = Order.LineItems(LstItems.ListIndex + 1)
+    Set Lineitem = Order.LineItems(LstItems.ListIndex + 1)
 
-    If LineItem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
     
-    If Not FrmDBLineItem.ShowForm(LineItem) Then Err.Raise HANDLED_ERROR
+    If Not FrmDBLineItem.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
     
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
 
     
 GracefulExit:
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
 
 Exit Sub
 
 ErrorExit:
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
     FormTerminate
     Terminate
 
@@ -494,7 +495,7 @@ End Function
 ' Status processing for order
 ' ---------------------------------------------------------------
 Private Function ProcessStatus() As Boolean
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     Dim NoOpen As Integer
     Dim NoOnHold As Integer
     Dim NoIssued As Integer
@@ -507,13 +508,13 @@ Private Function ProcessStatus() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Set LineItem = New ClsLineItem
+    Set Lineitem = New ClsLineItem
     
     NoTotal = Order.LineItems.Count
     
     If Order.Status <> orderClosed Then
-        For Each LineItem In Order.LineItems
-            With LineItem
+        For Each Lineitem In Order.LineItems
+            With Lineitem
                 Select Case .Status
                     Case Is = LineComplete
                         NoComplete = NoComplete + 1
@@ -551,12 +552,12 @@ Private Function ProcessStatus() As Boolean
     
     ProcessStatus = True
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
 Exit Function
 
 ErrorExit:
 
-    Set LineItem = Nothing
+    Set Lineitem = Nothing
 '    ***CleanUpCode***
     ProcessStatus = False
 
