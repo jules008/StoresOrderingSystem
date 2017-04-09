@@ -1,0 +1,3 @@
+ID,  dbLong
+AccessLevelNo,  dbLong
+AccessLevel,  dbText

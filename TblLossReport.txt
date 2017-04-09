@@ -1,0 +1,14 @@
+ID,  dbLong
+Deleted,  dbDate
+LossReportNo,  dbLong
+ReportDate,  dbDate
+Theft,  dbBoolean
+ActionsTaken,  dbText
+AdditInfo,  dbText
+ReportingOfficerID,  dbText
+HQAction,  dbText
+OpsSupportAction,  dbText
+IncNo,  dbText
+Status,  dbText
+Authorised,  dbBoolean
+Rejected,  dbBoolean

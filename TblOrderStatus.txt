@@ -1,0 +1,2 @@
+OrderStatusNo,  dbLong
+OrderStatus,  dbText

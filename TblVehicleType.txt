@@ -1,0 +1,2 @@
+VehicleTypeNo,  dbLong
+VehicleType,  dbText

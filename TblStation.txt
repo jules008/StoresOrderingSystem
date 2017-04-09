@@ -1,0 +1,5 @@
+StationID,  dbLong
+StationNo,  dbText
+Name,  dbText
+Address,  dbText
+StationType,  dbText

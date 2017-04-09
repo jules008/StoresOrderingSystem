@@ -1,0 +1,9 @@
+VehNo,  dbLong
+VehReg,  dbText
+VehType,  dbDouble
+StationID,  dbLong
+CallSign,  dbText
+VehicleMake,  dbText
+RegYear,  dbDouble
+FleetNo,  dbText
+DisposalDate,  dbDate

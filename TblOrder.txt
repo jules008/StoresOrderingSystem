@@ -1,0 +1,7 @@
+Deleted,  dbDate
+OrderNo,  dbInteger
+OrderDate,  dbDate
+Status,  dbLong
+RequestorID,  dbText
+AssignedToID,  dbText
+AuthorisedByID,  dbText

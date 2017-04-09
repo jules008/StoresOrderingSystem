@@ -1,0 +1,16 @@
+LineItemNo,  dbInteger
+OrderNo,  dbLong
+Deleted,  dbDate
+Quantity,  dbInteger
+ReturnReqd,  dbBoolean
+itemsReturned,  dbBoolean
+ItemsDelivered,  dbBoolean
+ItemsIssued,  dbBoolean
+AssetID,  dbText
+LossReportID,  dbText
+ReqReason,  dbText
+ForPersonID,  dbText
+Status,  dbLong
+ForStationID,  dbText
+ForVehicleID,  dbText
+OnHoldReason,  dbText

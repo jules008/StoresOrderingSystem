@@ -1,0 +1,3 @@
+ID,  dbLong
+LineItemStatusNo,  dbLong
+LineItemStatus,  dbText
