@@ -12,17 +12,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Changes for Phone Order Functionality
 '---------------------------------------------------------------
-' Date - 03 Mar 17
+' Date - 16 Apr 17
 '===============================================================
 Option Explicit
 
@@ -106,7 +100,7 @@ Private Function PopulateForm() As Boolean
             i = i + 1
         Else
         
-            For Each Vehicle In CurrentUser.Station.Vehicles
+            For Each Vehicle In Lineitem.Parent.Requestor.Station.Vehicles
                 If Vehicle.CallSign <> "" Then
                     .AddItem
                     .List(i, 0) = Vehicle.VehNo

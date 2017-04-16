@@ -13,16 +13,12 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - bug fix SendEmailAlerts
+' v0,2 - changes for Phone Order functionality
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 Option Explicit
 
@@ -158,17 +154,28 @@ End Function
 ' Click event for new category search
 ' ---------------------------------------------------------------
 Private Sub BtnCatSearch_Click()
+    Dim Lineitem As ClsLineItem
+    
     Const StrPROCEDURE As String = "BtnCatSearch_Click()"
 
     On Error GoTo ErrorHandler
+    
+    Set Lineitem = New ClsLineItem
+    
+    Order.LineItems.AddItem Lineitem
+    
+    If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 
-    If Not FrmCatSearch.ShowForm Then Err.Raise HANDLED_ERROR
+    Set Lineitem = Nothing
 
 Exit Sub
 
 ErrorExit:
-
-
+    
+    Set Lineitem = Nothing
+    FormTerminate
+    Terminate
+    
 Exit Sub
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -416,17 +423,29 @@ End Sub
 ' Click event for new text search
 ' ---------------------------------------------------------------
 Private Sub BtnTextSearch_Click()
+    Dim Lineitem As ClsLineItem
+    
     Const StrPROCEDURE As String = "BtnTextSearch_Click()"
 
     On Error GoTo ErrorHandler
+    
+    Set Lineitem = New ClsLineItem
+    Lineitem.DBSave
+    
+    Order.LineItems.AddItem Lineitem
+    
+    If Not FrmTextSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 
-    If Not FrmTextSearch.ShowForm Then Err.Raise HANDLED_ERROR
-
+    Set Lineitem = Nothing
+    
 Exit Sub
 
 ErrorExit:
 
-
+    Set Lineitem = Nothing
+    FormTerminate
+    Terminate
+    
 Exit Sub
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -569,12 +588,6 @@ Public Function AddLineItem(Lineitem As ClsLineItem) As Boolean
     If Order Is Nothing Then Err.Raise NO_ORDER, Description:="Cannot find active Order"
     
     Lineitem.DBSave
-    
-    With Order
-        .LineItems.AddItem Lineitem
-        
-    End With
-    
     
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
     

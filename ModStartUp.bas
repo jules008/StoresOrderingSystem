@@ -5,8 +5,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,1 - Added maintenance flag start up option
 ' v0,2 - Bug fix for maintenance flag
 ' v0,3 - Hide more sheets plus bug fixes
+' v0,4 - Changed start up so always starts Menu 1
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -24,7 +25,7 @@ Public Function Initialise() As Boolean
     On Error GoTo ErrorHandler
     
     Terminate
-        
+    
     Set CurrentUser = New ClsPerson
     Set Vehicles = New ClsVehicles
     Set Stations = New ClsStations
@@ -62,14 +63,9 @@ Public Function Initialise() As Boolean
     'Build menu and backdrop
     If Not ModUIMenu.BuildMenu Then Err.Raise HANDLED_ERROR
     
-    If ShtMain.Range("menuitemno") = "" Then
-           
-        ModUIMenu.ProcessBtnPress (1)
-        ShtMain.Range("menuitemno") = 1
-        
-    Else
-        ModUIMenu.ProcessBtnPress (ShtMain.Range("menuitemno"))
-    End If
+    ShtMain.Range("menuitemno") = ""
+    
+    ModUIMenu.ProcessBtnPress (1)
         
     ActiveSheet.Range("A1").Select
 

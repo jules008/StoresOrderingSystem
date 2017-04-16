@@ -12,37 +12,45 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - changes for Remote Order functionality
 '---------------------------------------------------------------
-' Date - 28 Feb 17
+' Date - 16 Apr 17
 '===============================================================
 Option Explicit
 
 Private Const StrMODULE As String = "FrmPerson"
 
+Private Order As ClsOrder
 Private Lineitem As ClsLineItem
+Private RemoteOrder As Boolean
 
 ' ===============================================================
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(LocRemoteOrder As Boolean, Optional LocLineItem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
-    If LocLineItem Is Nothing Then
-        Err.Raise NO_LINE_ITEM, Description:="No Line Item Passed to ShowForm Function    "
+    
+    RemoteOrder = LocRemoteOrder
+    
+    If RemoteOrder Then
+        Set Order = New ClsOrder
+        
+        BtnPrev.Enabled = False
+        LblAllocation = "Who are you raising the Order on behalf of?"
     Else
-        Set Lineitem = LocLineItem
-        If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        If Not LocLineItem Is Nothing Then
+            Set Lineitem = LocLineItem
+            
+            If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        End If
     End If
+    
     
     Show
     ShowForm = True
@@ -52,6 +60,7 @@ Exit Function
 ErrorExit:
     
     Set Lineitem = Nothing
+    If Not Order Is Nothing Then Set Order = Nothing
 
     FormTerminate
     Terminate
@@ -121,6 +130,7 @@ Private Function FormTerminate() As Boolean
     On Error Resume Next
 
     Set Lineitem = Nothing
+    If Not Order Is Nothing Then Set Order = Nothing
     Unload Me
 
 End Function
@@ -154,15 +164,23 @@ Private Sub BtnNext_Click()
             Err.Raise HANDLED_ERROR
         
         Case Is = FormOK
-                           
-            If OptMe.Value = True Then
-                Lineitem.ForPerson = CurrentUser
+        
+            If RemoteOrder Then
+                If OptMe Then Order.Requestor = CurrentUser
+            Else
+                If Lineitem.ForPerson.CrewNo = 0 Then Err.Raise NO_NAMES_SELECTED
+                
+                If OptMe Then Lineitem.ForPerson = CurrentUser
             End If
             
-            If Lineitem.ForPerson.CrewNo = 0 Then Err.Raise NO_NAMES_SELECTED
-            
             Hide
-            If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            
+            If RemoteOrder Then
+                If Not FrmOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
+            Else
+                If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            End If
+            
             Unload Me
     End Select
         
@@ -563,8 +581,11 @@ Private Sub LstNames_Click()
         Me.TxtSearch.Value = .List(.ListIndex, 1)
         .ListIndex = 0
         
-        Lineitem.ForPerson.DBGet TxtSearch
-        
+        If RemoteOrder Then
+            Order.Requestor.DBGet TxtSearch
+        Else
+            Lineitem.ForPerson.DBGet TxtSearch
+        End If
     End With
 End Sub
 

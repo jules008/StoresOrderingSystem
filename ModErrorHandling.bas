@@ -5,8 +5,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,1 - Added no ini file error
 ' v0,2 - User Administration changes
 ' v0,3 - Add no stock available error
+' v0,4 - Move error log to system files folder
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -51,6 +52,8 @@ Public Function CentralErrorHandler( _
     ' Get the application directory.
     sPath = ThisWorkbook.Path
     If Right$(sPath, 1) <> "\" Then sPath = sPath & "\"
+    
+    sPath = sPath & "System Files\"
     
     ' Construct the fully-qualified error source name.
     sFullSource = "[" & sFile & "]" & sModule & "." & sProc

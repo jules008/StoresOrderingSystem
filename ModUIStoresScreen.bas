@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' Module ModUIStoresScreen
 ' v0,0 - Initial Version
 ' v0,1 - Added build Order Switch Button
+' v0,2 - Added Remote Order Button
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -86,6 +87,49 @@ Exit Function
 ErrorExit:
 
     BuildOrderSwitchBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' BuildRemoteOrderBtn
+' Adds the new phone order buttomn to the screen
+' ---------------------------------------------------------------
+Private Function BuildRemoteOrderBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildRemoteOrderBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnRemoteOrder
+        
+        .Height = BTN_REMOTE_ORDER_HEIGHT
+        .Left = BTN_REMOTE_ORDER_LEFT
+        .Top = BTN_REMOTE_ORDER_TOP
+        .Width = BTN_REMOTE_ORDER_WIDTH
+        .Name = "BtnRemoteOrder"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(10)'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "New Phone Order"
+    End With
+
+    MainScreen.Menu.AddItem BtnRemoteOrder
+    
+    BuildRemoteOrderBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildRemoteOrderBtn = False
 
 Exit Function
 
@@ -189,12 +233,15 @@ Public Function BuildStoresScreen() As Boolean
     Set StoresFrame1 = New ClsUIFrame
     Set BtnUserMangt = New ClsUIMenuItem
     Set BtnOrderSwitch = New ClsUIMenuItem
+    Set BtnRemoteOrder = New ClsUIMenuItem
     
     If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildStoresFrame1 Then Err.Raise HANDLED_ERROR
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
     If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildRemoteOrderBtn Then Err.Raise HANDLED_ERROR
     If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+    
     
     BuildStoresScreen = True
        
@@ -204,7 +251,7 @@ ErrorExit:
     Set StoresFrame1 = Nothing
     Set BtnUserMangt = Nothing
     Set BtnOrderSwitch = Nothing
-    
+    Set BtnRemoteOrder = Nothing
     Terminate
     
     BuildStoresScreen = False
@@ -243,6 +290,11 @@ Restart:
             
                 If Not BtnOrderSwitchSel Then Err.Raise HANDLED_ERROR
         
+            Case EnumRemoteOrder
+                
+                If Not FrmPerson.ShowForm(True) Then Err.Raise HANDLED_ERROR
+                
+                If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
         End Select
     
 GracefulExit:

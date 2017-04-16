@@ -420,7 +420,7 @@ End Sub
 ' Automatic initialise event that triggers custom Initialise
 ' ---------------------------------------------------------------
 Private Sub UserForm_Initialize()
-
+    
     On Error Resume Next
     
     FormInitialise

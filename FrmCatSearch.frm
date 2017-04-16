@@ -13,13 +13,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Changes for Remote Order Button
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 16 Apr 17
 '===============================================================
 Option Explicit
 
@@ -968,7 +966,7 @@ Private Function SelectNextForm() As Boolean
     
     Select Case Lineitem.Asset.AllocationType
         Case Is = Person
-            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Is = Vehicle
             If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR

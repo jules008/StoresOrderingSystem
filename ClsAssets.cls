@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsAssets
 ' v0,0 - Initial Version
+' v0,1 - Improved size list counting to prevent empty size lists
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 16 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -182,25 +183,36 @@ End Function
 Public Function GetSizeLists(Description As String, ListNo As Integer) As String()
     Dim RstSizeList As Recordset
     Dim StrSizeArry() As String
+    Dim RecordCnt As Integer
     Dim i As Integer
     
     Set RstSizeList = ModDatabase.SQLQuery("SELECT DISTINCT Size" & ListNo & " FROM TblAsset" & _
                                     " WHERE Description = '" & Description & "'")
 
+
     With RstSizeList
         ReDim StrSizeArry(1 To .RecordCount)
+        RecordCnt = .RecordCount
         i = 0
         .MoveFirst
         Do While Not .EOF
-            If Not IsNull(.Fields(0)) Then
-                If .Fields(0) <> "" Then
+            If IsNull(.Fields(0)) Then
+                RecordCnt = RecordCnt - 1
+            Else
+                If Trim(.Fields(0)) = "" Then
+                    RecordCnt = RecordCnt - 1
+                Else
                     i = i + 1
                     StrSizeArry(i) = .Fields(0)
                 End If
             End If
             .MoveNext
         Loop
-    
+        
+        If RecordCnt = 0 Then
+            ReDim StrSizeArry(0 To 0)
+        End If
+        
     End With
     
     GetSizeLists = StrSizeArry

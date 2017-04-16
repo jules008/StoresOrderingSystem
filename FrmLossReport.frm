@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmLossReport 
-   ClientHeight    =   5640
+   ClientHeight    =   5670
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   7560
@@ -12,13 +12,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Increased height of form
 '---------------------------------------------------------------
-' Date - 06 Mar 17
+' Date - 16 Apr 17
 '===============================================================
 Option Explicit
 
@@ -564,7 +562,7 @@ Private Function SelectPrevForm() As Boolean
         Case Is = Person
             
             Hide
-            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
             Hide

@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUISettings"
 ' Module ModUISettings
 ' v0,0 - Initial Version
 ' v0,1 - Added Order Switch Button
+' v0,2 - Added Remote Order Button
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -91,6 +92,11 @@ Public Const BTN_ORDER_SWITCH_HEIGHT As Integer = 30
 Public Const BTN_ORDER_SWITCH_WIDTH As Integer = 175
 Public Const BTN_ORDER_SWITCH_LEFT As Integer = 850
 Public Const BTN_ORDER_SWITCH_TOP As Integer = 60
+
+Public Const BTN_REMOTE_ORDER_HEIGHT As Integer = 30
+Public Const BTN_REMOTE_ORDER_WIDTH As Integer = 175
+Public Const BTN_REMOTE_ORDER_LEFT As Integer = 850
+Public Const BTN_REMOTE_ORDER_TOP As Integer = 100
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550

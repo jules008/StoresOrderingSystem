@@ -4,8 +4,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,0 - Initial Version
 ' v0,1 - added PrintOrderList procedure
 ' v0,2 - Change from Location object to string
+' v0,3 - Added Location to Print Order Form
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -138,6 +139,10 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
     Dim RngReqBy As Range
     Dim RngStation As Range
     Dim RngItemsRefPnt As Range
+    Dim VehReg As String
+    Dim StationName As String
+    Dim StationID As String
+    Dim DeliveryTo As String
     Dim Lineitem As ClsLineItem
     Dim i As Integer
     
@@ -148,8 +153,8 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
     ShtOrderList.ClearForm
     
     Set RngOrderNo = ShtOrderList.Range("C3")
-    Set RngReqBy = ShtOrderList.Range("E3")
-    Set RngStation = ShtOrderList.Range("G3")
+    Set RngReqBy = ShtOrderList.Range("F3")
+    Set RngStation = ShtOrderList.Range("H3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
 
     With Order
@@ -159,11 +164,35 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
         
         For i = 0 To .LineItems.Count - 1
 
+            Select Case .LineItems(i + 1).Asset.AllocationType
+                Case Person
+                    DeliveryTo = .LineItems(i + 1).ForPerson.Station.Name & " (" & .LineItems(i + 1).ForPerson.UserName & ")"
+                    
+                Case Vehicle
+                    VehReg = .LineItems(i + 1).ForVehicle.VehReg
+                    StationID = .LineItems(i + 1).ForVehicle.StationID
+                    
+                    If StationID <> "" Then
+                        StationName = Stations(StationID).Name
+                    Else
+                        StationName = "No Station"
+                    End If
+                    
+                    DeliveryTo = StationName & " (" & VehReg & ")"
+        
+                Case Station
+                    DeliveryTo = .LineItems(i + 1).ForStation.Name
+                
+            End Select
+                
+                
+
             RngItemsRefPnt.Offset(i, 0) = .LineItems(i + 1).Asset.Description
             RngItemsRefPnt.Offset(i, 2) = .LineItems(i + 1).Quantity
             RngItemsRefPnt.Offset(i, 3) = .LineItems(i + 1).Asset.Size1
             RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Asset.Size2
             RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Location
+            RngItemsRefPnt.Offset(i, 6) = DeliveryTo
         Next
     End With
     

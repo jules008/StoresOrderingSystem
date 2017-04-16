@@ -5,8 +5,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,1 - Added no ini file error
 ' v0,2 - Added Order Switch Button
 ' v0,3 - Add no stock avail error code
+' v0,4 - added Remote Order button
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 16 Apr 17
 '===============================================================
 
 Option Explicit
@@ -88,6 +89,7 @@ Public Header As ClsUIHeader
 Public BtnNewOrder As ClsUIMenuItem
 Public BtnUserMangt As ClsUIMenuItem
 Public BtnOrderSwitch As ClsUIMenuItem
+Public BtnRemoteOrder As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -289,6 +291,7 @@ Enum EnumBtnNo
     EnumSupportMsg = 7
     EnumUserMngt = 8
     EnumOrderSwitch = 9
+    EnumRemoteOrder = 10
 End Enum
 
 ' ===============================================================

@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsVehicle
 ' v0,0 - Initial Version
+' v0,1 - Added Station ID
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 16 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -30,6 +31,7 @@ Private pVehicleMake As String
 Private pRegYear As Integer
 Private pFleetNo As String
 Private pDisposalDate As Date
+Private pStationID As String
 Private pParent As Long
 
 '---------------------------------------------------------------
@@ -120,6 +122,15 @@ Public Property Let DisposalDate(ByVal VnewValue As Date)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get StationID() As String
+    StationID = pStationID
+End Property
+
+Public Property Let StationID(ByVal VnewValue As String)
+    pStationID = VnewValue
+End Property
+
+'---------------------------------------------------------------
 ' ===============================================================
 ' Method DBGet
 ' Gets class from Database
@@ -138,7 +149,8 @@ Public Sub DBGet(VehReg As String)
             If Not IsNull(!RegYear) Then pRegYear = !RegYear
             If Not IsNull(!FleetNo) Then pFleetNo = !FleetNo
             If Not IsNull(!DisposalDate) Then pDisposalDate = !DisposalDate
-
+            If Not IsNull(!StationID) Then pStationID = !StationID
+            
         End If
     End With
 Set RstVehicle = Nothing
@@ -234,5 +246,3 @@ Private Function GetParentFromPtr(ByVal Ptr As Long) As ClsStation
     Set GetParentFromPtr = tmp
     CopyMemory tmp, 0&, 4
 End Function
-
-
