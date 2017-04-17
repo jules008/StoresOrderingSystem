@@ -12,11 +12,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Increased height of form
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 17 Apr 17
 '===============================================================
 Option Explicit
 
@@ -565,7 +566,6 @@ Private Function SelectPrevForm() As Boolean
             If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
-            Hide
         Case Is = Vehicle
             Hide
             If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR

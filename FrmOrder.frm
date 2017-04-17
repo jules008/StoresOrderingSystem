@@ -13,12 +13,13 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - bug fix SendEmailAlerts
 ' v0,2 - changes for Phone Order functionality
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 17 Apr 17
 '===============================================================
 Option Explicit
 
@@ -38,16 +39,17 @@ Public Function ShowForm(Optional LocOrder As ClsOrder) As Boolean
     
     If LocOrder Is Nothing Then
         Set Order = New ClsOrder
-        
-        With Order
-            .Requestor = CurrentUser
-            .OrderDate = Format(Now, "dd/mm/yy")
-            .Status = OrderOpen
-        End With
+        Order.Requestor = CurrentUser
     Else
         Set Order = LocOrder
-        If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
+    
+    With Order
+        .OrderDate = Format(Now, "dd/mm/yy")
+        .Status = OrderOpen
+    End With
+    
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
     
     Show
     ShowForm = True
@@ -161,6 +163,8 @@ Private Sub BtnCatSearch_Click()
     On Error GoTo ErrorHandler
     
     Set Lineitem = New ClsLineItem
+    
+    Lineitem.DBSave
     
     Order.LineItems.AddItem Lineitem
     
