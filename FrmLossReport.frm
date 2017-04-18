@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Increased height of form
+' v0,2 - Bug fix hide crime no box when changing to used
 '---------------------------------------------------------------
-' Date - 17 Apr 17
+' Date - 18 Apr 17
 '===============================================================
 Option Explicit
 
@@ -369,6 +370,7 @@ Private Sub CmoReason_Change()
           
             Case Is = UsedConsumed
                 Lineitem.ReturnReqd = False
+                TxtCrimeNo.Visible = False
                 TxtComments1.Visible = False
                 TxtCrimeNo.Value = ""
                 TxtComments1.Value = ""
@@ -560,8 +562,8 @@ Private Function SelectPrevForm() As Boolean
     If Lineitem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset is on the order"
     
     Select Case Lineitem.Asset.AllocationType
+    
         Case Is = Person
-            
             Hide
             If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
@@ -572,6 +574,7 @@ Private Function SelectPrevForm() As Boolean
             Unload Me
             
         Case Is = Station
+            Hide
             If Not FrmStation.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
     

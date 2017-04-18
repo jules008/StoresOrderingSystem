@@ -13,11 +13,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
-' v0,1 - Changes for Remote Order Button
+' v0,1 - Changes for Phone Order Button
+' v0,2 - Bug fix for Phone Order
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 18 Apr 17
 '===============================================================
 Option Explicit
 
@@ -86,28 +88,28 @@ Private Function ValidateForm() As EnumFormValidation
     On Error GoTo ErrorHandler
 
     With CmoItem
-        If .ListIndex = -1 Then
+        If .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If
     End With
     
     With CmoQuantity
-        If .ListIndex = -1 Then
+        If .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If
     End With
     
     With CmoSize1
-        If .Visible = True And .ListIndex = -1 Then
+        If .Visible = True And .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If
     End With
     
     With CmoSize2
-        If .Visible = True And .ListIndex = -1 Then
+        If .Visible = True And .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If

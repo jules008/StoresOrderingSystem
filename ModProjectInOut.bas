@@ -219,7 +219,105 @@ Public Sub ExportDBTables()
                     
             Close #iFile
         End If
-    
-    
     Next
+End Sub
+
+Public Sub SetReferenceLibs()
+    Dim Reference As Object
+    
+    On Error Resume Next
+
+    ' Visual Basic For Applications
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{000204EF-0000-0000-C000-000000000046}", Major:=4, Minor:=1
+    
+    ' Microsoft Excel 14.0 Object Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{00020813-0000-0000-C000-000000000046}", Major:=1, Minor:=7
+    
+    ' Microsoft Forms 2.0 Object Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{0D452EE1-E08F-101A-852E-02608C4D0BB4}", Major:=2, Minor:=0
+    
+    ' OLE Automation
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{00020430-0000-0000-C000-000000000046}", Major:=2, Minor:=0
+    
+    ' Microsoft Office 14.0 Object Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}", Major:=2, Minor:=5
+    
+    ' Microsoft Office 14.0 Access database engine Object Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}", Major:=12, Minor:=0
+    
+    ' Microsoft Scripting Runtime
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{420B2830-E718-11CF-893D-00A0C9054228}", Major:=1, Minor:=0
+    
+    ' Microsoft Visual Basic for Applications Extensibility 5.3
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{0002E157-0000-0000-C000-000000000046}", Major:=5, Minor:=3
+    
+    ' Microsoft Outlook 14.0 Object Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{00062FFF-0000-0000-C000-000000000046}", Major:=9, Minor:=4
+
+End Sub
+
+Public Sub BuildProject()
+    SetReferenceLibs
+    ImportModules
+    CopyShtCodeModule
+End Sub
+Public Sub CopyShtCodeModule()
+    Dim SourceMod As VBIDE.VBComponent
+    Dim DestMod As VBIDE.VBComponent
+    Dim VBModule As VBIDE.VBComponent
+    Dim VBCodeMod As VBIDE.CodeModule
+    Dim i As Integer
+    
+    Set SourceMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook1")
+    Set DestMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook")
+
+    DestMod.CodeModule.DeleteLines 1, DestMod.CodeModule.CountOfLines
+    DestMod.CodeModule.AddFromString SourceMod.CodeModule.Lines(1, SourceMod.CodeModule.CountOfLines)
+
+    For Each VBModule In ThisWorkbook.VBProject.VBComponents
+        
+        With VBModule
+            
+            Debug.Print VBModule.Name
+            If Left(.Name, 3) = "Sht" And .Type <> vbext_ct_Document Then
+                Set SourceMod = VBModule
+                Debug.Print "Source: " & SourceMod.Name
+                
+                For Each DestMod In ThisWorkbook.VBProject.VBComponents
+                    Debug.Print DestMod.Name
+                    If Left(SourceMod.Name, Len(SourceMod.Name) - 1) = DestMod.Name Then
+                        Debug.Print "Source: " & SourceMod.Name
+                        Debug.Print " Dest: " & DestMod.Name
+                        
+                        DestMod.CodeModule.DeleteLines 1, DestMod.CodeModule.CountOfLines
+                        
+                        DestMod.CodeModule.AddFromString SourceMod.CodeModule.Lines(1, SourceMod.CodeModule.CountOfLines)
+                             
+                    End If
+                Next
+            End If
+        End With
+    Next
+        
+    For Each VBModule In ThisWorkbook.VBProject.VBComponents
+        If Right(VBModule.Name, 1) = "1" Then
+            ThisWorkbook.VBProject.VBComponents.Remove VBModule
+        End If
+    Next VBModule
+    
+    
+    
+    Set SourceMod = Nothing
+    Set DestMod = Nothing
+    Set VBModule = Nothing
+    Set VBCodeMod = Nothing
 End Sub

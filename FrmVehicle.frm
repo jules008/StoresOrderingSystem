@@ -12,11 +12,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Changes for Phone Order Functionality
+' v0,2 - Bug fix for Phone Order
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 18 Apr 17
 '===============================================================
 Option Explicit
 
@@ -89,7 +91,7 @@ Private Function PopulateForm() As Boolean
     
     With LstVehicles
         .Clear
-        If Not CurrentUser.Vehicle Is Nothing Then
+        If Not Lineitem.Parent.Requestor.Vehicle Is Nothing Then
     
             .AddItem
             .List(0, 0) = CurrentUser.Vehicle.VehNo

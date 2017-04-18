@@ -13,16 +13,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Bug fix - reset Asset before re-using
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 18 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -141,6 +136,7 @@ Private Sub BtnNext_Click()
             
             With Lineitem
                 
+                .Asset = New ClsAsset
                 .Asset.DBGet (Assets.FindAssetNo(TxtSearch.Value, "", ""))
                 If .Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset on current Order"
             

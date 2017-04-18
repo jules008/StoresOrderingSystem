@@ -12,16 +12,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Bug fix for Phone Order
 '---------------------------------------------------------------
-' Date - 03 Mar 17
+' Date - 18 Apr 17
 '===============================================================
 Option Explicit
 
@@ -79,15 +74,16 @@ End Function
 ' Populates form controls
 ' ---------------------------------------------------------------
 Private Function PopulateForm() As Boolean
-    
-    Const StrPROCEDURE As String = "PopulateForm()"
-
     Dim Station As ClsStation
     Dim i As Integer
     
+    Const StrPROCEDURE As String = "PopulateForm()"
+
     On Error GoTo ErrorHandler
     
-    If CurrentUser.Station.StationID <> 0 Then
+    Set Station = Lineitem.Parent.Requestor.Station
+    
+    If Station.StationID <> 0 Then
     
         LblText2.Visible = False
         LstStations.Visible = False
@@ -99,7 +95,7 @@ Private Function PopulateForm() As Boolean
         
         With OptMe
             .Visible = True
-            .Caption = Format(CurrentUser.Station.StationNo, "00") & " " & CurrentUser.Station.Name
+            .Caption = Format(Station.StationNo, "00") & " " & Station.Name
         End With
         
         With OptElse
