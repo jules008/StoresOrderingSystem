@@ -65,20 +65,12 @@ Public Sub ImportModules()
     Dim FSO As Scripting.FileSystemObject
     Dim FileObj As Scripting.File
     Dim TargetBookName As String
-    Dim DlgOpen As FileDialog
     Dim ImportFilePath As String
     Dim ImportFileName As String
     Dim VBModules As VBIDE.VBComponents
 
-    'open files
-    Set DlgOpen = Application.FileDialog(msoFileDialogFolderPicker)
+    ImportFilePath = ThisWorkbook.Path
     
-     With DlgOpen
-        .Title = "Select Import Folder"
-        .Show
-    End With
-        
-    ImportFilePath = DlgOpen.SelectedItems(1) & "\"
     ''' NOTE: This workbook must be open in Excel.
     TargetBookName = ActiveWorkbook.Name
     Set TargetBook = Application.Workbooks(TargetBookName)
@@ -320,4 +312,8 @@ Public Sub CopyShtCodeModule()
     Set DestMod = Nothing
     Set VBModule = Nothing
     Set VBCodeMod = Nothing
+End Sub
+
+Public Sub LockProject()
+    ThisWorkbook.VBProject.Protection
 End Sub
