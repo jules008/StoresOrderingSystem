@@ -12,13 +12,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Changes for Phone Order Functionality
 ' v0,2 - Bug fix for Phone Order
+' v0,3 - Hide 'select a vehicle' message when not required
 '---------------------------------------------------------------
-' Date - 18 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 Option Explicit
 
@@ -271,10 +271,9 @@ Private Sub CmoVehicleTypes_Change()
     CmoVehicleTypes.BackColor = COLOUR_3
     LstOtherVehs.BackColor = COLOUR_3
     
-    If CmoVehicleTypes <> "" Then
+    If CmoVehicleTypes.ListIndex <> -1 Then
         LstOtherVehs.Visible = True
         LblText3.Visible = True
-            
         
         With CmoVehicleTypes
             If .ListIndex <> -1 Then SelVehType = .List(.ListIndex, 1)
@@ -298,8 +297,11 @@ Private Sub CmoVehicleTypes_Change()
             Next
         End With
     
-        Set Vehicle = Nothing
+    Else
+        LstOtherVehs.Visible = False
+        LblText3.Visible = False
     End If
+    Set Vehicle = Nothing
 Exit Sub
 
 ErrorExit:

@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - Changes for Phone Order Button
 ' v0,2 - Bug fix for Phone Order
+' v0,3 - update purchase unit when size changed
 '---------------------------------------------------------------
-' Date - 18 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 Option Explicit
 
@@ -655,6 +656,8 @@ Private Sub CmoSize1_Change()
     Lineitem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
     
     If Not UpdateStockMessage(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
+    
+    TxtPurchaseUnit = Lineitem.Asset.PurchaseUnit
     
     If CmoSize1 = "" Then CmoSize2 = ""
 

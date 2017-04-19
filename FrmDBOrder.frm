@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign Order and improved printing
+' v0,2 - Add Delete Order functionality
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 Option Explicit
 
@@ -274,11 +275,49 @@ Private Sub BtnCloseOrder_Click()
             .Status = orderClosed
             .DBSave
         Else
-            MsgBox "Unable to close Order until all Items are completed"
+            MsgBox "Unable to close Order until all Items are completed", vbOKOnly + vbInformation, APP_NAME
         End If
     End With
 
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
+    
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' BtnDelete_Click
+' Marks order as deleted
+' ---------------------------------------------------------------
+Private Sub BtnDelete_Click()
+    Dim Response As String
+    
+    Const StrPROCEDURE As String = "BtnDelete_Click()"
+
+    On Error GoTo ErrorHandler
+
+    Response = MsgBox("Are you sure you want to mark the Order as deleted?", vbYesNo + vbDefaultButton2 + vbExclamation, APP_NAME)
+
+    If Response = 6 Then
+        With Order
+            .Deleted = Now
+            .DBSave
+            If Not ProcessStatus Then Err.Raise HANDLED_ERROR
+            If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        End With
+    End If
     
 Exit Sub
 
@@ -470,6 +509,7 @@ Private Function FormInitialise() As Boolean
         .AddItem "On Hold"
         .AddItem "Issued"
         .AddItem "Closed"
+        .AddItem "Deleted"
     End With
     
     FormInitialise = True
@@ -512,7 +552,7 @@ Private Function ProcessStatus() As Boolean
     
     NoTotal = Order.LineItems.Count
     
-    If Order.Status <> orderClosed Then
+    If Order.Status <> OrderClosed And Order.Status <> OrderDeleted Then
         For Each Lineitem In Order.LineItems
             With Lineitem
                 Select Case .Status
@@ -540,8 +580,7 @@ Private Function ProcessStatus() As Boolean
             If NoOpen = 0 Then Status = OrderOnHold
         End If
         
-        
-        If NoComplete = NoTotal Then Status = OrderIssued
+        If NoIssued + NoComplete + NoDelivered = NoTotal Then Status = OrderIssued
     
         With Order
             .Status = Status

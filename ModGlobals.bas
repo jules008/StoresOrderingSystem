@@ -6,8 +6,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,2 - Added Order Switch Button
 ' v0,3 - Add no stock avail error code
 ' v0,4 - added Remote Order button
+' v0,5 - Added Deleted Order Status
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -122,7 +123,8 @@ Enum EnumOrderStatus
     OrderAssigned = 1
     OrderOnHold = 2
     OrderIssued = 3
-    orderClosed = 4
+    OrderClosed = 4
+    OrderDeleted = 5
 End Enum
 
 Enum EnumPersonRole

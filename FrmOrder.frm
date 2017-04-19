@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - bug fix SendEmailAlerts
 ' v0,2 - changes for Phone Order functionality
+' v0,3 - Improved message boxes
 '---------------------------------------------------------------
-' Date - 17 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 Option Explicit
 
@@ -396,12 +397,12 @@ Private Sub BtnSubmit_Click()
         
         
         If Order.OrderNo <> 0 Then
-            MsgBox "Thank you, your order has been submitted successfully"
+            MsgBox "Thank you, your order has been submitted successfully", vbOKOnly + vbInformation, APP_NAME
             
             If Not SendEmailAlerts Then Err.Raise HANDLED_ERROR
             
         Else
-            MsgBox "Sorry, there has been an error, Please contact Stores", vbCritical
+            MsgBox "Sorry, there has been an error, Please contact Stores", vbCritical, APP_NAME
         End If
     End If
 

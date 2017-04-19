@@ -6,8 +6,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,2 - Bug fix for maintenance flag
 ' v0,3 - Hide more sheets plus bug fixes
 ' v0,4 - Changed start up so always starts Menu 1
+' v0,5 - reverted back to restart back to previous menu item
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -63,9 +64,11 @@ Public Function Initialise() As Boolean
     'Build menu and backdrop
     If Not ModUIMenu.BuildMenu Then Err.Raise HANDLED_ERROR
     
-    ShtMain.Range("menuitemno") = ""
-    
-    ModUIMenu.ProcessBtnPress (1)
+    If [menuitemno] = "" Then
+        ModUIMenu.ProcessBtnPress (1)
+    Else
+        ModUIMenu.ProcessBtnPress ([menuitemno])
+    End If
         
     ActiveSheet.Range("A1").Select
 
@@ -212,7 +215,7 @@ Private Function ReadINIFile() As Boolean
     If StopFlag = True Then Stop
     
     If MaintMsg <> "Online" Then
-        MsgBox MaintMsg
+        MsgBox MaintMsg, vbExclamation, APP_NAME
         Application.DisplayAlerts = False
         ActiveWorkbook.Close
         Application.DisplayAlerts = True

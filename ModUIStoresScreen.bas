@@ -4,8 +4,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,0 - Initial Version
 ' v0,1 - Added build Order Switch Button
 ' v0,2 - Added Remote Order Button
+' v0,3 - Changes for disable line item functionality
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -419,7 +420,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
         .LineItems.Style = GENERIC_LINEITEM_HEADER
         
         For i = 0 To ORDER_LINEITEM_NOCOLS - 1
-            .LineItems.Text 0, i, RowTitles(i)
+            .LineItems.Text 0, i, RowTitles(i), False
         Next
         
         .LineItems.Style = GENERIC_LINEITEM
@@ -441,12 +442,12 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     i = 1
     For Each Order In Orders
         With StoresFrame1.LineItems
-            .Text i, 0, Order.OrderNo, Order.OrderNo
-            .Text i, 1, Order.LineItems.Count, Order.OrderNo
-            .Text i, 2, Order.Requestor.UserName, Order.OrderNo
-            .Text i, 3, Order.Requestor.Station.Name, Order.OrderNo
-            .Text i, 4, Order.AssignedTo.UserName, Order.OrderNo
-            .Text i, 5, Order.ReturnOrderStatus, Order.OrderNo
+            .Text i, 0, Order.OrderNo, True, Order.OrderNo
+            .Text i, 1, Order.LineItems.Count, True, Order.OrderNo
+            .Text i, 2, Order.Requestor.UserName, True, Order.OrderNo
+            .Text i, 3, Order.Requestor.Station.Name, True, Order.OrderNo
+            .Text i, 4, Order.AssignedTo.UserName, True, Order.OrderNo
+            .Text i, 5, Order.ReturnOrderStatus, True, Order.OrderNo
         End With
         i = i + 1
     Next

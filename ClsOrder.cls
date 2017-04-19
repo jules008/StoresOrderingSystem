@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsOrder
 ' v0,0 - Initial Version
+' v0,1 - Added Deleted status
 '---------------------------------------------------------------
-' Date - 20 Feb 17
+' Date - 19 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -40,6 +41,7 @@ End Property
 
 Public Property Let Deleted(ByVal VnewValue As Date)
     pDeleted = VnewValue
+    If pDeleted = 0 Then pStatus = OrderOpen Else pStatus = OrderDeleted
 End Property
 
 '---------------------------------------------------------------
@@ -164,6 +166,7 @@ Public Sub DBSave()
         If pAssignedTo.UserName <> "" Then !AssignedToID = pAssignedTo.UserName
         If pAuthorisedBy.UserName <> "" Then !AuthorisedByID = pAuthorisedBy.UserName
         If pOrderDate <> 0 Then !OrderDate = pOrderDate
+        If pDeleted <> 0 Then !Deleted = pDeleted
         !Status = pStatus
         .Update
         

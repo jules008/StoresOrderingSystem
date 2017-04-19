@@ -9,8 +9,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Rest menu item store on start up
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -27,7 +28,7 @@ Private Sub Workbook_Open()
     On Error GoTo ErrorHandler
     
     ShtMain.Unprotect
-    [menuitemno] = 1
+    [menuitemno] = ""
     ShtMain.Protect
     
     If MainScreen Is Nothing Then

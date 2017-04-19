@@ -17,11 +17,13 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
+' v0,2 - improved message boxes
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 Option Explicit
 
@@ -91,7 +93,7 @@ Private Sub BtnDel_Click()
         CrewNo = LstAccessList.List(SelUser, 0)
         UserName = LstAccessList.List(SelUser, 1)
         Response = MsgBox("Are you sure you want to remove " _
-                            & UserName & " from the system? ", 36)
+                            & UserName & " from the system? ", vbYesNo + vbExclamation + vbDefaultButton2, APP_NAME)
     
         If Response = 6 Then SelectedUser.DBDelete FullDelete:=True
         
@@ -222,7 +224,7 @@ Private Sub BtnUpdate_Click()
             End With
             MsgBox "User updated successfully.  If any change have been made " _
                     & "to your own profile, please restart the system for these changes " _
-                     & "to take effect"
+                     & "to take effect", vbInformation, APP_NAME
             
             If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
 

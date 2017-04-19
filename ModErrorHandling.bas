@@ -6,8 +6,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,2 - User Administration changes
 ' v0,3 - Add no stock available error
 ' v0,4 - Move error log to system files folder
+' v0,5 - Improved message boxes
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -92,7 +93,7 @@ Public Function CentralErrorHandler( _
     
         
         If Not DEV_MODE Then
-            Response = MsgBox(ErrMsgTxt, vbYesNo, APP_NAME)
+            Response = MsgBox(ErrMsgTxt, vbYesNo + vbDefaultButton1 + vbCritical, APP_NAME)
         
             If Response = 6 Then
                 With MailSystem
@@ -141,7 +142,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             
             MsgBox "Sorry, the system does not recognise you.  Please continue with " _
                     & "the order as a guest.  Your name has been forwarded onto the " _
-                    & "Administrator so that you can be added to the system"
+                    & "Administrator so that you can be added to the system", vbOKOnly + vbInformation, APP_NAME
                                
             CurrentUser.AddTempAccount
             
@@ -160,7 +161,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             End With
 
         Case NO_ITEM_SELECTED
-            MsgBox "Please select an item"
+            MsgBox "Please select an item", vbOKOnly + vbInformation, APP_NAME
             
         Case NO_DATABASE_FOUND
             FaultCount1008 = FaultCount1008 + 1
@@ -195,49 +196,49 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             End If
             
         Case NO_QUANTITY_ENTERED
-            MsgBox "Please enter a quantity"
+            MsgBox "Please enter a quantity", vbExclamation, APP_NAME
         
         Case NO_SIZE_ENTERED
-            MsgBox "Please enter a size"
+            MsgBox "Please enter a size", vbExclamation, APP_NAME
         
         Case NO_CREW_NO_ENTERED
-            MsgBox "Please enter a Brigade No"
+            MsgBox "Please enter a Brigade No", vbExclamation, APP_NAME
             
         Case NUMBERS_ONLY
-            MsgBox "Please enter number only"
+            MsgBox "Please enter number only", vbExclamation, APP_NAME
             
         Case CREWNO_UNRECOGNISED
-            MsgBox "The Brigade No is not recognised on the system, please re-enter"
+            MsgBox "The Brigade No is not recognised on the system, please re-enter", vbExclamation, APP_NAME
         
         Case NO_VEHICLE_SELECTED
-            MsgBox "Please select a vehicle"
+            MsgBox "Please select a vehicle", vbExclamation, APP_NAME
         
         Case NO_STATION_SELECTED
-            MsgBox "Please select a station"
+            MsgBox "Please select a station", vbExclamation, APP_NAME
             
         Case FIELDS_INCOMPLETE
-            MsgBox "Please complete all fields"
+            MsgBox "Please complete all fields", vbExclamation, APP_NAME
             
         Case NO_NAMES_SELECTED
-            MsgBox "Please select a name"
+            MsgBox "Please select a name", vbExclamation, APP_NAME
             
         Case FORM_INPUT_EMPTY
-            MsgBox "Please complete all highlighted fields"
+            MsgBox "Please complete all highlighted fields", vbExclamation, APP_NAME
             
         Case ACCESS_DENIED
             MsgBox "Sorry you do not have the required Access Level.  " _
-                & "Please send a Support Mail if you require access", vbCritical
+                & "Please send a Support Mail if you require access", vbCritical, APP_NAME
         
         Case NO_ORDER_MESSAGE
             MsgBox Message
             
         Case NO_INI_FILE
             MsgBox "No INI file has been found, so system cannot continue. This can occur if the file " _
-                    & "is copied from its location on the T Drive.  Please delete file and create a shortcut instead"
+                    & "is copied from its location on the T Drive.  Please delete file and create a shortcut instead", vbCritical, APP_NAME
             Err.Raise SYSTEM_FAILURE
         
         Case NO_STOCK_AVAIL
-            MsgBox "You cannot issue this item as there insuficient stock available"
+            MsgBox "You cannot issue this item as there insuficient stock available", vbExclamation, APP_NAME
             
     End Select
     

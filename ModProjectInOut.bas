@@ -57,7 +57,7 @@ Public Sub ExportModules()
     
     Set DlgOpen = Nothing
 
-    MsgBox "Export is ready"
+    MsgBox "Export is ready", vbInformation, APP_NAME
 End Sub
 
 Public Sub ImportModules()
@@ -85,7 +85,7 @@ Public Sub ImportModules()
             
     Set FSO = New Scripting.FileSystemObject
     If FSO.GetFolder(ImportFilePath).Files.Count = 0 Then
-       MsgBox "There are no files to import"
+       MsgBox "There are no files to import", vbInformation, APP_NAME
        Exit Sub
     End If
 
@@ -104,7 +104,7 @@ Public Sub ImportModules()
     Next FileObj
     
     
-    MsgBox "Import is ready"
+    MsgBox "Import is ready", vbInformation, APP_NAME
 End Sub
  
 Public Sub RemoveAllModules()

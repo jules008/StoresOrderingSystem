@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUISupportScreen"
 '===============================================================
 ' Module ModUISupportScreen
 ' v0,0 - Initial Version
+' v0,1 - improved message box
 '---------------------------------------------------------------
-' Date - 30 Mar 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -197,6 +198,8 @@ Restart:
             Case EnumSupportMsg
             
                 If Not BtnFeedbackSend Then Err.Raise HANDLED_ERROR
+                
+                MsgBox "Thank you for your feedback", vbOKOnly + vbInformation, APP_NAME
                         
         End Select
     

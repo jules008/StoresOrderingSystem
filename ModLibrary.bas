@@ -3,8 +3,9 @@ Attribute VB_Name = "ModLibrary"
 ' Module ModLibrary
 ' v0,0 - Initial Version
 ' v0,1 - Added ColourConvert
+' v0,2 - improved message box
 '---------------------------------------------------------------
-' Date - 08 Feb 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -149,7 +150,7 @@ Sub CopyTextToClipboard()
     obj.SetText Txt
     obj.PutInClipboard
     
-    MsgBox "There is now text copied to your clipboard!", vbInformation
+    MsgBox "There is now text copied to your clipboard!", vbInformation, APP_NAME
 
 End Sub
 

@@ -2,8 +2,9 @@ Attribute VB_Name = "ModDatabase"
 '===============================================================
 ' Module ModDatabase
 ' v0,0 - Initial Version
+' v0,1 - Improved message box
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -167,7 +168,7 @@ Public Function SelectDB() As Boolean
     
     'exit if no files selected
     If NoFiles = 0 Then
-        MsgBox "There was no database selected", vbOKOnly, "No Files"
+        MsgBox "There was no database selected", vbOKOnly + vbExclamation, "No Files"
         SelectDB = True
         Exit Function
     End If
