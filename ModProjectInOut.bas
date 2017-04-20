@@ -57,7 +57,7 @@ Public Sub ExportModules()
     
     Set DlgOpen = Nothing
 
-    MsgBox "Export is ready"
+    MsgBox "Export is ready", vbInformation, APP_NAME
 End Sub
 
 Public Sub ImportModules()
@@ -65,27 +65,19 @@ Public Sub ImportModules()
     Dim FSO As Scripting.FileSystemObject
     Dim FileObj As Scripting.File
     Dim TargetBookName As String
-    Dim DlgOpen As FileDialog
     Dim ImportFilePath As String
     Dim ImportFileName As String
     Dim VBModules As VBIDE.VBComponents
 
-    'open files
-    Set DlgOpen = Application.FileDialog(msoFileDialogFolderPicker)
+    ImportFilePath = ThisWorkbook.Path
     
-     With DlgOpen
-        .Title = "Select Import Folder"
-        .Show
-    End With
-        
-    ImportFilePath = DlgOpen.SelectedItems(1) & "\"
     ''' NOTE: This workbook must be open in Excel.
     TargetBookName = ActiveWorkbook.Name
     Set TargetBook = Application.Workbooks(TargetBookName)
             
     Set FSO = New Scripting.FileSystemObject
     If FSO.GetFolder(ImportFilePath).Files.Count = 0 Then
-       MsgBox "There are no files to import"
+       MsgBox "There are no files to import", vbInformation, APP_NAME
        Exit Sub
     End If
 
@@ -104,7 +96,7 @@ Public Sub ImportModules()
     Next FileObj
     
     
-    MsgBox "Import is ready"
+    MsgBox "Import is ready", vbInformation, APP_NAME
 End Sub
  
 Public Sub RemoveAllModules()
@@ -320,4 +312,8 @@ Public Sub CopyShtCodeModule()
     Set DestMod = Nothing
     Set VBModule = Nothing
     Set VBCodeMod = Nothing
+End Sub
+
+Public Sub LockProject()
+    ThisWorkbook.VBProject.Protection
 End Sub

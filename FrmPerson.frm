@@ -12,6 +12,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - changes for Remote Order functionality
@@ -168,7 +169,7 @@ Private Sub BtnNext_Click()
             If RemoteOrder Then
                 If OptMe Then Order.Requestor = CurrentUser
             Else
-                If Lineitem.ForPerson.CrewNo = 0 Then Err.Raise NO_NAMES_SELECTED
+                If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
                 
                 If OptMe Then Lineitem.ForPerson = CurrentUser
             End If
