@@ -12,13 +12,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Increased height of form
 ' v0,2 - Bug fix hide crime no box when changing to used
+' v0,3 - Fixed Loss Report details being shown as 'True'
 '---------------------------------------------------------------
-' Date - 18 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 Option Explicit
 
@@ -623,29 +623,29 @@ Private Function BuildLossReport() As Boolean
         
             Case Is = DamagedOpTraining
                 
-                .AdditInfo = TxtComments1.Visible
+                .AdditInfo = TxtComments1
                 .Status = RepOpen
                 .DBSave
             
             Case Is = DamagedOther
             
-                .AdditInfo = TxtComments1.Visible
+                .AdditInfo = TxtComments1
                 .Status = RepOpen
                 .DBSave
             
             Case Is = lost
-                .ActionsTaken = TxtComments1.Value
+                .ActionsTaken = TxtComments1
                 .Status = RepOpen
                 .DBSave
            
             Case Is = Malfunction
-                .AdditInfo = TxtComments1.Visible
+                .AdditInfo = TxtComments1
                 .Status = RepOpen
                 .DBSave
           
             Case Is = Stolen
                 .Theft = True
-                .ActionsTaken = TxtComments1.Value
+                .ActionsTaken = TxtComments1
                 .Status = RepOpen
                 .IncNo = TxtCrimeNo
                 .DBSave

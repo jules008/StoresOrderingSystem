@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -94,7 +95,6 @@ Private Function PopulateForm() As Boolean
         
         TxtName = .Name
         TxtStationNo = .StationNo
-        TxtStationType = .StationType
         
     End With
     
@@ -176,3 +176,6 @@ Private Sub BtnClose_Click()
 End Sub
 
 
+Private Sub UserForm_Click()
+
+End Sub

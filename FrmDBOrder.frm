@@ -13,15 +13,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign Order and improved printing
 ' v0,2 - Add Delete Order functionality
+' v0,3 - Fix Order Form double click issue
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 Option Explicit
 
@@ -271,8 +269,8 @@ Private Sub BtnCloseOrder_Click()
     On Error GoTo ErrorHandler
 
     With Order
-        If .Status = OrderIssued Or .Status = orderClosed Then
-            .Status = orderClosed
+        If .Status = OrderIssued Or .Status = OrderClosed Then
+            .Status = OrderClosed
             .DBSave
         Else
             MsgBox "Unable to close Order until all Items are completed", vbOKOnly + vbInformation, APP_NAME
@@ -512,6 +510,7 @@ Private Function FormInitialise() As Boolean
         .AddItem "Deleted"
     End With
     
+    LstItems.SetFocus
     FormInitialise = True
 
 Exit Function

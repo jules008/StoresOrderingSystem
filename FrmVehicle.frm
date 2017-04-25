@@ -12,13 +12,15 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Changes for Phone Order Functionality
 ' v0,2 - Bug fix for Phone Order
 ' v0,3 - Hide 'select a vehicle' message when not required
+' v0,31 - Second go at hiding message
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 Option Explicit
 
@@ -457,6 +459,7 @@ Private Function FormInitialise() As Boolean
     On Error GoTo ErrorHandler
 
     LblText1.Visible = False
+    LblText3.Visible = False
     FormInitialise = True
 
 Exit Function

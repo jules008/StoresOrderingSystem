@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDBVehicle
    ClientHeight    =   4545
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   6645
+   ClientWidth     =   7170
    OleObjectBlob   =   "FrmDBVehicle.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -13,12 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -94,7 +88,8 @@ Private Function PopulateForm() As Boolean
         TxtRegYear = .RegYear
         TxtVehicleMake = .VehicleMake
         TxtVehReg = .VehReg
-        TxtVehType = .VehType
+        TxtVehType = .GetVehicleTypeString
+        TxtLocation = Stations(.StationID).Name
     End With
     
     PopulateForm = True
