@@ -3,8 +3,9 @@ Attribute VB_Name = "ModDatabase"
 ' Module ModDatabase
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
+' v0,2 - Added Asset Sheet Import
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 
 Option Explicit
@@ -201,3 +202,79 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' ImportAssetFile
+' Imports the Asset file into the database
+' ---------------------------------------------------------------
+Private Sub ImportAssetFile()
+    Dim DlgOpen As FileDialog
+    Dim LineInputString As String
+    Dim AssetData() As String
+    Dim AssetFileLoc As String
+    Dim NoFiles As Integer
+    Dim AssetFile As Integer
+    Dim RstAssets As Recordset
+    Dim i As Integer
+    
+    Const StrPROCEDURE As String = "ImportAssetFile()"
+
+    On Error GoTo ErrorHandler
+    Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
+    
+     With DlgOpen
+        .Filters.Clear
+        .Filters.Add "CSV Files (*.csv)", "*.csv"
+        .AllowMultiSelect = False
+        .Title = "Select Spreadsheet of Doom"
+        .Show
+    End With
+    
+    'get no files selected
+    NoFiles = DlgOpen.SelectedItems.Count
+    
+    'exit if no files selected
+    If NoFiles = 0 Then Err.Raise NO_FILE_SELECTED
+  
+    AssetFileLoc = DlgOpen.SelectedItems(1)
+
+    AssetFile = FreeFile()
+    
+    If Dir(AssetFileLoc) = "" Then Err.Raise NO_FILE_SELECTED
+    
+    'get Asset Recordset
+    Set RstAssets = SQLQuery("TblAssets")
+    
+    Open AssetFileLoc For Input As AssetFile
+    
+    While Not EOF(AssetFile)
+        Line Input #AssetFile, LineInputString
+        AssetData = Split(LineInputString, ",")
+        i = i + 1
+        
+        
+        
+    Wend
+    
+    Close #AssetFile
+
+
+
+
+
+    Set RstAssets = Nothing
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set RstAssets = Nothing
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub

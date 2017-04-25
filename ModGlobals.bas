@@ -7,8 +7,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,3 - Add no stock avail error code
 ' v0,4 - added Remote Order button
 ' v0,5 - Added Deleted Order Status
+' v0,6 - Added No File Selected Error
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 
 Option Explicit
@@ -45,6 +46,7 @@ Public Const ACCESS_DENIED As Long = 1014
 Public Const NO_ORDER_MESSAGE As Long = 1015
 Public Const NO_INI_FILE As Long = 1016
 Public Const NO_STOCK_AVAIL As Long = 1017
+Public Const NO_FILE_SELECTED As Long = 1018
 
 Public Const NO_ASSET_ON_ORDER As Long = 1501
 Public Const NO_LINE_ITEM As Long = 1502
