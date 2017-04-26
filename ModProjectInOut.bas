@@ -305,6 +305,3 @@ Public Sub CopyShtCodeModule()
     Set VBCodeMod = Nothing
 End Sub
 
-Public Sub LockProject()
-    ThisWorkbook.VBProject.Protection
-End Sub

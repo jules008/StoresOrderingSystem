@@ -7,8 +7,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,3 - Add no stock available error
 ' v0,4 - Move error log to system files folder
 ' v0,5 - Improved message boxes
+' v0,6 - Added No File Selected Error
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 25 Apr 17
 '===============================================================
 
 Option Explicit
@@ -239,7 +240,11 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
         
         Case NO_STOCK_AVAIL
             MsgBox "You cannot issue this item as there insuficient stock available", vbExclamation, APP_NAME
-            
+        
+        Case NO_FILE_SELECTED
+            MsgBox "There was no file selected", vbOKOnly + vbExclamation, APP_NAME
+        Exit Function
+
     End Select
     
     Set MailSystem = Nothing
