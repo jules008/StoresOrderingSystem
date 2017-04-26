@@ -201,3 +201,59 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' UpdateDBScript
+' Script to update DB
+' ---------------------------------------------------------------
+Public Sub UpdateDBScript()
+    Dim TableDef As DAO.TableDef
+    Dim Ind As DAO.Index
+    Dim RstTable As Recordset
+    Dim i As Integer
+    
+    Dim Fld As DAO.Field
+    
+    Initialise
+    
+    Set TableDef = DB.CreateTableDef("TblDBVersion")
+    
+    With TableDef
+        
+        Set Fld = .CreateField("Version", dbText)
+
+        .Fields.Append Fld
+        DB.TableDefs.Append TableDef
+        
+    End With
+        
+    Set RstTable = SQLQuery("TblDBVersion")
+    
+    With RstTable
+        .AddNew
+        .Fields(0) = "v0,31"
+        .Update
+    End With
+    
+    Set TableDef = DB.TableDefs("TblAsset")
+    
+    With TableDef
+        
+        For Each Ind In .Indexes
+            Debug.Print Ind.Name
+        
+        Next
+        
+        With .Indexes
+            .Delete "PrimaryKey"
+            .Delete "ID"
+        End With
+        .Fields.Delete "ID"
+        
+        
+    End With
+    
+    Set RstTable = Nothing
+    Set TableDef = Nothing
+    Set Fld = Nothing
+
+End Sub
