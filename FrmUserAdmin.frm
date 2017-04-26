@@ -13,11 +13,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
-
-
-
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
@@ -220,6 +215,7 @@ Private Sub BtnUpdate_Click()
                 .Station.DBGet CmoStation.ListIndex
                 .Watch = TxtWatch
                 .MailAlert = ChkMailAlert
+                .UserName = TxtUsername
                 .DBSave
             End With
             MsgBox "User updated successfully.  If any change have been made " _
@@ -242,6 +238,10 @@ ErrorHandler:
     Else
         Resume ErrorExit
     End If
+End Sub
+
+Private Sub Label36_Click()
+
 End Sub
 
 ' ===============================================================
@@ -639,6 +639,7 @@ Private Function RefreshUserDetails() As Boolean
         TxtRankGrade = ""
         TxtRole = ""
         TxtSurname = ""
+        TxtUsername = ""
     Else
         CrewNo = LstAccessList.List(ListSelection, 0)
         
@@ -654,6 +655,7 @@ Private Function RefreshUserDetails() As Boolean
             TxtWatch = .Watch
             TxtSurname = .Surname
             ChkMailAlert = .MailAlert
+            TxtUsername = .UserName
         End With
     
     End If

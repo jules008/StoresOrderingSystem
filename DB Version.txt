@@ -1,0 +1,2 @@
+V0,31
+taken out AssetID from Asset Table

@@ -3,27 +3,18 @@ Dim ExportFilePath As String
 
 Public Sub ExportModules()
     Dim ExportYN As Boolean
-    Dim DlgOpen As FileDialog
     Dim SourceBook As Excel.Workbook
     Dim SourceBookName As String
     Dim EmportFileName As String
     Dim VBModule As VBIDE.VBComponent
    
-    'open files
-    Set DlgOpen = Application.FileDialog(msoFileDialogFolderPicker)
-    
-     With DlgOpen
-        .Title = "Select Export Folder"
-        .Show
-    End With
-        
-    ExportFilePath = DlgOpen.SelectedItems(1)
-
     ''' NOTE: This workbook must be open in Excel.
     SourceBookName = ActiveWorkbook.Name
     Set SourceBook = Application.Workbooks(SourceBookName)
     
-    ExportFilePath = ExportFilePath & "\"
+    ExportFilePath = ExportFilePath & "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
+    
+    Kill ExportFilePath & "*.*"
     
     For Each VBModule In SourceBook.VBProject.VBComponents
         

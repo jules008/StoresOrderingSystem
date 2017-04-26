@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsPerson
 ' v0,0 - Initial Version
 ' v0,1 - Changes to Username functionality
+' v0,2 - Make Username read/write
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 26 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -77,6 +78,10 @@ End Property
 '---------------------------------------------------------------
 Public Property Get UserName() As String
     UserName = pUsername
+End Property
+
+Public Property Let UserName(ByVal VnewValue As String)
+    pUsername = VnewValue
 End Property
 
 '---------------------------------------------------------------
