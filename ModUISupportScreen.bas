@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' Module ModUISupportScreen
 ' v0,0 - Initial Version
 ' v0,1 - improved message box
+' v0,2 - Fix Error 287 by opening Outlook if closed
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 27 Apr 17
 '===============================================================
 
 Option Explicit
@@ -244,6 +245,10 @@ Private Function BtnFeedbackSend() As Boolean
     Const StrPROCEDURE As String = "BtnFeedbackSend()"
 
     On Error GoTo ErrorHandler
+
+    If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+        Shell "Outlook.exe"
+    End If
 
     Set MailSystem = New ClsMailSystem
     

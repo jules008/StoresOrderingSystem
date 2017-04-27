@@ -14,13 +14,15 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - bug fix SendEmailAlerts
 ' v0,2 - changes for Phone Order functionality
 ' v0,3 - Improved message boxes
+' v0,4 - Fix Error 287 by opening Outlook if it is closed
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 27 Apr 17
 '===============================================================
 Option Explicit
 
@@ -649,6 +651,10 @@ Private Function SendEmailAlerts() As Boolean
             TestFlag = ""
         End If
     
+        If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+            Shell "Outlook.exe"
+        End If
+        
         If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
         
         With MailSystem.MailItem
@@ -658,10 +664,13 @@ Private Function SendEmailAlerts() As Boolean
             .Importance = olImportanceHigh
         End With
         
+        
         With MailSystem
             If SEND_EMAILS Then .MailItem.Send
         End With
+        
     End If
+                
     
     Set MailSystem = Nothing
     Set Persons = Nothing

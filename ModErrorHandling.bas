@@ -7,8 +7,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,3 - Add no stock available error
 ' v0,4 - Move error log to system files folder
 ' v0,5 - Improved message boxes
+' v0,6 - Fix Error 287 by opening Outlook if closed
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 27 Apr 17
 '===============================================================
 
 Option Explicit
@@ -88,7 +89,11 @@ Public Function CentralErrorHandler( _
     ' procedure or immediately if we are in debug mode.
     If bEntryPoint Or DEBUG_MODE Then
         ModLibrary.PerfSettingsOff
-        
+
+        If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+            Shell "Outlook.exe"
+        End If
+
         If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
     
         
@@ -147,6 +152,10 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             CurrentUser.AddTempAccount
             
             CurrentUser.DBSave
+            
+            If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+                Shell "Outlook.exe"
+            End If
             
             Set MailSystem = New ClsMailSystem
             
