@@ -1,6 +1,6 @@
 ID,  dbLong
 Deleted,  dbText
-CrewNo,  dbText
+CrewNo,  dbLong
 Forename,  dbText
 Surname,  dbText
 Username,  dbText

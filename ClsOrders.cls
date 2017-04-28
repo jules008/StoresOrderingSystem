@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsOrders
 ' v0,0 - Initial Version
 ' v0,1 - Add Get Closed Orders Method
+' v0,2 - Improved Order retrieval performance
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 28 Apr 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -79,55 +80,81 @@ End Function
 ' Gets all orders that are not closed
 '---------------------------------------------------------------
 
-Public Sub GetOpenOrders()
+Public Function GetOpenOrders() As Recordset
     Dim RstOrder As Recordset
     Dim Order As ClsOrder
     Dim OrderStatus As EnumOrderStatus
     
     Dim i As Integer
     
-    OrderStatus = orderClosed
+    OrderStatus = OrderClosed
     
-    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE " _
-                        & "status <> " & OrderStatus & " AND Deleted IS NULL")
-    With RstOrder
-        If .RecordCount > 0 Then
-            Do While Not .EOF
-                Set Order = New ClsOrder
-                Order.DBGet !OrderNo
-                Me.AddItem Order
-                .MoveNext
-            Loop
-        End If
-    End With
-End Sub
+    Set RstOrder = ModDatabase.SQLQuery("SELECT " _
+                                        & "TblOrder.OrderNo AS Order_No, " _
+                                        & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "TblPerson.Username AS ReqBy, " _
+                                        & "TblStation.Name AS Station, " _
+                                        & "TblPerson1.Username AS Assigned_To, " _
+                                        & "TblOrderStatus.OrderStatus AS Status " _
+                                        & "FROM " _
+                                        & "((((TblOrder " _
+                                        & "INNER JOIN TblPerson ON TblPerson.CrewNo = TblOrder.RequestorID) " _
+                                        & "INNER JOIN TblStation ON TblStation.StationID = TblPerson.StationID) " _
+                                        & "INNER JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
+                                        & "LEFT JOIN TblPerson TblPerson1 ON TblPerson1.CrewNo = TblOrder.AssignedToID) " _
+                                        & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
+                                        & "WHERE " _
+                                        & "TblOrder.Status < 4 " _
+                                        & "GROUP BY " _
+                                        & "TblOrder.OrderNo, " _
+                                        & "TblPerson.Username, " _
+                                        & "TblStation.Name, " _
+                                        & "TblPerson1.Username, " _
+                                        & "TblOrderStatus.OrderStatus " _
+                                        & "ORDER BY " _
+                                        & "TblOrder.OrderNo")
+    Set GetOpenOrders = RstOrder
+End Function
 
 ' ===============================================================
 ' Method GetClosedOrders
 ' Gets all orders that are closed
 '---------------------------------------------------------------
-Public Sub GetClosedOrders()
+Public Function GetClosedOrders() As Recordset
     Dim RstOrder As Recordset
     Dim Order As ClsOrder
     Dim OrderStatus As EnumOrderStatus
     
     Dim i As Integer
     
-    OrderStatus = orderClosed
+    OrderStatus = OrderClosed
     
-    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE " _
-                        & "status = " & OrderStatus & " AND Deleted IS NULL")
-    With RstOrder
-        If .RecordCount > 0 Then
-            Do While Not .EOF
-                Set Order = New ClsOrder
-                Order.DBGet !OrderNo
-                Me.AddItem Order
-                .MoveNext
-            Loop
-        End If
-    End With
-End Sub
+    Set RstOrder = ModDatabase.SQLQuery("SELECT " _
+                                        & "TblOrder.OrderNo AS Order_No, " _
+                                        & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "TblPerson.Username AS ReqBy, " _
+                                        & "TblStation.Name AS Station, " _
+                                        & "TblPerson1.Username AS Assigned_To, " _
+                                        & "TblOrderStatus.OrderStatus AS Status " _
+                                        & "FROM " _
+                                        & "((((TblOrder " _
+                                        & "INNER JOIN TblPerson ON TblPerson.CrewNo = TblOrder.RequestorID) " _
+                                        & "INNER JOIN TblStation ON TblStation.StationID = TblPerson.StationID) " _
+                                        & "INNER JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
+                                        & "LEFT JOIN TblPerson TblPerson1 ON TblPerson1.CrewNo = TblOrder.AssignedToID) " _
+                                        & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
+                                        & "WHERE " _
+                                        & "TblOrder.Status = 4 " _
+                                        & "GROUP BY " _
+                                        & "TblOrder.OrderNo, " _
+                                        & "TblPerson.Username, " _
+                                        & "TblStation.Name, " _
+                                        & "TblPerson1.Username, " _
+                                        & "TblOrderStatus.OrderStatus " _
+                                        & "ORDER BY " _
+                                        & "TblOrder.OrderNo")
+    Set GetClosedOrders = RstOrder
+End Function
 
 ' ===============================================================
 ' Method DeleteCollection

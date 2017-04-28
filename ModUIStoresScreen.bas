@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,1 - Added build Order Switch Button
 ' v0,2 - Added Remote Order Button
 ' v0,3 - Changes for disable line item functionality
+' v0,4 - Increased Order retrieval performance
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 28 Apr 17
 '===============================================================
 
 Option Explicit
@@ -390,15 +391,21 @@ End Function
 ' Refreshes the list of open orders from the database
 ' ---------------------------------------------------------------
 Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
-    Const StrPROCEDURE As String = "RefreshOrderList()"
-    
+    Dim OrderNo As Integer
+    Dim NoOfItems As String
+    Dim ReqBy As String
+    Dim Station As String
+    Dim AssignedTo As String
+    Dim OrderStatus As String
     Dim Orders As ClsOrders
-    Dim Order As ClsOrder
+    Dim RstOrder As Recordset
     Dim Lineitem As ClsUILineitem
     Dim i As Integer
     Dim OnAction As String
     Dim RowTitles() As String
 
+    Const StrPROCEDURE As String = "RefreshOrderList()"
+    
     On Error GoTo ErrorHandler
     
     Set Orders = New ClsOrders
@@ -428,29 +435,40 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     End With
     
     If ClosedOrders Then
-        Orders.GetClosedOrders
+        Set RstOrder = Orders.GetClosedOrders
         StoresFrame1.Header.Text = "Closed Orders"
         BtnOrderSwitch.Text = "Show Open Orders"
     Else
-        Orders.GetOpenOrders
+        Set RstOrder = Orders.GetOpenOrders
         StoresFrame1.Header.Text = "Open Orders"
         BtnOrderSwitch.Text = "Show Closed Orders"
     End If
     
-    StoresFrame1.Height = Orders.Count * ORDER_LINEITEM_ROWOFFSET + (ORDER_LINEITEM_TOP * 2)
-
+    StoresFrame1.Height = RstOrder.RecordCount * ORDER_LINEITEM_ROWOFFSET + (ORDER_LINEITEM_TOP * 2)
+    
     i = 1
-    For Each Order In Orders
-        With StoresFrame1.LineItems
-            .Text i, 0, Order.OrderNo, True, Order.OrderNo
-            .Text i, 1, Order.LineItems.Count, True, Order.OrderNo
-            .Text i, 2, Order.Requestor.UserName, True, Order.OrderNo
-            .Text i, 3, Order.Requestor.Station.Name, True, Order.OrderNo
-            .Text i, 4, Order.AssignedTo.UserName, True, Order.OrderNo
-            .Text i, 5, Order.ReturnOrderStatus, True, Order.OrderNo
-        End With
-        i = i + 1
-    Next
+    With RstOrder
+        Do While Not .EOF
+            With StoresFrame1.LineItems
+                If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
+                If Not IsNull(RstOrder!No_of_Items) Then NoOfItems = RstOrder!No_of_Items Else NoOfItems = ""
+                If Not IsNull(RstOrder!ReqBy) Then ReqBy = RstOrder!ReqBy Else ReqBy = ""
+                If Not IsNull(RstOrder!Station) Then Station = RstOrder!Station Else Station = ""
+                If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
+                If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
+                
+                .Text i, 0, CStr(OrderNo), True, OrderNo
+                .Text i, 1, NoOfItems, True, OrderNo
+                .Text i, 2, ReqBy, True, OrderNo
+                .Text i, 3, Station, True, OrderNo
+                .Text i, 4, AssignedTo, True, OrderNo
+                .Text i, 5, OrderStatus, True, OrderNo
+            End With
+            .MoveNext
+            i = i + 1
+        Loop
+        
+    End With
     
     ModLibrary.PerfSettingsOff
                 
@@ -458,12 +476,12 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     
     RefreshOrderList = True
     
-    Set Order = Nothing
+    Set Orders = Nothing
     
 Exit Function
 
 ErrorExit:
-    Set Order = Nothing
+    Set Orders = Nothing
     
     Terminate
     RefreshOrderList = False
