@@ -7,8 +7,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,3 - Hide more sheets plus bug fixes
 ' v0,4 - Changed start up so always starts Menu 1
 ' v0,5 - reverted back to restart back to previous menu item
+' v0,6 - Stopped the removal of '-' from the user name
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 01 May 17
 '===============================================================
 
 Option Explicit
@@ -126,7 +127,6 @@ Public Function GetUserName() As Boolean
     If UserName = "" Then Err.Raise HANDLED_ERROR
 
     UserName = Replace(UserName, "'", "")
-    UserName = Replace(UserName, "-", "")
     
     CurrentUser.DBGet Trim(UserName)
     

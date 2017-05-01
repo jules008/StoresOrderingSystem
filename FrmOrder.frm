@@ -15,14 +15,16 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - bug fix SendEmailAlerts
 ' v0,2 - changes for Phone Order functionality
 ' v0,3 - Improved message boxes
 ' v0,4 - Fix Error 287 by opening Outlook if it is closed
+' v0,5 - Added checks before removing line items
 '---------------------------------------------------------------
-' Date - 27 Apr 17
+' Date - 01 May 17
 '===============================================================
 Option Explicit
 
@@ -313,6 +315,9 @@ Private Sub BtnRemove_Click()
     
     On Error GoTo ErrorHandler
 
+    If LstItems.ListCount = 0 Then Exit Sub
+    If LstItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
+
     With LstItems
         LineItemNo = .List(.ListIndex, 0)
         
@@ -324,7 +329,8 @@ Private Sub BtnRemove_Click()
         .RemoveItem (.ListIndex)
         
     End With
-
+    
+GracefulExit:
 
 Exit Sub
 
@@ -335,7 +341,14 @@ ErrorExit:
 
 Exit Sub
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:
+        
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else
@@ -393,11 +406,12 @@ Private Sub BtnSubmit_Click()
 
     On Error GoTo ErrorHandler
 
+    If Order Is Nothing Then Err.Raise NO_ORDER, Description:="System failure, no Order"
+    
     If Order.OrderNo = 0 Then
         Order.DBSave
         TxtOrderNo = Order.OrderNo
-        
-        
+                
         If Order.OrderNo <> 0 Then
             MsgBox "Thank you, your order has been submitted successfully", vbOKOnly + vbInformation, APP_NAME
             
