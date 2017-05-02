@@ -8,8 +8,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,4 - Move error log to system files folder
 ' v0,5 - Improved message boxes
 ' v0,6 - Fix Error 287 by opening Outlook if closed
+' v0,7 - Added DB Version Error
 '---------------------------------------------------------------
-' Date - 27 Apr 17
+' Date - 02 May 17
 '===============================================================
 
 Option Explicit
@@ -184,9 +185,8 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
                 Debug.Print FaultCount1008
             Else
                 FaultCount1008 = 0
-                Application.StatusBar = "No Database"
-                Err.Raise SYSTEM_FAILURE, Description:="Unable to connect to database afer 3 attempts"
-                CustomErrorHandler = False
+                Application.StatusBar = "System Failed - No Database"
+                End
             End If
         
         Case SYSTEM_RESTART
@@ -201,7 +201,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             Else
                 FaultCount1002 = 0
                 Application.StatusBar = "Sysetm Failed"
-                Err.Raise SYSTEM_FAILURE, Description:="System restart failed 3 time"
+                End
             End If
             
         Case NO_QUANTITY_ENTERED
@@ -244,11 +244,16 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
         Case NO_INI_FILE
             MsgBox "No INI file has been found, so system cannot continue. This can occur if the file " _
                     & "is copied from its location on the T Drive.  Please delete file and create a shortcut instead", vbCritical, APP_NAME
-            Err.Raise SYSTEM_FAILURE
+            Application.StatusBar = "System Failed - No INI File"
+            End
         
         Case NO_STOCK_AVAIL
             MsgBox "You cannot issue this item as there insuficient stock available", vbExclamation, APP_NAME
             
+        Case DB_WRONG_VER
+            MsgBox "Incorrect Version Database - System cannot continue", vbCritical + vbOKOnly, APP_NAME
+            Application.StatusBar = "System Failed - Wrong DB Version"
+            End
     End Select
     
     Set MailSystem = Nothing
