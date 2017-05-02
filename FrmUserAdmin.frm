@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
 ' v0,2 - improved message boxes
+' v0,3 - Bug fix for empty mail alert list
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 27 Apr 17
 '===============================================================
 Option Explicit
 
@@ -157,18 +158,19 @@ Private Sub BtnShowMail_Click()
     Set Persons = New ClsPersons
     Set RstPersons = Persons.GetMailAlertUsers
     
-    With LstAccessList
-        .Clear
+    If Not RstPersons Is Nothing Then
+        With LstAccessList
+            .Clear
+            
+            For i = 0 To RstPersons.RecordCount - 1
+                .AddItem
+                .List(i, 0) = RstPersons!CrewNo
+                .List(i, 1) = RstPersons!UserName
+                RstPersons.MoveNext
+            Next
         
-        For i = 0 To RstPersons.RecordCount - 1
-            .AddItem
-            .List(i, 0) = RstPersons!CrewNo
-            .List(i, 1) = RstPersons!UserName
-            RstPersons.MoveNext
-        Next
-    
-    End With
-
+        End With
+    End If
 
 
     Set Persons = Nothing

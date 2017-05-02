@@ -4,8 +4,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,0 - Initial Version
 ' v0,1 - Added ColourConvert
 ' v0,2 - improved message box
+' v0,3 - Added IsProcessRunning Procedure
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 27 Apr 17
 '===============================================================
 
 Option Explicit
@@ -218,4 +219,20 @@ Sub AddCheckBoxes()
     
 End Sub
 
+' ===============================================================
+' IsProcessRunning
+' Checks whether Windows application is running
+' ---------------------------------------------------------------
+Function IsProcessRunning(process As String) As Boolean
+    Dim objList As Object
 
+    Set objList = GetObject("winmgmts:") _
+        .ExecQuery("select * from win32_process where name='" & process & "'")
+
+    If objList.Count > 0 Then
+        IsProcessRunning = True
+    Else
+        IsProcessRunning = False
+    End If
+
+End Function

@@ -10,8 +10,9 @@ Attribute VB_Exposed = True
 '===============================================================
 ' Module ShtOrderList
 ' v0,0 - Initial Version
+' v0,1 - Reinforced sheet reference
 '---------------------------------------------------------------
-' Date - 07 Apr 17
+' Date - 01 May 17
 '===============================================================
 
 Option Explicit
@@ -29,7 +30,7 @@ Public Function ClearForm() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Range("RngClear").ClearContents
+    ShtOrderList.Range("RngClear").ClearContents
 
     ClearForm = True
     
