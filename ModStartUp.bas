@@ -7,8 +7,10 @@ Attribute VB_Name = "ModStartUp"
 ' v0,3 - Hide more sheets plus bug fixes
 ' v0,4 - Changed start up so always starts Menu 1
 ' v0,5 - reverted back to restart back to previous menu item
+' v0,6 - Stopped the removal of '-' from the user name
+' v0,7 - Added DB Version Check
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 02 May 17
 '===============================================================
 
 Option Explicit
@@ -27,17 +29,27 @@ Public Function Initialise() As Boolean
     
     Terminate
     
+    Application.StatusBar = "Initialising....."
+    
     Set CurrentUser = New ClsPerson
     Set Vehicles = New ClsVehicles
     Set Stations = New ClsStations
         
     ShtMain.Unprotect
     
+    Application.StatusBar = "Reading INI File....."
+    
     If Not ReadINIFile Then Err.Raise HANDLED_ERROR
     
     DB_PATH = ShtSettings.Range("DBPath")
     
+    Application.StatusBar = "Connecting to DB....."
+    
     If Not ModDatabase.DBConnect Then Err.Raise HANDLED_ERROR
+    
+    Application.StatusBar = "Checking DB Version....."
+    
+    If ModDatabase.GetDBVer <> DB_VER Then Err.Raise DB_WRONG_VER
     
     If DEV_MODE Then
         ShtSettings.Visible = xlSheetVisible
@@ -50,12 +62,17 @@ Public Function Initialise() As Boolean
         ShtOrderList.Visible = xlSheetHidden
     End If
         
+    Application.StatusBar = "Building Data....."
+        
     'build collections
     Vehicles.GetCollection
     Stations.GetCollection
     
+    Application.StatusBar = "Finding User....."
     'get username of current user
     If Not ModStartUp.GetUserName Then Err.Raise HANDLED_ERROR
+    
+    Application.StatusBar = "Buidling UI....."
     
     'build styles
     If Not ModUIMenu.BuildStylesMenu Then Err.Raise HANDLED_ERROR
@@ -126,7 +143,6 @@ Public Function GetUserName() As Boolean
     If UserName = "" Then Err.Raise HANDLED_ERROR
 
     UserName = Replace(UserName, "'", "")
-    UserName = Replace(UserName, "-", "")
     
     CurrentUser.DBGet Trim(UserName)
     

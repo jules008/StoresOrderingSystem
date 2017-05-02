@@ -3,8 +3,9 @@ Attribute VB_Name = "ModDatabase"
 ' Module ModDatabase
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
+' v0,2 - Added GetDBVer function
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 02 May 17
 '===============================================================
 
 Option Explicit
@@ -257,3 +258,38 @@ Public Sub UpdateDBScript()
     Set Fld = Nothing
 
 End Sub
+
+' ===============================================================
+' GetDBVer
+' Returns the version of the DB
+' ---------------------------------------------------------------
+Public Function GetDBVer() As String
+    Dim DBVer As Recordset
+    
+    Const StrPROCEDURE As String = "GetDBVer()"
+
+    On Error GoTo ErrorHandler
+
+    Set DBVer = SQLQuery("TblDBVersion")
+
+    GetDBVer = DBVer.Fields(0)
+
+    Set DBVer = Nothing
+    
+Exit Function
+
+ErrorExit:
+
+    GetDBVer = ""
+    
+    Set DBVer = Nothing
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
