@@ -3,8 +3,9 @@ Attribute VB_Name = "ModDatabase"
 ' Module ModDatabase
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
+' v0,2 - Added GetDBVer function
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 02 May 17
 '===============================================================
 
 Option Explicit
@@ -352,7 +353,63 @@ ErrorHandler:
 End Sub
 
 ' ===============================================================
-' ParseAsset
+' UpdateDBScript
+' Script to update DB
+' ---------------------------------------------------------------
+Public Sub UpdateDBScript()
+    Dim TableDef As DAO.TableDef
+    Dim Ind As DAO.Index
+    Dim RstTable As Recordset
+    Dim i As Integer
+    
+    Dim Fld As DAO.Field
+    
+    Initialise
+    
+    Set TableDef = DB.CreateTableDef("TblDBVersion")
+    
+    With TableDef
+        
+        Set Fld = .CreateField("Version", dbText)
+
+        .Fields.Append Fld
+        DB.TableDefs.Append TableDef
+        
+    End With
+        
+    Set RstTable = SQLQuery("TblDBVersion")
+    
+    With RstTable
+        .AddNew
+        .Fields(0) = "v0,31"
+        .Update
+    End With
+    
+    Set TableDef = DB.TableDefs("TblAsset")
+    
+    With TableDef
+        
+        For Each Ind In .Indexes
+            Debug.Print Ind.Name
+        
+        Next
+        
+        With .Indexes
+            .Delete "PrimaryKey"
+            .Delete "ID"
+        End With
+        .Fields.Delete "ID"
+        
+        
+    End With
+    
+    Set RstTable = Nothing
+    Set TableDef = Nothing
+    Set Fld = Nothing
+
+End Sub
+
+' ===============================================================' ParseAsset
 ' Checks asset data quality
 ' ---------------------------------------------------------------
 Private Function ParseAsset(AssetData() As String, LineNo As Integer) As EnumFormValidation
@@ -442,6 +499,40 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' GetDBVer
+' Returns the version of the DB
+' ---------------------------------------------------------------
+Public Function GetDBVer() As String
+    Dim DBVer As Recordset
+    
+    Const StrPROCEDURE As String = "GetDBVer()"
+
+    On Error GoTo ErrorHandler
+
+    Set DBVer = SQLQuery("TblDBVersion")
+
+    GetDBVer = DBVer.Fields(0)
+
+    Set DBVer = Nothing
+    
+Exit Function
+
+ErrorExit:
+
+    GetDBVer = ""
+    
+    Set DBVer = Nothing
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
 
 ' ===============================================================
 ' BuildAsset
