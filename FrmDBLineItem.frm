@@ -13,13 +13,13 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign
 ' v0,2 - Update stock qty on issue
+' v0,3 - Next/Prev Button / Update Quantity / Changed format of Order Date
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 03 May 17
 '===============================================================
 Option Explicit
 
@@ -90,7 +90,7 @@ Private Function PopulateForm() As Boolean
         ChkReturned = .itemsReturned
         ChkIssued = .ItemsIssued
         TxtLineItemNo = .LineItemNo
-        TxtOrderDate = .Parent.OrderDate
+        TxtOrderDate = Format(.Parent.OrderDate, "dd/mm/yyyy")
         TxtOrderNo = .Parent.OrderNo
         TxtQuantity = .Quantity
         TxtRequestedBy = .Parent.Requestor.UserName
@@ -243,7 +243,7 @@ Private Sub BtnAsset_Click()
     
     If Not FrmDBAsset.ShowForm(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
 
-GracefulExit:
+Gracefulexit:
 
 Exit Sub
 
@@ -259,7 +259,7 @@ ErrorHandler:
     
         If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume GracefulExit
+        Resume Gracefulexit
     End If
     
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -325,6 +325,103 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+' ===============================================================
+' BtnNext_Click
+' Next Line Item
+' ---------------------------------------------------------------
+Private Sub BtnNext_Click()
+    Dim IndexNo As Integer
+    
+    Const StrPROCEDURE As String = "BtnNext_Click()"
+
+    On Error GoTo ErrorHandler
+
+    With FrmDBOrder.LstItems
+        
+        IndexNo = .ListIndex + 1
+        
+        BtnPrev.Enabled = True
+        
+        'reached end of list?
+        If IndexNo + 1 = .ListCount Then
+            BtnNext.Enabled = False
+        Else
+            BtnNext.Enabled = True
+        End If
+        
+    End With
+    Hide
+    
+    FrmDBOrder.LstItems.ListIndex = IndexNo
+    
+    If Not ShowForm(Lineitem.Parent.LineItems(IndexNo + 1)) Then Err.Raise HANDLED_ERROR
+
+    
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' BtnPrev_Click
+' Prev Line Item
+' ---------------------------------------------------------------
+Private Sub BtnPrev_Click()
+    Dim IndexNo As Integer
+    
+    Const StrPROCEDURE As String = "BtnPrev_Click()"
+
+    On Error GoTo ErrorHandler
+
+    With FrmDBOrder.LstItems
+        
+        IndexNo = .ListIndex + 1
+        
+        BtnNext.Enabled = True
+        
+        'reached end of list?
+        If IndexNo - 1 = 1 Then
+            BtnPrev.Enabled = False
+        Else
+            BtnPrev.Enabled = True
+        End If
+        
+    End With
+    Hide
+    
+    FrmDBOrder.LstItems.ListIndex = IndexNo - 2
+    
+    If Not ShowForm(Lineitem.Parent.LineItems(IndexNo - 1)) Then Err.Raise HANDLED_ERROR
+
+    
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
 ' ===============================================================
 ' BtnPutOnHold_Click
 ' Puts lineitem on hold
@@ -358,10 +455,47 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 
+' ===============================================================
+' BtnUpdate_Click
+' Updates quantity
+' ---------------------------------------------------------------
 Private Sub BtnUpdate_Click()
+    Const StrPROCEDURE As String = "BtnUpdate_Click()"
 
+    On Error GoTo ErrorHandler
+
+    If TxtQuantity = "" Then Err.Raise NO_QUANTITY_ENTERED
+
+    If Not IsNumeric(TxtQuantity) Then Err.Raise NUMBERS_ONLY
+    
+    Lineitem.Quantity = TxtQuantity
+    Lineitem.DBSave
+
+Gracefulexit:
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume Gracefulexit
+    End If
+
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
 End Sub
-
 ' ===============================================================
 ' BtnViewDelivery_Click
 ' View the delivery details
@@ -541,7 +675,7 @@ Private Sub ChkIssued_Click()
 
 
 
-GracefulExit:
+Gracefulexit:
 
 
 Exit Sub
@@ -556,7 +690,7 @@ ErrorHandler:
 
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume GracefulExit
+        Resume Gracefulexit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -660,6 +794,11 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+Private Sub TxtQuantity_Change()
+
+End Sub
+
 ' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise

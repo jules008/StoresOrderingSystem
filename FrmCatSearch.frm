@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Changes for Phone Order Button
 ' v0,2 - Bug fix for Phone Order
 ' v0,3 - update purchase unit when size changed
+' v0,4 - add validation to prevent quantity of 0
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 03 May 17
 '===============================================================
 Option Explicit
 
@@ -100,6 +101,13 @@ Private Function ValidateForm() As EnumFormValidation
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If
+        
+        If .Value = 0 Then
+            .BackColor = COLOUR_6
+            ValidateForm = ValidationError
+            Err.Raise NO_QUANTITY_ENTERED
+        End If
+        
     End With
     
     With CmoSize1
@@ -793,6 +801,8 @@ Public Function FormInitialise() As Boolean
     For i = 1 To 50
         CmoQuantity.AddItem i
     Next
+    
+    CmoQuantity.ListIndex = 0
     
     CmoQuantity.Value = 1
     

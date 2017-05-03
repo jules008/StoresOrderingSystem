@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDBOrder 
    Caption         =   "F402"
-   ClientHeight    =   8880
+   ClientHeight    =   10785
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   16380
@@ -13,6 +13,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Auto assign Order and improved printing
@@ -332,15 +333,75 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+' ===============================================================
+' BtnDeleteItem_Click
+' Deletes line item
+' ---------------------------------------------------------------
+Private Sub BtnDeleteItem_Click()
+    Dim Response As Integer
+    Dim Lineitem As ClsLineItem
+    
+    Const StrPROCEDURE As String = "BtnDeleteItem_Click()"
+
+    On Error GoTo ErrorHandler
+
+    Set Lineitem = New ClsLineItem
+    
+    If LstItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
+    
+    Response = MsgBox("Are you sure you want to delete the line?", vbYesNoCancel + vbExclamation, APP_NAME)
+    
+    If Response <> 6 Then Exit Sub
+    
+    Set Lineitem = Order.LineItems(LstItems.ListIndex + 1)
+
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    
+    Lineitem.Parent.LineItems.RemoveItem CStr(Lineitem.LineItemNo)
+    
+    Lineitem.DBDelete
+    
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
+
+    
+GracefulExit:
+
+    Set Lineitem = Nothing
+
+Exit Sub
+
+ErrorExit:
+
+    Set Lineitem = Nothing
+    FormTerminate
+    Terminate
+Exit Sub
+
+ErrorHandler:
+            
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit
+    End If
+
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
 ' ===============================================================
 ' BtnLineItem_Click
 ' opens the selected line item
 ' ---------------------------------------------------------------
 Private Sub BtnLineItem_Click()
-    Const StrPROCEDURE As String = "BtnLineItem_Click()"
-    
     Dim Lineitem As ClsLineItem
     
+    Const StrPROCEDURE As String = "BtnLineItem_Click()"
+        
     On Error GoTo ErrorHandler
 
     Set Lineitem = New ClsLineItem

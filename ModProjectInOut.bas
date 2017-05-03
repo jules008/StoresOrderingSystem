@@ -46,6 +46,8 @@ Public Sub ExportModules()
     
     ExportDBTables
     
+    ThisWorkbook.SaveAs ExportFilePath & "\Stores IT System v0", 51
+    
     Set DlgOpen = Nothing
 
     MsgBox "Export is ready", vbInformation, APP_NAME

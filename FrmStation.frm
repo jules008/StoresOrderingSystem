@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Bug fix for Phone Order
+' v0,2 - Bug fix when using using Prev Button
 '---------------------------------------------------------------
-' Date - 18 Apr 17
+' Date - 03 May 17
 '===============================================================
 Option Explicit
 
@@ -222,7 +223,7 @@ Private Sub BtnPrev_Click()
 
     On Error GoTo ErrorHandler
 
-    Unload Me
+    Hide
     If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 Exit Sub
 

@@ -1,4 +1,2 @@
-v0,32
-changed indexes from text to string
 V0,31
 taken out AssetID from Asset Table
