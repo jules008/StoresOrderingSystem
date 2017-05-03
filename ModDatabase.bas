@@ -3,9 +3,8 @@ Attribute VB_Name = "ModDatabase"
 ' Module ModDatabase
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
-' v0,2 - Added GetDBVer function
 '---------------------------------------------------------------
-' Date - 02 May 17
+' Date - 19 Apr 17
 '===============================================================
 
 Option Explicit
@@ -210,7 +209,10 @@ Private Sub ImportAssetFile()
     Dim DlgOpen As FileDialog
     Dim LineInputString As String
     Dim AssetData() As String
+    Dim FormValidation As EnumFormValidation
     Dim AssetFileLoc As String
+    Dim Asset As ClsAsset
+    Dim Assets As ClsAssets
     Dim NoFiles As Integer
     Dim AssetFile As Integer
     Dim RstAssets As Recordset
@@ -220,6 +222,7 @@ Private Sub ImportAssetFile()
 
     On Error GoTo ErrorHandler
     Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
+    Set Assets = New ClsAssets
     
      With DlgOpen
         .Filters.Clear
@@ -242,7 +245,7 @@ Private Sub ImportAssetFile()
     If Dir(AssetFileLoc) = "" Then Err.Raise NO_FILE_SELECTED
     
     'get Asset Recordset
-    Set RstAssets = SQLQuery("TblAssets")
+    Set RstAssets = SQLQuery("TblAsset")
     
     Open AssetFileLoc For Input As AssetFile
     
@@ -251,16 +254,73 @@ Private Sub ImportAssetFile()
         AssetData = Split(LineInputString, ",")
         i = i + 1
         
+        Debug.Print "Starting Line: " & i
         
+        If i <> 1 Then
         
-    Wend
+            FormValidation = ParseAsset(AssetData, i)
+            
+            Select Case FormValidation
+                Case FunctionalError
+                    Err.Raise HANDLED_ERROR
+                Case ValidationError
+                    Err.Raise IMPORT_ERROR
+            End Select
+            
+            Debug.Print "Validated!"
+            
+            Set Asset = New ClsAsset
     
+            Set Asset = BuildAsset(AssetData)
+            
+            Assets.AddItem Asset
+            If Err.Number <> 0 Then Err.Raise IMPORT_ERROR
+            
+            Debug.Print "Asset Added!"
+        End If
+    Wend
     Close #AssetFile
 
+    Stop
+    
+    'check whether there are more assets to add than records to delete, or vice versa
+    If RstAssets.RecordCount > Assets.Count Then
+    
+        With RstAssets
+            .MoveFirst
+            For i = 1 To .RecordCount
+                .Delete
+                Assets(i).DBSave
+                .MoveNext
+            Next
+            
+            For i = .RecordCount + 1 To Assets.Count
+                Assets(i).DBSave
+            Next
+            
+        End With
+    Else
+        With RstAssets
+            .MoveFirst
+            For i = 1 To Assets.Count
+                .Delete
+                Assets(i).DBSave
+                .MoveNext
+            Next
+            
+            For i = Assets.Count + 1 To .RecordCount
+                .Delete
+                .MoveNext
+            Next
+
+        End With
+    End If
 
 
+GracefulExit:
 
-
+    Set DlgOpen = Nothing
+    Set Assets = Nothing
     Set RstAssets = Nothing
 
 Exit Sub
@@ -268,10 +328,22 @@ Exit Sub
 ErrorExit:
 
 '    ***CleanUpCode***
+    Set DlgOpen = Nothing
+    Set Assets = Nothing
     Set RstAssets = Nothing
 Exit Sub
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = IMPORT_ERROR Then MsgBox
+        
+        If CustomErrorHandler(Err.Number) Then
+            GoTo GracefulExit
+        End If
+    End If
+    
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else
@@ -280,86 +352,125 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 
 ' ===============================================================
-' UpdateDBScript
-' Script to update DB
+' ParseAsset
+' Checks asset data quality
 ' ---------------------------------------------------------------
-Public Sub UpdateDBScript()
-    Dim TableDef As DAO.TableDef
-    Dim Ind As DAO.Index
-    Dim RstTable As Recordset
+Private Function ParseAsset(AssetData() As String, LineNo As Integer) As EnumFormValidation
     Dim i As Integer
+    Dim TestValue As String
+    Dim TestString() As String
     
-    Dim Fld As DAO.Field
+    Const StrPROCEDURE As String = "ParseAsset()"
     
-    Initialise
+    On Error GoTo ErrorHandler
     
-    Set TableDef = DB.CreateTableDef("TblDBVersion")
+    For i = 0 To 24
     
-    With TableDef
+        TestValue = AssetData(i)
         
-        Set Fld = .CreateField("Version", dbText)
+        'generic tests first
+        If InStr(TestValue, "'") <> 0 Then Err.Raise IMPORT_ERROR
 
-        .Fields.Append Fld
-        DB.TableDefs.Append TableDef
+        Select Case i
+            Case Is = 0
         
-    End With
+            Case Is = 1
+                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
+                If TestValue < 0 Or TestValue > 3 Then Err.Raise IMPORT_ERROR
         
-    Set RstTable = SQLQuery("TblDBVersion")
+            Case Is = 4
+                If TestValue < 0 Then Err.Raise IMPORT_ERROR
     
-    With RstTable
-        .AddNew
-        .Fields(0) = "v0,31"
-        .Update
-    End With
+            Case Is = 11
+                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
+                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+            
+            Case Is = 12
+                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
+                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+            
+            Case Is = 13
+                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
+                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+            
+            Case Is = 16
+                
+                If Len(TestValue) <> 13 Then Err.Raise IMPORT_ERROR
+                
+                On Error GoTo ValidationError
+                
+                TestString = Split(TestValue, ":")
+                
+                If TestString(0) <> "0" And TestString(0) <> "1" Then Err.Raise IMPORT_ERROR
+                If TestString(2) <> "0" And TestString(2) <> "1" Then Err.Raise IMPORT_ERROR
+                If TestString(4) <> "0" And TestString(4) <> "1" Then Err.Raise IMPORT_ERROR
+                If TestString(6) <> "0" And TestString(6) <> "1" Then Err.Raise IMPORT_ERROR
     
-    Set TableDef = DB.TableDefs("TblAsset")
+                On Error GoTo 0
     
-    With TableDef
+            Case Is = 22
+                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
+                If TestValue < 0 Then Err.Raise IMPORT_ERROR
         
-        For Each Ind In .Indexes
-            Debug.Print Ind.Name
+            
+        End Select
         
         Next
         
-        With .Indexes
-            .Delete "PrimaryKey"
-            .Delete "ID"
-        End With
-        .Fields.Delete "ID"
+    ParseAsset = FormOK
         
+Exit Function
         
-    End With
+ValidationError:
     
-    Set RstTable = Nothing
-    Set TableDef = Nothing
-    Set Fld = Nothing
-
-End Sub
-
-' ===============================================================
-' GetDBVer
-' Returns the version of the DB
-' ---------------------------------------------------------------
-Public Function GetDBVer() As String
-    Dim DBVer As Recordset
-    
-    Const StrPROCEDURE As String = "GetDBVer()"
-
-    On Error GoTo ErrorHandler
-
-    Set DBVer = SQLQuery("TblDBVersion")
-
-    GetDBVer = DBVer.Fields(0)
-
-    Set DBVer = Nothing
-    
+    Err.Raise IMPORT_ERROR
+    MsgBox "There has been an error importing the data on line " & LineNo & ", Field " & i + 1
+    ParseAsset = ValidationError
 Exit Function
 
 ErrorExit:
 
-    GetDBVer = ""
+'    ***CleanUpCode***
+    ParseAsset = FunctionalError
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' BuildAsset
+' Takes Asset array and build Asset Class
+' ---------------------------------------------------------------
+Private Function BuildAsset(AssetData() As String) As ClsAsset
+    Dim Asset As ClsAsset
     
-    Set DBVer = Nothing
+    Const StrPROCEDURE As String = "BuildAsset()"
+
+    On Error GoTo ErrorHandler
+
+    Set Asset = New ClsAsset
+
+    With Asset
+
+
+    
+    End With
+
+    Set BuildAsset = Asset
+    Set Asset = Nothing
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    BuildAsset = False
+    Set Asset = Nothing
 
 Exit Function
 
