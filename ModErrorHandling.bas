@@ -7,7 +7,8 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,3 - Add no stock available error
 ' v0,4 - Move error log to system files folder
 ' v0,5 - Improved message boxes
-' v0,6 - Fix Error 287 by opening Outlook if closed
+' v0,6 - Added No File Selected Error
+' v0,61 - Fix Error 287 by opening Outlook if closed
 ' v0,7 - Added DB Version Error
 '---------------------------------------------------------------
 ' Date - 02 May 17
@@ -254,6 +255,11 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             MsgBox "Incorrect Version Database - System cannot continue", vbCritical + vbOKOnly, APP_NAME
             Application.StatusBar = "System Failed - Wrong DB Version"
             End
+        
+        Case NO_FILE_SELECTED
+            MsgBox "There was no file selected", vbOKOnly + vbExclamation, APP_NAME
+        Exit Function
+
     End Select
     
     Set MailSystem = Nothing

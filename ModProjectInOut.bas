@@ -305,6 +305,4 @@ Public Sub CopyShtCodeModule()
     Set DestMod = Nothing
     Set VBModule = Nothing
     Set VBCodeMod = Nothing
-End Sub
-
-
+End Sub
