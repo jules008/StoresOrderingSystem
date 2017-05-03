@@ -2,6 +2,6 @@ Deleted,  dbDate
 OrderNo,  dbInteger
 OrderDate,  dbDate
 Status,  dbLong
-RequestorID,  dbLong
-AssignedToID,  dbLong
-AuthorisedByID,  dbLong
+RequestorID,  dbText
+AssignedToID,  dbText
+AuthorisedByID,  dbText

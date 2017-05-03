@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Add Get Closed Orders Method
 ' v0,2 - Improved Order retrieval performance
+' v0,3 - limited closed orders to last 14 days
 '---------------------------------------------------------------
-' Date - 28 Apr 17
+' Date - 03 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -145,14 +146,14 @@ Public Function GetClosedOrders() As Recordset
                                         & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
                                         & "WHERE " _
                                         & "TblOrder.Status = 4 " _
+                                        & "AND DateDiff('d', TblOrder.OrderDate, Now()) < 14 " _
                                         & "GROUP BY " _
                                         & "TblOrder.OrderNo, " _
                                         & "TblPerson.Username, " _
                                         & "TblStation.Name, " _
                                         & "TblPerson1.Username, " _
                                         & "TblOrderStatus.OrderStatus " _
-                                        & "ORDER BY " _
-                                        & "TblOrder.OrderNo")
+                                        & "ORDER BY TblOrder.OrderNo")
     Set GetClosedOrders = RstOrder
 End Function
 
