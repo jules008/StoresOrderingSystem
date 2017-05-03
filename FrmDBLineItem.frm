@@ -18,6 +18,7 @@ Attribute VB_Exposed = False
 ' v0,1 - Auto assign
 ' v0,2 - Update stock qty on issue
 ' v0,3 - Next/Prev Button / Update Quantity / Changed format of Order Date
+' v0,4 - Bug fix Next / Prev Buttons
 '---------------------------------------------------------------
 ' Date - 03 May 17
 '===============================================================
@@ -186,6 +187,11 @@ Private Function FormInitialise() As Boolean
         .AddItem "Malfunction"
         .AddItem "New Issue"
     
+    End With
+    
+    With FrmDBOrder.LstItems
+        If .ListIndex = 0 Then BtnPrev.Enabled = False
+        If .ListIndex = .ListCount - 1 Then BtnNext.Enabled = False
     End With
     
     FormInitialise = True
