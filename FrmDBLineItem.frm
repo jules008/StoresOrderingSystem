@@ -801,10 +801,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 
-Private Sub TxtQuantity_Change()
-
-End Sub
-
 ' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise
