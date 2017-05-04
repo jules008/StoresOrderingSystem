@@ -340,7 +340,14 @@ ErrorHandler:
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         
         If Err.Number = IMPORT_ERROR Then
-            MsgBox "There has been an error importing the data on line " & i & ", Field " & FormValidation + 1
+            Select Case FormValidation
+                Case Is < 25
+                    MsgBox "There has been an error importing the data on line " & i & ", Field " & FormValidation + 1, vbExclamation, APP_NAME
+                Case Is = 25
+                    MsgBox "There is an error with the number of columns on line " _
+                            & i & " This is commonly caused by commas not encase in Quote marks", vbExclamation, APP_NAME
+            End Select
+            
             Stop
             Resume
         End If
@@ -428,7 +435,12 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
     
     On Error GoTo ErrorHandler
     
-    For i = 0 To 24
+    If UBound(AssetData) < 25 Then
+        i = 25
+        Err.Raise IMPORT_ERROR
+    End If
+    
+    For i = 0 To 25
     
         TestValue = AssetData(i)
         
@@ -485,6 +497,9 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
                 If TestValue < 0 Then Err.Raise IMPORT_ERROR
                 End If
             
+            Case Is = 25
+                If TestValue <> "!" Then Err.Raise IMPORT_ERROR
+            
         End Select
         
         Next
@@ -508,7 +523,7 @@ ErrorHandler:
         If Err.Number = IMPORT_ERROR Then
             ParseAsset = i
             Stop
-            Resume
+            
             Resume ValidationError
         End If
     End If
