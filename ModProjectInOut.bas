@@ -211,6 +211,17 @@ Public Sub SetReferenceLibs()
     Dim Reference As Object
     
     On Error Resume Next
+    
+    For Each Reference In ThisWorkbook.VBProject.References
+        With Reference
+            Debug.Print .Name
+            Debug.Print .Description
+            Debug.Print .Minor
+            Debug.Print .Major
+            Debug.Print .GUID
+            Debug.Print
+        End With
+    Next
 
     ' Visual Basic For Applications
     ThisWorkbook.VBProject.References.AddFromGuid _
@@ -247,6 +258,10 @@ Public Sub SetReferenceLibs()
     ' Microsoft Outlook 14.0 Object Library
     ThisWorkbook.VBProject.References.AddFromGuid _
     GUID:="{00062FFF-0000-0000-C000-000000000046}", Major:=9, Minor:=4
+
+    ' Microsoft ActiveX Data Objects 6.1 Library
+    ThisWorkbook.VBProject.References.AddFromGuid _
+    GUID:="{B691E011-1797-432E-907A-4D8C69339129}", Major:=1, Minor:=6
 
 End Sub
 
@@ -305,4 +320,5 @@ Public Sub CopyShtCodeModule()
     Set DestMod = Nothing
     Set VBModule = Nothing
     Set VBCodeMod = Nothing
-End Sub
+End Sub
+
