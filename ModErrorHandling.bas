@@ -10,8 +10,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,6 - Added No File Selected Error
 ' v0,61 - Fix Error 287 by opening Outlook if closed
 ' v0,7 - Added DB Version Error
+' v0,8 - 287 issue, tried new Outlook detector
 '---------------------------------------------------------------
-' Date - 02 May 17
+' Date - 09 May 17
 '===============================================================
 
 Option Explicit
@@ -92,7 +93,7 @@ Public Function CentralErrorHandler( _
     If bEntryPoint Or DEBUG_MODE Then
         ModLibrary.PerfSettingsOff
 
-        If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+        If Not ModLibrary.OutlookRunning Then
             Shell "Outlook.exe"
         End If
 
@@ -155,7 +156,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             
             CurrentUser.DBSave
             
-            If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+            If Not ModLibrary.OutlookRunning Then
                 Shell "Outlook.exe"
             End If
             

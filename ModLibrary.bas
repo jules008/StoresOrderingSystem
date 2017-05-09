@@ -5,8 +5,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,1 - Added ColourConvert
 ' v0,2 - improved message box
 ' v0,3 - Added IsProcessRunning Procedure
+' v0,4 - Tried new Outlook detector
 '---------------------------------------------------------------
-' Date - 27 Apr 17
+' Date - 09 May 17
 '===============================================================
 
 Option Explicit
@@ -235,4 +236,22 @@ Function IsProcessRunning(process As String) As Boolean
         IsProcessRunning = False
     End If
 
+End Function
+
+' ===============================================================
+' OutlookRunning
+' Checks whether Outlook application is running
+' ---------------------------------------------------------------
+Function OutlookRunning() As Boolean
+    Dim oOutlook As Object
+
+    On Error Resume Next
+    Set oOutlook = GetObject(, "Outlook.Application")
+    On Error GoTo 0
+
+    If oOutlook Is Nothing Then
+        OutlookRunning = False
+    Else
+        OutlookRunning = True
+    End If
 End Function

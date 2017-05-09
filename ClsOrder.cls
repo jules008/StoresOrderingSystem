@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsOrder
 ' v0,0 - Initial Version
 ' v0,1 - Added Deleted status
+' v0,2 - Fix Assigned To issue
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 09 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -163,7 +164,7 @@ Public Sub DBSave()
         End If
         !OrderNo = pOrderNo
         If Requestor.CrewNo <> "" Then !RequestorID = pRequestor.CrewNo
-        If pAssignedTo.UserName <> "" Then !AssignedToID = pAssignedTo.UserName
+        If pAssignedTo.CrewNo <> "" Then !AssignedToID = pAssignedTo.CrewNo
         If pAuthorisedBy.UserName <> "" Then !AuthorisedByID = pAuthorisedBy.UserName
         If pOrderDate <> 0 Then !OrderDate = pOrderDate
         If pDeleted <> 0 Then !Deleted = pDeleted

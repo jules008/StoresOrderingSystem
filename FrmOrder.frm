@@ -23,8 +23,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Improved message boxes
 ' v0,4 - Fix Error 287 by opening Outlook if it is closed
 ' v0,5 - Added checks before removing line items
+' v0,6 - 287 issue, tried different Outlook detector
 '---------------------------------------------------------------
-' Date - 01 May 17
+' Date - 09 May 17
 '===============================================================
 Option Explicit
 
@@ -665,7 +666,7 @@ Private Function SendEmailAlerts() As Boolean
             TestFlag = ""
         End If
     
-        If Not ModLibrary.IsProcessRunning("Outlook.exe") Then
+        If Not ModLibrary.OutlookRunning Then
             Shell "Outlook.exe"
         End If
         

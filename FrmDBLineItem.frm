@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Update stock qty on issue
 ' v0,3 - Next/Prev Button / Update Quantity / Changed format of Order Date
 ' v0,4 - Bug fix Next / Prev Buttons
+' v0,5 - Stop qty adjust if order issued or closed
 '---------------------------------------------------------------
-' Date - 03 May 17
+' Date - 09 May 17
 '===============================================================
 Option Explicit
 
@@ -474,8 +475,15 @@ Private Sub BtnUpdate_Click()
 
     If Not IsNumeric(TxtQuantity) Then Err.Raise NUMBERS_ONLY
     
+    If Lineitem.Status = OrderAssigned Or _
+        Lineitem.Status = OrderOpen Then
+        
     Lineitem.Quantity = TxtQuantity
     Lineitem.DBSave
+        MsgBox "Quantity Updated", vbInformation, APP_NAME
+    Else
+        MsgBox "You cannot adjust the quantity of the Order if it has been Issued or Closed", vbExclamation, APP_NAME
+    End If
 
 Gracefulexit:
 
@@ -799,10 +807,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     Else
         Resume ErrorExit
     End If
-End Sub
-
-Private Sub TxtQuantity_Change()
-
 End Sub
 
 ' ===============================================================
