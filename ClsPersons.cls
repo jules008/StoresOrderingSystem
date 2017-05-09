@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsPersons
 ' v0,0 - Initial Version
 ' v0,1 - change GetMailAlertUsers
+' v0,2 - Return guest accounts function
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 09 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -23,6 +24,8 @@ Attribute VB_Exposed = False
 ' GetCollection - Gets all items in collection
 ' DeleteCollection - Deletes all items in collection
 ' GetMailAlertUsers - Returns users that have mail alert selected
+' ReturnUserName - Returns username from crew no
+' GetGuestAccts - Returns Guest accounts from the system
 '===============================================================
 
 Option Explicit
@@ -133,8 +136,30 @@ Public Function GetMailAlertUsers() As Recordset
 End Function
 
 ' ===============================================================
-' Method GetMailAlertUsers
-' Returns users that have mail alert selected
+' Method GetGuestAccts
+' Returns Guest accounts from the system
+'---------------------------------------------------------------
+Public Function GetGuestAccts() As Recordset
+    Dim RstPerson As Recordset
+    Dim Person As ClsPerson
+    Dim i As Integer
+
+    Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE LEN (crewno) =4 AND LEFT (crewno, 2) = '99'")
+    
+    With RstPerson
+        If .RecordCount > 0 Then
+            .MoveLast
+            .MoveFirst
+            Set GetGuestAccts = RstPerson
+        Else
+            Set GetGuestAccts = Nothing
+        End If
+    End With
+End Function
+
+' ===============================================================
+' Method ReturnUserName
+' Returns username from crew no
 '---------------------------------------------------------------
 Public Function ReturnUserName(CrewNo As String) As String
     Dim RstPerson As Recordset

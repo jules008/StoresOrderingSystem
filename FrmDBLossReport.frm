@@ -95,7 +95,7 @@ Private Function PopulateForm() As Boolean
         TxtLossReportNo = .LossReportNo
         TxtOpsSupportAction = .OpsSupportAction
         TxtOrderNo = .Parent.Parent.OrderNo
-        TxtReportDate = .ReportDate
+        TxtReportDate = Format(.ReportDate, "dd/mm/yy")
         TxtReportingOfficer = .ReportingOfficer.UserName
         ChkAuthorised = .Authorised
         ChkRejected = .Rejected

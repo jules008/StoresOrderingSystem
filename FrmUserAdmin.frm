@@ -14,13 +14,15 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
 ' v0,2 - improved message boxes
 ' v0,3 - Bug fix for empty mail alert list
+' v0,4 - Process Guest Accounts
 '---------------------------------------------------------------
-' Date - 27 Apr 17
+' Date - 09 May 17
 '===============================================================
 Option Explicit
 
@@ -143,6 +145,84 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 
 ' ===============================================================
+' ShowGuestAccounts
+' Processes any guest accounts
+' ---------------------------------------------------------------
+Private Function ShowGuestAccounts() As Boolean
+    Dim RstGuests As Recordset
+    Dim Persons As ClsPersons
+    Dim i As Integer
+    
+    Const StrPROCEDURE As String = "ShowGuestAccounts()"
+
+    On Error GoTo ErrorHandler
+
+    Set Persons = New ClsPersons
+    
+    Set RstGuests = Persons.GetGuestAccts
+
+    If Not RstGuests Is Nothing Then
+        With LstAccessList
+            .Clear
+
+            For i = 0 To RstGuests.RecordCount - 1
+                .AddItem
+                .List(i, 0) = RstGuests!CrewNo
+                .List(i, 1) = RstGuests!UserName
+                RstGuests.MoveNext
+            Next
+
+        End With
+    End If
+
+    ShowGuestAccounts = True
+    Set Persons = Nothing
+
+Exit Function
+
+ErrorExit:
+    ShowGuestAccounts = False
+    Set Persons = Nothing
+'    ***CleanUpCode***
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+
+' ===============================================================
+' BtnGuestAcct_Click
+' Shows only guest accounts
+' ---------------------------------------------------------------
+Private Sub BtnGuestAcct_Click()
+    Const StrPROCEDURE As String = "BtnGuestAcct_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Not ShowGuestAccounts Then Err.Raise HANDLED_ERROR
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
 ' BtnShowMail_Click
 ' Shows users with mail alert selected
 ' ---------------------------------------------------------------
@@ -243,6 +323,10 @@ ErrorHandler:
     End If
 End Sub
 
+Private Sub CommandButton1_Click()
+
+End Sub
+
 ' ===============================================================
 ' LstAccessList_Click
 ' Selects user that is clicked in the list
@@ -263,6 +347,85 @@ ErrorExit:
 Exit Sub
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' LstAccessList_DblClick
+' Processes guest account if guest selected
+' ---------------------------------------------------------------
+Private Sub LstAccessList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+    Dim Response As Integer
+    Dim NewUser As ClsPerson
+    Dim RstOrder As Recordset
+    Dim Orders As ClsOrders
+    
+    Const StrPROCEDURE As String = "LstAccessList_DblClick()"
+
+    On Error GoTo ErrorHandler
+
+    If Len(SelectedUser.CrewNo) = 4 And Left(SelectedUser.CrewNo, 2) = "99" Then
+        Response = MsgBox("Would you like to convert the Guest Account?", vbInformation + vbYesNo, APP_NAME)
+        
+        If Response = 6 Then
+        
+            Set Orders = New ClsOrders
+            Set NewUser = FrmPersonPicker.ShowForm
+        
+            If NewUser Is Nothing Then Err.Raise NO_NAMES_SELECTED
+        
+            NewUser.UserName = SelectedUser.UserName
+            
+            Set RstOrder = Orders.FindOrders(SelectedUser.CrewNo)
+            
+            If RstOrder Is Nothing Then Err.Raise NO_ORDER
+            
+            With RstOrder
+                Do While Not .EOF
+                    .Edit
+                    !RequestorID = NewUser.CrewNo
+                    .Update
+                    .MoveNext
+                Loop
+            
+            End With
+            
+            SelectedUser.DBDelete True
+
+            If Not ShowGuestAccounts Then Err.Raise HANDLED_ERROR
+            
+            Set RstOrder = Nothing
+            Set Orders = Nothing
+        End If
+    End If
+    
+GracefulExit:
+
+    Set RstOrder = Nothing
+    Set Orders = Nothing
+    Set NewUser = Nothing
+
+Exit Sub
+
+ErrorExit:
+
+    Set NewUser = Nothing
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit:
+    End If
+    
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else

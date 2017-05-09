@@ -13,8 +13,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Add Get Closed Orders Method
 ' v0,2 - Improved Order retrieval performance
 ' v0,3 - limited closed orders to last 14 days
+' v0,4 - New function FinOrders
 '---------------------------------------------------------------
-' Date - 03 May 17
+' Date - 09 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,6 +27,7 @@ Attribute VB_Exposed = False
 ' DeleteCollection - Deletes all items in collection
 ' GetOpenOrders - Gets all orders that are not closed
 ' GetClosedOrders - Gets all orders that are closed
+' FindOrders - Finds open orders from Crew No
 '===============================================================
 
 Option Explicit
@@ -170,6 +172,21 @@ Public Sub DeleteCollection()
     Next
 End Sub
 
+' ===============================================================
+' FindOrders
+' Finds open orders from Crew No
+' ---------------------------------------------------------------
+Public Function FindOrders(CrewNo As String) As Recordset
+    Dim RstOrder As Recordset
+    Dim i As Integer
+
+    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE RequestorID = '" & CrewNo _
+                                        & "' AND Status < 4" _
+                                        & " AND Deleted IS NULL")
+    Set FindOrders = RstOrder
+
+    Set RstOrder = Nothing
+End Function
 
 ' ===============================================================
 Private Sub Class_Initialize()
