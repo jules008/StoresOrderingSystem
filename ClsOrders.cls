@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Improved Order retrieval performance
 ' v0,3 - limited closed orders to last 14 days
 ' v0,4 - New function FinOrders
+' v0,5 - Bug fix - FindOrders
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 10 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -183,7 +184,11 @@ Public Function FindOrders(CrewNo As String) As Recordset
     Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE RequestorID = '" & CrewNo _
                                         & "' AND Status < 4" _
                                         & " AND Deleted IS NULL")
+    If RstOrder.RecordCount = 0 Then
+        Set FindOrders = Nothing
+    Else
     Set FindOrders = RstOrder
+    End If
 
     Set RstOrder = Nothing
 End Function

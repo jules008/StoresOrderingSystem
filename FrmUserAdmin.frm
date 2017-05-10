@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,2 - improved message boxes
 ' v0,3 - Bug fix for empty mail alert list
 ' v0,4 - Process Guest Accounts
+' v0,5 - Bug fix for Guest Account processing
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 10 May 17
 '===============================================================
 Option Explicit
 
@@ -379,11 +380,11 @@ Private Sub LstAccessList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
             If NewUser Is Nothing Then Err.Raise NO_NAMES_SELECTED
         
             NewUser.UserName = SelectedUser.UserName
+            NewUser.DBSave
             
             Set RstOrder = Orders.FindOrders(SelectedUser.CrewNo)
             
-            If RstOrder Is Nothing Then Err.Raise NO_ORDER
-            
+            If Not RstOrder Is Nothing Then
             With RstOrder
                 Do While Not .EOF
                     .Edit
@@ -391,11 +392,12 @@ Private Sub LstAccessList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
                     .Update
                     .MoveNext
                 Loop
-            
             End With
+            End If
             
             SelectedUser.DBDelete True
 
+            If Not ResetForm Then Err.Raise HANDLED_ERROR
             If Not ShowGuestAccounts Then Err.Raise HANDLED_ERROR
             
             Set RstOrder = Nothing
@@ -631,7 +633,11 @@ Private Function ResetForm() As Boolean
     TxtSearch = ""
     TxtRankGrade = ""
     TxtRole = ""
+    TxtUsername = ""
+    TxtWatch = ""
 
+    LstAccessList.Clear
+    LstAccessList = ""
 
     ResetForm = True
 
