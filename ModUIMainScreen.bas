@@ -356,10 +356,10 @@ Private Function BuildRightFrame() As Boolean
             .RowOffset = MY_ORDER_LINEITEM_ROWOFFSET
                 
         End With
+        If Not RefreshMyOrderList Then Err.Raise HANDLED_ERROR
         .ReOrder
     End With
 
-    If Not RefreshMyOrderList Then Err.Raise HANDLED_ERROR
     
     BuildRightFrame = True
 
@@ -549,7 +549,6 @@ Public Function RefreshMyOrderList() As Boolean
     
     ModLibrary.PerfSettingsOff
                 
-    ShtMain.Protect
 
     RefreshMyOrderList = True
 
@@ -562,7 +561,8 @@ ErrorExit:
 
 Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else

@@ -49,7 +49,7 @@ Public Const MY_ORDER_LINEITEM_LEFT As Integer = 0
 Public Const MY_ORDER_LINEITEM_TOP As Integer = 25
 Public Const MY_ORDER_LINEITEM_NOCOLS As Integer = 4
 Public Const MY_ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100"
-Public Const MY_ORDER_LINEITEM_ROWOFFSET As Integer = 20
+Public Const MY_ORDER_LINEITEM_ROWOFFSET As Integer = 15
 Public Const MY_ORDER_LINEITEM_TITLES As String = "Order No:No of Items:Assigned To:Order Status"
 
 ' ---------------------------------------------------------------
