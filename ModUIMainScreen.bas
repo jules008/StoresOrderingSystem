@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' Module ModUIMainScreen
 ' v0,0 - Initial Version
 ' v0,1 - added performance mode switching
+' v0,2 - Build Right frame order list
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 10 May 17
 '===============================================================
 
 Option Explicit
@@ -345,8 +346,20 @@ Private Function BuildRightFrame() As Boolean
             .Icon.Name = .Parent.Name & " Icon"
             .Icon.Visible = msoCTrue
         End With
+        
+        With .LineItems
+            .NoColumns = MY_ORDER_LINEITEM_NOCOLS
+            .Top = MY_ORDER_LINEITEM_TOP
+            .Left = MY_ORDER_LINEITEM_LEFT
+            .Height = MY_ORDER_LINEITEM_HEIGHT
+            .Columns = MY_ORDER_LINEITEM_COL_WIDTHS
+            .RowOffset = MY_ORDER_LINEITEM_ROWOFFSET
+                
+        End With
+        .ReOrder
     End With
 
+    If Not RefreshMyOrderList Then Err.Raise HANDLED_ERROR
     
     BuildRightFrame = True
 
@@ -464,3 +477,95 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' RefreshMyOrderList
+' Populates right frame with my orders
+' ---------------------------------------------------------------
+Public Function RefreshMyOrderList() As Boolean
+    Dim OrderNo As Integer
+    Dim NoOfItems As String
+'    Dim ReqBy As String
+'    Dim Station As String
+    Dim AssignedTo As String
+    Dim OrderStatus As String
+    Dim Orders As ClsOrders
+    Dim RstOrder As Recordset
+    Dim Lineitem As ClsUILineitem
+    Dim i As Integer
+'    Dim OnAction As String
+    Dim RowTitles() As String
+    
+    Const StrPROCEDURE As String = "RefreshMyOrderList()"
+
+    On Error GoTo ErrorHandler
+    
+    Set Orders = New ClsOrders
+
+    ShtMain.Unprotect
+    
+    ModLibrary.PerfSettingsOn
+    
+    With RightFrame
+        For Each Lineitem In .LineItems
+            .LineItems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineItem.Delete
+            Set Lineitem = Nothing
+        Next
+
+        ReDim RowTitles(0 To MY_ORDER_LINEITEM_NOCOLS - 1)
+        RowTitles = Split(MY_ORDER_LINEITEM_TITLES, ":")
+
+        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        
+        For i = 0 To MY_ORDER_LINEITEM_NOCOLS - 1
+            .LineItems.Text 0, i, RowTitles(i), False
+        Next
+        
+        .LineItems.Style = GENERIC_LINEITEM
+
+    End With
+
+    Set RstOrder = Orders.MyOrders
+
+    i = 1
+    With RstOrder
+        Do While Not .EOF
+            With RightFrame.LineItems
+                If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
+                If Not IsNull(RstOrder!No_of_Items) Then NoOfItems = RstOrder!No_of_Items Else NoOfItems = ""
+                If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
+                If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
+                
+                .Text i, 0, CStr(OrderNo), True, OrderNo
+                .Text i, 1, NoOfItems, True, OrderNo
+                .Text i, 2, AssignedTo, True, OrderNo
+                .Text i, 3, OrderStatus, True, OrderNo
+            End With
+            .MoveNext
+            i = i + 1
+        Loop
+        
+    End With
+    
+    ModLibrary.PerfSettingsOff
+                
+    ShtMain.Protect
+
+    RefreshMyOrderList = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    RefreshMyOrderList = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function

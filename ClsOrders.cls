@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Improved Order retrieval performance
 ' v0,3 - limited closed orders to last 14 days
 ' v0,4 - New function FinOrders
+' v0,5 - Added MyOrders function
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 10 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -28,6 +29,7 @@ Attribute VB_Exposed = False
 ' GetOpenOrders - Gets all orders that are not closed
 ' GetClosedOrders - Gets all orders that are closed
 ' FindOrders - Finds open orders from Crew No
+' MyOrders - Query for my orders screen
 '===============================================================
 
 Option Explicit
@@ -184,6 +186,40 @@ Public Function FindOrders(CrewNo As String) As Recordset
                                         & "' AND Status < 4" _
                                         & " AND Deleted IS NULL")
     Set FindOrders = RstOrder
+
+    Set RstOrder = Nothing
+End Function
+
+' ===============================================================
+' MyOrders
+' Query for my orders screen
+' ---------------------------------------------------------------
+Public Function MyOrders() As Recordset
+    Dim RstOrder As Recordset
+    Dim i As Integer
+
+    Set RstOrder = ModDatabase.SQLQuery("SELECT " _
+                                          & "TblOrder.OrderNo AS [Order_No], " _
+                                          & "Count(TblLineItem.LineItemNo) AS [No_of_Items], " _
+                                          & "TblPerson.Username AS [Assigned_To], " _
+                                          & "TblOrderStatus.OrderStatus AS Status " _
+                                        & "From " _
+                                          & "((TblOrder " _
+                                          & "LEFT JOIN TblLineItem ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                                          & "LEFT JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
+                                          & "LEFT JOIN TblPerson ON TblOrder.AssignedToID = TblPerson.CrewNo " _
+                                        & "WHERE " _
+                                          & "TblOrder.Status < 4 " _
+                                          & "AND CrewNo = '" & CurrentUser.CrewNo & " '" _
+                                        & "Group BY " _
+                                          & "TblOrder.OrderNo, " _
+                                          & "TblOrder.Status, " _
+                                          & "TblPerson.Username, " _
+                                          & "TblOrderStatus.OrderStatus " _
+                                        & "Order BY " _
+                                          & "TblOrder.Status ")
+  
+    Set MyOrders = RstOrder
 
     Set RstOrder = Nothing
 End Function
