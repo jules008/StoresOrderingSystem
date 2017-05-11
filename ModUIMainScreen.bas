@@ -3,9 +3,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' Module ModUIMainScreen
 ' v0,0 - Initial Version
 ' v0,1 - added performance mode switching
-' v0,2 - Build Right frame order list
+' v0,21 - Build Right frame order list
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 11 May 17
 '===============================================================
 
 Option Explicit
@@ -483,7 +483,7 @@ End Function
 ' ---------------------------------------------------------------
 Public Function RefreshMyOrderList() As Boolean
     Dim OrderNo As Integer
-    Dim NoOfItems As String
+    Dim OrderDate As String
 '    Dim ReqBy As String
 '    Dim Station As String
     Dim AssignedTo As String
@@ -532,17 +532,18 @@ Public Function RefreshMyOrderList() As Boolean
         Do While Not .EOF
             With RightFrame.LineItems
                 If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
-                If Not IsNull(RstOrder!No_of_Items) Then NoOfItems = RstOrder!No_of_Items Else NoOfItems = ""
+                If Not IsNull(RstOrder!Order_Date) Then OrderDate = RstOrder!Order_Date Else OrderDate = ""
                 If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
                 If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
                 
                 .Text i, 0, CStr(OrderNo), True, OrderNo
-                .Text i, 1, NoOfItems, True, OrderNo
+                .Text i, 1, Format(OrderDate, "dd mmm yy"), True, OrderNo
                 .Text i, 2, AssignedTo, True, OrderNo
                 .Text i, 3, OrderStatus, True, OrderNo
             End With
             .MoveNext
             i = i + 1
+            If i > MY_ORDER_MAX_LINES Then Exit Do
         Loop
         
     End With

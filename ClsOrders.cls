@@ -15,9 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - limited closed orders to last 14 days
 ' v0,4 - New function FinOrders
 ' v0,5 - Bug fix - FindOrders
-' v0,6 - Added MyOrders function
+' v0,61 - Added MyOrders function
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 11 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -201,7 +201,7 @@ Public Function MyOrders() As Recordset
 
     Set RstOrder = ModDatabase.SQLQuery("SELECT " _
                                           & "TblOrder.OrderNo AS [Order_No], " _
-                                          & "Count(TblLineItem.LineItemNo) AS [No_of_Items], " _
+                                          & "TblOrder.OrderDate AS [Order_Date], " _
                                           & "TblPerson.Username AS [Assigned_To], " _
                                           & "TblOrderStatus.OrderStatus AS Status " _
                                         & "From " _
@@ -211,14 +211,16 @@ Public Function MyOrders() As Recordset
                                           & "LEFT JOIN TblPerson ON TblOrder.AssignedToID = TblPerson.CrewNo " _
                                         & "WHERE " _
                                           & "TblOrder.Status < 4 " _
-                                          & "AND CrewNo = '" & CurrentUser.CrewNo & " '" _
+                                          & "AND TblOrder.RequestorID = '" & CurrentUser.CrewNo & " '" _
                                         & "Group BY " _
                                           & "TblOrder.OrderNo, " _
+                                          & "TblOrder.OrderDate, " _
                                           & "TblOrder.Status, " _
                                           & "TblPerson.Username, " _
                                           & "TblOrderStatus.OrderStatus " _
                                         & "Order BY " _
-                                          & "TblOrder.Status ")
+                                          & "TblOrder.Status, " _
+                                          & "TblOrder.OrderNo")
   
     Set MyOrders = RstOrder
 
