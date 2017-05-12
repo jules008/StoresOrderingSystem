@@ -3,9 +3,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' Module ModUIMainScreen
 ' v0,0 - Initial Version
 ' v0,1 - added performance mode switching
-' v0,21 - Build Right frame order list
+' v0,22 - Build Right frame order list
 '---------------------------------------------------------------
-' Date - 11 May 17
+' Date - 12 May 17
 '===============================================================
 
 Option Explicit
@@ -159,6 +159,7 @@ Private Function BuildMainFrame() As Boolean
 
     On Error GoTo ErrorHandler
 
+    Set MainFrame = New ClsUIFrame
     
     'add main frame
     With MainFrame
@@ -217,11 +218,6 @@ Public Function BuildMainScreen() As Boolean
 
     On Error GoTo ErrorHandler
     
-    Set MainFrame = New ClsUIFrame
-    Set LeftFrame = New ClsUIFrame
-    Set RightFrame = New ClsUIFrame
-    Set BtnNewOrder = New ClsUIMenuItem
-                
     ModLibrary.PerfSettingsOn
     
     If Not ResetScreen Then Err.Raise HANDLED_ERROR
@@ -262,6 +258,7 @@ Private Function BuildLeftFrame() As Boolean
 
     On Error GoTo ErrorHandler
 
+    Set LeftFrame = New ClsUIFrame
     
     'add Left frame
     With LeftFrame
@@ -319,6 +316,8 @@ Private Function BuildRightFrame() As Boolean
 
     On Error GoTo ErrorHandler
 
+    Set RightFrame = Nothing
+    Set RightFrame = New ClsUIFrame
     
     'add Right frame
     With RightFrame
@@ -388,6 +387,8 @@ Private Function BuildNewOrderBtn() As Boolean
     Const StrPROCEDURE As String = "BuildNewOrderBtn()"
 
     On Error GoTo ErrorHandler
+    
+    Set BtnNewOrder = New ClsUIMenuItem
 
     With BtnNewOrder
         .Height = BTN_NEWORDER_HEIGHT
@@ -428,7 +429,7 @@ End Function
 
 ' ===============================================================
 ' DestroyMainScreen
-' Builds the display using shapes
+' Destroys the main screen objects
 ' ---------------------------------------------------------------
 Public Function DestroyMainScreen() As Boolean
     Dim Frame As ClsUIFrame
@@ -484,15 +485,13 @@ End Function
 Public Function RefreshMyOrderList() As Boolean
     Dim OrderNo As Integer
     Dim OrderDate As String
-'    Dim ReqBy As String
-'    Dim Station As String
     Dim AssignedTo As String
     Dim OrderStatus As String
     Dim Orders As ClsOrders
     Dim RstOrder As Recordset
     Dim Lineitem As ClsUILineitem
+    Dim StrOnAction As String
     Dim i As Integer
-'    Dim OnAction As String
     Dim RowTitles() As String
     
     Const StrPROCEDURE As String = "RefreshMyOrderList()"
@@ -536,10 +535,12 @@ Public Function RefreshMyOrderList() As Boolean
                 If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
                 If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
                 
-                .Text i, 0, CStr(OrderNo), True, OrderNo
-                .Text i, 1, Format(OrderDate, "dd mmm yy"), True, OrderNo
-                .Text i, 2, AssignedTo, True, OrderNo
-                .Text i, 3, OrderStatus, True, OrderNo
+                StrOnAction = "'ModUIMainScreen.OpenOrder(" & OrderNo & ")'"
+                
+                .Text i, 0, CStr(OrderNo), StrOnAction
+                .Text i, 1, Format(OrderDate, "dd mmm yy"), StrOnAction
+                .Text i, 2, AssignedTo, StrOnAction
+                .Text i, 3, OrderStatus, StrOnAction
             End With
             .MoveNext
             i = i + 1
@@ -570,3 +571,47 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Function
+' ===============================================================
+' OpenOrder
+' Opens the selected order form
+' ---------------------------------------------------------------
+Private Sub OpenOrder(OrderNo As Integer)
+    Const StrPROCEDURE As String = "OpenOrder()"
+    
+    Dim Order As ClsOrder
+    
+    On Error GoTo ErrorHandler
+
+    Set Order = New ClsOrder
+    
+    Order.DBGet OrderNo
+    
+    If Not FrmDBOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
+    
+    ModLibrary.PerfSettingsOn
+    ShtMain.Unprotect
+    
+    If Not RefreshMyOrderList Then Err.Raise HANDLED_ERROR
+    
+    ModLibrary.PerfSettingsOff
+    ShtMain.Protect
+    
+    Set Order = Nothing
+
+Exit Sub
+
+ErrorExit:
+
+    ModLibrary.PerfSettingsOff
+    Set Order = Nothing
+    Terminate
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
