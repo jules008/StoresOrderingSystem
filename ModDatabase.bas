@@ -4,9 +4,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
 ' v0,2 - Added GetDBVer function
-' v0,3 - Asset Import functionality
+' v0,31 - Asset Import functionality
 '---------------------------------------------------------------
-' Date - 03 May 17
+' Date - 12 May 17
 '===============================================================
 
 Option Explicit
@@ -454,12 +454,18 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
         
 '** add check to ensure unique numeric key"
             
+'** add check to ensure that asset description matches asset no
+            
             Case Is = 1
                 If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
                 If TestValue < 0 Or TestValue > 2 Then Err.Raise IMPORT_ERROR
         
             Case Is = 4
+                If IsNumeric(TestValue) Then
                 If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                Else
+                    If TestValue <> "" Then Err.Raise IMPORT_ERROR
+                End If
     
             Case Is = 11
                 If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
@@ -523,7 +529,6 @@ ErrorHandler:
         If Err.Number = IMPORT_ERROR Then
             ParseAsset = i
             Stop
-            
             Resume ValidationError
         End If
     End If
