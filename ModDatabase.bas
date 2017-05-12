@@ -455,6 +455,8 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
 '** add check to ensure unique numeric key"
             
 '** add check to ensure that asset description matches asset no
+
+'** ensure category 1 is not NULL and other fields too
             
             Case Is = 1
                 If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
