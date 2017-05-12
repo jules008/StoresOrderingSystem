@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' V0,1 - Add new Asset functionality
+' v0,2 - Lock down Stock reduction
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 12 May 17
 '===============================================================
 Option Explicit
 
@@ -566,7 +567,17 @@ Private Function UpdateChanges() As Boolean
         .NoOrderMessage = TxtNoOrderMessage
         .OrderLevel = TxtOrderLevel
         .PurchaseUnit = TxtPurchaseUnit
+        
+        If TxtQtyInStock < .QtyInStock Then
+            If CurrentUser.AccessLvl < SupervisorLvl_3 Then
+                MsgBox "Sorry, you are not authorised to reduce stock levels", vbExclamation, APP_NAME
+            Else
+                .QtyInStock = TxtQtyInStock
+            End If
+        Else
         .QtyInStock = TxtQtyInStock
+        End If
+        
         .Size1 = TxtSize1
         .Size2 = TxtSize2
         .DBSave
