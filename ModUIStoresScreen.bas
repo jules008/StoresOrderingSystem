@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,2 - Added Remote Order Button
 ' v0,3 - Changes for disable line item functionality
 ' v0,4 - Increased Order retrieval performance
+' v0,5 - Now passing OnAction as paramater
 '---------------------------------------------------------------
-' Date - 28 Apr 17
+' Date - 12 May 17
 '===============================================================
 
 Option Explicit
@@ -399,6 +400,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     Dim OrderStatus As String
     Dim Orders As ClsOrders
     Dim RstOrder As Recordset
+    Dim StrOnAction As String
     Dim Lineitem As ClsUILineitem
     Dim i As Integer
     Dim OnAction As String
@@ -457,12 +459,14 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
                 If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
                 If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
                 
-                .Text i, 0, CStr(OrderNo), True, OrderNo
-                .Text i, 1, NoOfItems, True, OrderNo
-                .Text i, 2, ReqBy, True, OrderNo
-                .Text i, 3, Station, True, OrderNo
-                .Text i, 4, AssignedTo, True, OrderNo
-                .Text i, 5, OrderStatus, True, OrderNo
+                StrOnAction = "'ModUIStoresScreen.OpenOrder(" & OrderNo & ")'"
+                
+                .Text i, 0, CStr(OrderNo), StrOnAction
+                .Text i, 1, NoOfItems, StrOnAction
+                .Text i, 2, ReqBy, StrOnAction
+                .Text i, 3, Station, StrOnAction
+                .Text i, 4, AssignedTo, StrOnAction
+                .Text i, 5, OrderStatus, StrOnAction
             End With
             .MoveNext
             i = i + 1

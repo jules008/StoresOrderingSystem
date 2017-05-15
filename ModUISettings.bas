@@ -4,8 +4,10 @@ Attribute VB_Name = "ModUISettings"
 ' v0,0 - Initial Version
 ' v0,1 - Added Order Switch Button
 ' v0,2 - Added Remote Order Button
+' v0,3 - Right Frame Order List
+' v0,4 - Left Frame Order List
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -19,6 +21,52 @@ Private Const StrMODULE As String = "ModUISettings"
 ' ---------------------------------------------------------------
 Public Const SCREEN_HEIGHT As Integer = 800
 Public Const SCREEN_WIDTH As Integer = 1025
+' ---------------------------------------------------------------
+' Main Frame
+' ---------------------------------------------------------------
+Public Const MAIN_FRAME_TOP As Integer = 10
+Public Const MAIN_FRAME_LEFT As Integer = 175
+Public Const MAIN_FRAME_WIDTH As Integer = 764
+Public Const MAIN_FRAME_HEIGHT As Integer = 215
+' ---------------------------------------------------------------
+' Left Frame
+' ---------------------------------------------------------------
+Public Const LEFT_FRAME_TOP As Integer = 240
+Public Const LEFT_FRAME_LEFT As Integer = 175
+Public Const LEFT_FRAME_WIDTH As Integer = 373
+Public Const LEFT_FRAME_HEIGHT As Integer = 215
+
+Public Const RCT_ORDER_LINEITEM_HEIGHT As Integer = 15
+Public Const RCT_ORDER_LINEITEM_WIDTH As Integer = 550
+Public Const RCT_ORDER_LINEITEM_LEFT As Integer = 0
+Public Const RCT_ORDER_LINEITEM_TOP As Integer = 25
+Public Const RCT_ORDER_LINEITEM_NOCOLS As Integer = 4
+Public Const RCT_ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100"
+Public Const RCT_ORDER_LINEITEM_ROWOFFSET As Integer = 15
+Public Const RCT_ORDER_LINEITEM_TITLES As String = "Order No:Order Date:Ordered By:Order Status"
+Public Const RCT_ORDER_MAX_LINES As Integer = 10
+
+' ---------------------------------------------------------------
+' Right Frame
+' ---------------------------------------------------------------
+Public Const RIGHT_FRAME_TOP As Integer = 240
+Public Const RIGHT_FRAME_LEFT As Integer = 566
+Public Const RIGHT_FRAME_WIDTH As Integer = 373
+Public Const RIGHT_FRAME_HEIGHT As Integer = 125
+
+Public Const MY_ORDER_LINEITEM_HEIGHT As Integer = 15
+Public Const MY_ORDER_LINEITEM_WIDTH As Integer = 550
+Public Const MY_ORDER_LINEITEM_LEFT As Integer = 0
+Public Const MY_ORDER_LINEITEM_TOP As Integer = 25
+Public Const MY_ORDER_LINEITEM_NOCOLS As Integer = 4
+Public Const MY_ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100"
+Public Const MY_ORDER_LINEITEM_ROWOFFSET As Integer = 15
+Public Const MY_ORDER_LINEITEM_TITLES As String = "Order No:Order Date:Assigned To:Order Status"
+Public Const MY_ORDER_MAX_LINES As Integer = 5
+
+' ---------------------------------------------------------------
+' Menu Bar
+' ---------------------------------------------------------------
 Public Const MENUBAR_HEIGHT As Integer = 800
 Public Const MENUBAR_WIDTH As Integer = 150
 Public Const MENUBAR_TOP As Integer = 0
@@ -36,21 +84,11 @@ Public Const LOGO_TOP As Integer = 15
 Public Const LOGO_LEFT As Integer = 20
 Public Const LOGO_WIDTH As Integer = 126
 Public Const LOGO_HEIGHT As Integer = 60
-Public Const MAIN_FRAME_TOP As Integer = 10
-Public Const MAIN_FRAME_LEFT As Integer = 175
-Public Const MAIN_FRAME_WIDTH As Integer = 764
-Public Const MAIN_FRAME_HEIGHT As Integer = 215
-Public Const LEFT_FRAME_TOP As Integer = 240
-Public Const LEFT_FRAME_LEFT As Integer = 175
-Public Const LEFT_FRAME_WIDTH As Integer = 373
-Public Const LEFT_FRAME_HEIGHT As Integer = 215
-Public Const RIGHT_FRAME_TOP As Integer = 240
-Public Const RIGHT_FRAME_LEFT As Integer = 566
-Public Const RIGHT_FRAME_WIDTH As Integer = 373
-Public Const RIGHT_FRAME_HEIGHT As Integer = 125
+
 Public Const HEADER_HEIGHT As Integer = 25
 Public Const HEADER_ICON_TOP As Integer = 5
 Public Const HEADER_ICON_RIGHT As Integer = 5
+
 Public Const BTN_NEWORDER_TOP As Integer = 390
 Public Const BTN_NEWORDER_LEFT As Integer = 566
 Public Const BTN_NEWORDER_WIDTH As Integer = 373

@@ -20,8 +20,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Next/Prev Button / Update Quantity / Changed format of Order Date
 ' v0,4 - Bug fix Next / Prev Buttons
 ' v0,5 - Stop qty adjust if order issued or closed
+' v0,6 - Restrict view for Level 1
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 12 May 17
 '===============================================================
 Option Explicit
 
@@ -195,6 +196,22 @@ Private Function FormInitialise() As Boolean
         If .ListIndex = .ListCount - 1 Then BtnNext.Enabled = False
     End With
     
+    If CurrentUser.AccessLvl < StoresLvl_2 Then
+        BtnAsset.Visible = False
+        BtnViewLossRep.Visible = False
+        BtnUpdate.Visible = False
+        BtnPutOnHold.Visible = False
+        BtnIssue.Visible = False
+        BtnViewRequestor.Visible = False
+        BtnViewDelivery.Visible = False
+        CmoStatus.Enabled = False
+        ChkDelivered.Enabled = False
+        ChkIssued.Enabled = False
+        ChkReturned.Enabled = False
+        ChkReturnReqd.Enabled = False
+        TxtOnHoldReason.Enabled = False
+    End If
+    
     FormInitialise = True
 
 Exit Function
@@ -286,14 +303,6 @@ Private Sub BtnClose_Click()
     On Error Resume Next
 
     FormTerminate
-
-End Sub
-
-Private Sub CommandButton3_Click()
-
-End Sub
-
-Private Sub CommandButton1_Click()
 
 End Sub
 
@@ -609,10 +618,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 
-Private Sub CommandButton2_Click()
-
-End Sub
-
 ' ===============================================================
 ' ChkDelivered_Click
 ' Mark item as delivered
@@ -660,6 +665,8 @@ Private Sub ChkIssued_Click()
 
     On Error GoTo ErrorHandler
     
+    If CurrentUser.AccessLvl >= StoresLvl_2 Then
+    
     With Lineitem
         InStock = .Asset.QtyInStock
         IssueQty = .Quantity
@@ -687,7 +694,7 @@ Private Sub ChkIssued_Click()
     
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
 
-
+    End If
 
 Gracefulexit:
 
@@ -759,10 +766,13 @@ Private Sub CmoReqReason_Change()
 
     On Error GoTo ErrorHandler
 
+    If CurrentUser.AccessLvl >= StoresLvl_2 Then
+    
     With Lineitem
         .ReqReason = CmoReqReason.ListIndex
         .DBSave
     End With
+    End If
 Exit Sub
 
 ErrorExit:
@@ -778,6 +788,7 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
 ' ===============================================================
 ' TxtOnHoldReason_Change
 ' Captures changes to on hold reason
@@ -787,12 +798,13 @@ Private Sub TxtOnHoldReason_Change()
 
     On Error GoTo ErrorHandler
 
+    If CurrentUser.AccessLvl < StoresLvl_2 Then
     With Lineitem
         .Parent.AssignedTo = CurrentUser
         .OnHoldReason = TxtOnHoldReason
         .DBSave
     End With
-
+    End If
 Exit Sub
 
 ErrorExit:

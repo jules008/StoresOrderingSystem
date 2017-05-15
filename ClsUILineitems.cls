@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Bug fix to Width Property
 ' v0,2 - Add option to disable OnAction for LineItem
+' v0,3 - OnAction now passed as a parameter
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 12 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -176,7 +177,7 @@ End Function
 ' Method Text
 ' Adds text to the line item
 '---------------------------------------------------------------
-Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Enabled As Boolean, Optional Index As Integer)
+Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Optional OnAction As String)
     Dim DashObj As ClsUIDashObj
     Dim UILineItem As ClsUILineitem
     Dim LeftOffset As Integer
@@ -196,7 +197,7 @@ Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Enabled As B
         .Height = pHeight
         .Top = pTop + (Row * pRowOffset)
         .Text = ItemText
-        If Enabled Then .OnAction = "'ModUIStoresScreen.OpenOrder(" & Index & ")'"
+        .OnAction = OnAction
     End With
     Me.AddItem UILineItem
 End Sub

@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Auto assign Order and improved printing
 ' v0,2 - Add Delete Order functionality
 ' v0,3 - Fix Order Form double click issue
+' v0,4 - Restrict view for level 1
 '---------------------------------------------------------------
-' Date - 25 Apr 17
+' Date - 12 May 17
 '===============================================================
 Option Explicit
 
@@ -570,6 +571,16 @@ Private Function FormInitialise() As Boolean
         .AddItem "Closed"
         .AddItem "Deleted"
     End With
+    
+    If CurrentUser.AccessLvl < StoresLvl_2 Then
+        BtnAssignToMe.Visible = False
+        BtnDeleteItem.Visible = False
+        BtnDelete.Visible = False
+        BtnCloseOrder.Visible = False
+        BtnPrint.Visible = False
+        BtnDeleteItem = False
+        CmoStatus.Enabled = False
+    End If
     
     LstItems.SetFocus
     FormInitialise = True
