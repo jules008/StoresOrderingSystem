@@ -4,9 +4,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,0 - Initial Version
 ' v0,1 - Added Order Switch Button
 ' v0,2 - Added Remote Order Button
-' v0,31 - Right Frame Order List
+' v0,3 - Right Frame Order List
 '---------------------------------------------------------------
-' Date - 11 May 17
+' Date - 10 May 17
 '===============================================================
 
 Option Explicit

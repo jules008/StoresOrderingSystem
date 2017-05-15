@@ -15,9 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - limited closed orders to last 14 days
 ' v0,4 - New function FinOrders
 ' v0,5 - Bug fix - FindOrders
-' v0,61 - Added MyOrders function
+' v0,6 - Added MyOrders function
 '---------------------------------------------------------------
-' Date - 11 May 17
+' Date - 10 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
