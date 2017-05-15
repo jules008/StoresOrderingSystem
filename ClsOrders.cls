@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 ' v0,4 - New function FinOrders
 ' v0,5 - Bug fix - FindOrders
 ' v0,6 - Added MyOrders function
+' v0,7 - Added RecentOrders function
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 15 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -223,6 +224,43 @@ Public Function MyOrders() As Recordset
                                           & "TblOrder.OrderNo")
   
     Set MyOrders = RstOrder
+
+    Set RstOrder = Nothing
+End Function
+
+' ===============================================================
+' RecentOrders
+' Query for my orders screen
+' ---------------------------------------------------------------
+Public Function RecentOrders() As Recordset
+    Dim RstOrder As Recordset
+    Dim i As Integer
+
+    Set RstOrder = ModDatabase.SQLQuery("SELECT " _
+                                          & "TblOrder.OrderNo AS [Order_No], " _
+                                          & "TblOrder.OrderDate AS [Order_Date], " _
+                                          & "TblPerson.Username AS Name, " _
+                                          & "TblOrderStatus.OrderStatus AS Status " _
+                                        & "From " _
+                                          & "((TblOrder " _
+                                          & "LEFT JOIN TblLineItem ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                                          & "LEFT JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
+                                          & "LEFT JOIN TblPerson ON TblOrder.RequestorID = TblPerson.CrewNo " _
+                                        & "WHERE " _
+                                          & "TblOrder.Status < 4 AND " _
+                                          & "TblPerson.StationID = " & CurrentUser.Station.StationID & " " _
+                                        & "Group BY " _
+                                          & "TblOrder.OrderNo, " _
+                                          & "TblOrder.OrderDate, " _
+                                          & "TblPerson.Username, " _
+                                          & "TblOrderStatus.OrderStatus, " _
+                                          & "TblOrder.Status, " _
+                                          & "TblPerson.StationID " _
+                                        & "Order BY " _
+                                          & "TblOrder.Status, " _
+                                          & "TblOrder.OrderNo ")
+  
+    Set RecentOrders = RstOrder
 
     Set RstOrder = Nothing
 End Function

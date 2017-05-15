@@ -789,10 +789,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 
-Private Sub Frame1_Click()
-
-End Sub
-
 ' ===============================================================
 ' TxtOnHoldReason_Change
 ' Captures changes to on hold reason

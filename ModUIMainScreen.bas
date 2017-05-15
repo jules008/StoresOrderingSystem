@@ -4,8 +4,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,0 - Initial Version
 ' v0,1 - added performance mode switching
 ' v0,22 - Build Right frame order list
+' v0,3 - Build Left Frame
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -258,6 +259,7 @@ Private Function BuildLeftFrame() As Boolean
 
     On Error GoTo ErrorHandler
 
+    Set LeftFrame = Nothing
     Set LeftFrame = New ClsUIFrame
     
     'add Left frame
@@ -285,7 +287,21 @@ Private Function BuildLeftFrame() As Boolean
             .Icon.Left = .Parent.Left + .Parent.Width - .Icon.Width - HEADER_ICON_RIGHT
             .Icon.Name = .Parent.Name & " Icon"
             .Icon.Visible = msoCTrue
+        
         End With
+        
+        With .LineItems
+            .NoColumns = MY_ORDER_LINEITEM_NOCOLS
+            .Top = MY_ORDER_LINEITEM_TOP
+            .Left = MY_ORDER_LINEITEM_LEFT
+            .Height = MY_ORDER_LINEITEM_HEIGHT
+            .Columns = MY_ORDER_LINEITEM_COL_WIDTHS
+            .RowOffset = MY_ORDER_LINEITEM_ROWOFFSET
+                
+        End With
+        If Not RefreshRecentOrderList Then Err.Raise HANDLED_ERROR
+        .ReOrder
+        
     End With
 
     
@@ -571,6 +587,101 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' RefreshRecentOrderList
+' Populates right frame with my orders
+' ---------------------------------------------------------------
+Public Function RefreshRecentOrderList() As Boolean
+    Dim OrderNo As Integer
+    Dim OrderDate As String
+    Dim OrderedBy As String
+    Dim OrderStatus As String
+    Dim Orders As ClsOrders
+    Dim RstOrder As Recordset
+    Dim Lineitem As ClsUILineitem
+    Dim StrOnAction As String
+    Dim i As Integer
+    Dim RowTitles() As String
+    
+    Const StrPROCEDURE As String = "RefreshRecentOrderList()"
+
+    On Error GoTo ErrorHandler
+    
+    Set Orders = New ClsOrders
+
+    ShtMain.Unprotect
+    
+    ModLibrary.PerfSettingsOn
+    
+    With LeftFrame
+        For Each Lineitem In .LineItems
+            .LineItems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineItem.Delete
+            Set Lineitem = Nothing
+        Next
+
+        ReDim RowTitles(0 To RCT_ORDER_LINEITEM_NOCOLS - 1)
+        RowTitles = Split(RCT_ORDER_LINEITEM_TITLES, ":")
+
+        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        
+        For i = 0 To RCT_ORDER_LINEITEM_NOCOLS - 1
+            .LineItems.Text 0, i, RowTitles(i), False
+        Next
+        
+        .LineItems.Style = GENERIC_LINEITEM
+
+    End With
+
+    Set RstOrder = Orders.RecentOrders
+
+    i = 1
+    With RstOrder
+        Do While Not .EOF
+            With LeftFrame.LineItems
+                If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
+                If Not IsNull(RstOrder!Order_Date) Then OrderDate = RstOrder!Order_Date Else OrderDate = ""
+                If Not IsNull(RstOrder!Name) Then OrderedBy = RstOrder!Name Else OrderedBy = ""
+                If Not IsNull(RstOrder!Status) Then OrderStatus = RstOrder!Status Else OrderStatus = ""
+                
+                StrOnAction = "'ModUIMainScreen.OpenOrder(" & OrderNo & ")'"
+                
+                .Text i, 0, CStr(OrderNo), StrOnAction
+                .Text i, 1, Format(OrderDate, "dd mmm yy"), StrOnAction
+                .Text i, 2, OrderedBy, StrOnAction
+                .Text i, 3, OrderStatus, StrOnAction
+            End With
+            .MoveNext
+            i = i + 1
+            If i > RCT_ORDER_MAX_LINES Then Exit Do
+        Loop
+        
+    End With
+    
+    ModLibrary.PerfSettingsOff
+                
+
+    RefreshRecentOrderList = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    RefreshRecentOrderList = False
+
+Exit Function
+
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 ' ===============================================================
 ' OpenOrder
 ' Opens the selected order form

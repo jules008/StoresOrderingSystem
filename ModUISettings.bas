@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,1 - Added Order Switch Button
 ' v0,2 - Added Remote Order Button
 ' v0,3 - Right Frame Order List
+' v0,4 - Left Frame Order List
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -34,6 +35,16 @@ Public Const LEFT_FRAME_TOP As Integer = 240
 Public Const LEFT_FRAME_LEFT As Integer = 175
 Public Const LEFT_FRAME_WIDTH As Integer = 373
 Public Const LEFT_FRAME_HEIGHT As Integer = 215
+
+Public Const RCT_ORDER_LINEITEM_HEIGHT As Integer = 15
+Public Const RCT_ORDER_LINEITEM_WIDTH As Integer = 550
+Public Const RCT_ORDER_LINEITEM_LEFT As Integer = 0
+Public Const RCT_ORDER_LINEITEM_TOP As Integer = 25
+Public Const RCT_ORDER_LINEITEM_NOCOLS As Integer = 4
+Public Const RCT_ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100"
+Public Const RCT_ORDER_LINEITEM_ROWOFFSET As Integer = 15
+Public Const RCT_ORDER_LINEITEM_TITLES As String = "Order No:Order Date:Ordered By:Order Status"
+Public Const RCT_ORDER_MAX_LINES As Integer = 10
 
 ' ---------------------------------------------------------------
 ' Right Frame
