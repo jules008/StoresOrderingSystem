@@ -4,9 +4,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
 ' v0,2 - Added GetDBVer function
-' v0,31 - Asset Import functionality
+' v0,32 - Asset Import functionality
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -597,7 +597,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         .AllocationType = AssetData(1)
         .Brand = AssetData(2)
         .Description = AssetData(3)
-        .QtyInStock = AssetData(4)
+        If AssetData(4) <> "" Then .QtyInStock = AssetData(4)
         .Category1 = AssetData(5)
         .Category2 = AssetData(6)
         .Category3 = AssetData(7)
@@ -610,9 +610,10 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         If AssetData(14) <> "" Then .LeadTime = CInt(AssetData(14))
         .Keywords = AssetData(15)
         .AllowedOrderReasons = AssetData(16)
-        .NoOrderMessage = AssetData(17)
-        .Location = AssetData(18)
-        If AssetData(19) <> "" Then .Status = AssetData(19)
+        .AdditInfo = AssetData(17)
+        .NoOrderMessage = AssetData(18)
+        .Location = AssetData(19)
+        If AssetData(20) <> "" Then .Status = AssetData(20)
         If AssetData(21) <> "" Then .cost = CInt(AssetData(21))
 '        .Supplier1 = AssetData(22)
 '        .Supplier2 = AssetData(23)
