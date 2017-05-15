@@ -20,8 +20,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Bug fix for Phone Order
 ' v0,3 - update purchase unit when size changed
 ' v0,4 - add validation to prevent quantity of 0
+' v0,5 - Override 'No Order' message for Phone Orders
 '---------------------------------------------------------------
-' Date - 03 May 17
+' Date - 15 May 17
 '===============================================================
 Option Explicit
 
@@ -248,7 +249,7 @@ Private Sub BtnNext_Click()
                     If .Asset.AssetNo = 0 Then
                         Err.Raise NO_ASSET_ON_ORDER, Description:="No Asset found"
                     Else
-                        If .Asset.NoOrderMessage <> "" Then Err.Raise NO_ORDER_MESSAGE
+                        If .Asset.NoOrderMessage <> "" And Not .Parent.PhoneOrder Then Err.Raise NO_ORDER_MESSAGE
                         
                         .Quantity = CmoQuantity
                         

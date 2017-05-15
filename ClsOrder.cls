@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Added Deleted status
 ' v0,2 - Fix Assigned To issue
+' v0,3 - Added new property PhoneOrder
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 15 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -34,6 +35,7 @@ Private pLineItems As ClsLineItems
 Private pAuthorisedBy As ClsPerson
 Private pOrderDate As Date
 Private pStatus As EnumOrderStatus
+Private pPhoneOrder As Boolean
 
 '---------------------------------------------------------------
 Public Property Get Deleted() As Date
@@ -106,6 +108,15 @@ End Property
 
 Public Property Let Status(ByVal VnewValue As EnumOrderStatus)
     pStatus = VnewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get PhoneOrder() As Boolean
+    PhoneOrder = pPhoneOrder
+End Property
+
+Public Property Let PhoneOrder(ByVal VnewValue As Boolean)
+    pPhoneOrder = VnewValue
 End Property
 
 '---------------------------------------------------------------

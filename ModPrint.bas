@@ -5,8 +5,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,1 - added PrintOrderList procedure
 ' v0,2 - Change from Location object to string
 ' v0,3 - Added Location to Print Order Form
+' v0,4 - Print two copies of Order Form
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -198,7 +199,7 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
     
     If ENABLE_PRINT Then
         ShtOrderList.Visible = xlSheetVisible
-        ShtOrderList.PrintOut
+        ShtOrderList.PrintOut copies:=2
         ShtOrderList.Visible = xlSheetHidden
     End If
     

@@ -11,8 +11,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,61 - Fix Error 287 by opening Outlook if closed
 ' v0,7 - Added DB Version Error
 ' v0,8 - 287 issue, tried new Outlook detector
+' v0,9 - Added Emma to Unknown user alert
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -163,7 +164,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             Set MailSystem = New ClsMailSystem
             
             With MailSystem
-                .MailItem.To = "Julian Turner"
+                .MailItem.To = "Julian Turner; Emma Moreton"
                 .MailItem.Subject = "Unknown User - " & APP_NAME
                 .MailItem.Importance = olImportanceHigh
                 .MailItem.Body = "A new user needs to be added to the database - " _
