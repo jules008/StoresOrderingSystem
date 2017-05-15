@@ -46,6 +46,8 @@ Public Sub ExportModules()
     
     ExportDBTables
     
+    Terminate
+    
     ThisWorkbook.SaveAs ExportFilePath & "\Stores IT System v0", 51
     
     Set DlgOpen = Nothing

@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUIMenu"
 ' Module ModUIMenu
 ' v0,0 - Initial Version
 ' v0,1 - changes to performance mode switching
+' v0,2 - Refresh front screen orders after new order placed
 '---------------------------------------------------------------
-' Date - 06 Apr 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -375,6 +376,8 @@ Restart:
             Case EnumNewOrder
             
             If Not FrmOrder.ShowForm Then Err.Raise HANDLED_ERROR
+            If Not ModUIMainScreen.RefreshMyOrderList Then Err.Raise HANDLED_ERROR
+            If Not ModUIMainScreen.RefreshRecentOrderList Then Err.Raise HANDLED_ERROR
         
         End Select
         
