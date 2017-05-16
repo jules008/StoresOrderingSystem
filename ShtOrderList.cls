@@ -11,8 +11,9 @@ Attribute VB_Exposed = True
 ' Module ShtOrderList
 ' v0,0 - Initial Version
 ' v0,1 - Reinforced sheet reference
+' v0,2 - Bug fix for Shane's printing error
 '---------------------------------------------------------------
-' Date - 01 May 17
+' Date - 15 May 17
 '===============================================================
 
 Option Explicit
@@ -28,12 +29,13 @@ Public Function ClearForm() As Boolean
     
     Const StrPROCEDURE As String = "ClearForm()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     ShtOrderList.Range("RngClear").ClearContents
 
     ClearForm = True
     
+    On Error GoTo 0
 
 Exit Function
 
