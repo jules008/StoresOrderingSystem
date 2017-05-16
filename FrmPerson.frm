@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,1 - changes for Remote Order functionality
 ' v0,2 - bug fix - change crewno to read string not integer
 ' v0,3 - Set Phone Order flag
+' v0,4 - Phone Order Bug Fix
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 16 May 17
 '===============================================================
 Option Explicit
 
@@ -176,7 +177,7 @@ Private Sub BtnNext_Click()
                 If OptMe Then Lineitem.ForPerson = CurrentUser
                 
                 If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
-                Order.PhoneOrder = False
+                If Not Order Is Nothing Then Order.PhoneOrder = False
             End If
             
             Hide
