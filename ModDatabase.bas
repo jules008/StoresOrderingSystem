@@ -4,9 +4,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
 ' v0,2 - Added GetDBVer function
-' v0,32 - Asset Import functionality
+' v0,33 - Asset Import functionality
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 16 May 17
 '===============================================================
 
 Option Explicit
@@ -219,6 +219,7 @@ Private Sub ImportAssetFile()
     Dim AssetFile As Integer
     Dim RstAssets As Recordset
     Dim i As Integer
+    Dim MaxAssetNo As Integer
     
     Const StrPROCEDURE As String = "ImportAssetFile()"
 
@@ -247,7 +248,7 @@ Private Sub ImportAssetFile()
     If Dir(AssetFileLoc) = "" Then Err.Raise NO_FILE_SELECTED
     
     'get Asset Recordset
-    Set RstAssets = SQLQuery("TblAsset")
+    Set RstAssets = SQLQuery("SELECT * FROM TblAsset ORDER BY AssetNo ASC")
     
     Open AssetFileLoc For Input As AssetFile
     
@@ -276,6 +277,10 @@ Private Sub ImportAssetFile()
             Set Asset = BuildAsset(AssetData)
             
             Assets.AddItem Asset
+            
+            'find maximum assetno
+            If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
+            
             If Err.Number <> 0 Then Err.Raise IMPORT_ERROR
             
             Debug.Print "Asset Added!"
@@ -285,39 +290,70 @@ Private Sub ImportAssetFile()
 
     Stop
     
-    'check whether there are more assets to add than records to delete, or vice versa
-    If RstAssets.RecordCount > Assets.Count Then
-    
-        With RstAssets
-            .MoveFirst
-            For i = 1 To .RecordCount
-                .Delete
-                Assets(i).DBSave
-                .MoveNext
-            Next
+    'Update Asset File data
+    RstAssets.MoveFirst
+    For i = 1 To MaxAssetNo
+        Debug.Print "Assets.AssetNo: " & i
+        Debug.Print "RST.AssetNo: " & RstAssets!AssetNo
             
-            For i = .RecordCount + 1 To Assets.Count
+        If Assets(i).AssetNo = i Then
                 Assets(i).DBSave
-            Next
-            
-        End With
+            RstAssets.MoveNext
+            Debug.Print "Add to DB"
     Else
-        With RstAssets
-            .MoveFirst
-            For i = 1 To Assets.Count
-                .Delete
-                Assets(i).DBSave
-                .MoveNext
+            If RstAssets!AssetNo = i Then
+                RstAssets.Delete
+                Debug.Print "Delete from DB"
+            Else
+                RstAssets.MoveNext
+                Debug.Print "do nothing"
+            End If
+        End If
+        Debug.Print
             Next
             
-            For i = Assets.Count + 1 To .RecordCount
-                .Delete
-                .MoveNext
-            Next
+    Stop
+    
+    'Validate Asset file data
+    RstAssets.MoveFirst
+    For i = 1 To MaxAssetNo
+        Debug.Print "Assets.AssetNo: " & i
+        Debug.Print "RST.AssetNo: " & RstAssets!AssetNo
+        
+        If Assets(i).AssetNo = i And RstAssets!AssetNo = i Then
+            With Assets(i)
+                If .AssetNo <> RstAssets!AssetNo Then Err.Raise IMPORT_ERROR
+                If .AllocationType <> RstAssets!AllocationType Then Err.Raise IMPORT_ERROR
+                If .Brand <> RstAssets!Brand Then Err.Raise IMPORT_ERROR
+                If .Description <> RstAssets!Description Then Err.Raise IMPORT_ERROR
+  '              If .QtyInStock <> RstAssets!QtyInStock Then Err.Raise IMPORT_ERROR
+                If .Category1 <> RstAssets!Category1 Then Err.Raise IMPORT_ERROR
+                If .Category2 <> RstAssets!Category2 Then Err.Raise IMPORT_ERROR
+                If .Category3 <> RstAssets!Category3 Then Err.Raise IMPORT_ERROR
+                If .Size1 <> RstAssets!Size1 Then Err.Raise IMPORT_ERROR
+                If .Size2 <> RstAssets!Size2 Then Err.Raise IMPORT_ERROR
+                If .PurchaseUnit <> RstAssets!PurchaseUnit Then Err.Raise IMPORT_ERROR
+                If .MinAmount <> RstAssets!MinAmount Then Err.Raise IMPORT_ERROR
+                If .MaxAmount <> RstAssets!MaxAmount Then Err.Raise IMPORT_ERROR
+                If .OrderLevel <> RstAssets!OrderLevel Then Err.Raise IMPORT_ERROR
+                If .LeadTime <> RstAssets!LeadTime Then Err.Raise IMPORT_ERROR
+                If .Keywords <> RstAssets!Keywords Then Err.Raise IMPORT_ERROR
+                If .AllowedOrderReasons <> RstAssets!AllowedOrderReasons Then Err.Raise IMPORT_ERROR
+                If .AdditInfo <> RstAssets!AdditInfo Then Err.Raise IMPORT_ERROR
+                If .NoOrderMessage <> RstAssets!NoOrderMessage Then Err.Raise IMPORT_ERROR
+                If .Location <> RstAssets!Location Then Err.Raise IMPORT_ERROR
+                If .Status <> RstAssets!Status Then Err.Raise IMPORT_ERROR
+                If .cost <> RstAssets!cost Then Err.Raise IMPORT_ERROR
+        '        .Supplier1 <> AssetData(22) Then Err.Raise IMPORT_ERROR
+        '        .Supplier2 <> AssetData(23) Then Err.Raise IMPORT_ERROR
 
         End With
+            RstAssets.MoveNext
     End If
+        Debug.Print
+    Next
 
+    MsgBox "Complete"
 
 GracefulExit:
 
@@ -351,11 +387,11 @@ ErrorHandler:
             Stop
             Resume
         End If
-        
-        If CustomErrorHandler(Err.Number) Then
-            GoTo GracefulExit
-        End If
     End If
+    
+'        If CustomErrorHandler(Err.Number) Then
+'            GoTo GracefulExit
+'        End If
     
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
@@ -447,11 +483,11 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
         'generic tests first
         If InStr(TestValue, "'") <> 0 Then Err.Raise IMPORT_ERROR
 
-'** test for too many commas
-
         Select Case i
             Case Is = 0
         
+'** Ignore blank quantities
+
 '** add check to ensure unique numeric key"
             
 '** add check to ensure that asset description matches asset no
