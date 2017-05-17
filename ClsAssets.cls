@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsAssets
 ' v0,0 - Initial Version
 ' v0,1 - Improved size list counting to prevent empty size lists
+' v0,2 - Added GetAllAssets function
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 17 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,6 +27,7 @@ Attribute VB_Exposed = False
 ' GetItemList - Gets list of items from category lists, returning them in a recordset
 ' GetSizeLists - Returns size lists for a given asset no
 ' FindAssetNo - Finds Asset No from Asset Description
+' GetAllAssets - Gets all assets and returns in a recordset
 '===============================================================
 
 Option Explicit
@@ -243,6 +245,23 @@ Public Function FindAssetNo(Description As String, Size1 As String, Size2 As Str
 End Function
 
 ' ===============================================================
+' Method GetAllAssets
+' Gets all assets and returns in a recordset
+' ---------------------------------------------------------------
+Public Function GetAllAssets() As Recordset
+    Dim RstAsset As Recordset
+    Dim Asset As ClsAsset
+    Dim i As Integer
+
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE Deleted IS NULL")
+    
+    Set GetAllAssets = RstAsset
+    
+    Set RstAsset = Nothing
+End Function
+
+
+' ===============================================================
 Private Sub Class_Initialize()
     Set pAssets = New Collection
 
@@ -255,3 +274,5 @@ Private Sub Class_Terminate()
 End Sub
 
 '---------------------------------------------------------------
+
+
