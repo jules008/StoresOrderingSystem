@@ -10,6 +10,8 @@ Option Explicit
 
 Private Const StrMODULE As String = "ModAssetImportExport"
 
+Dim ErrorLog() As String
+Dim ErrorCount As Integer
 ' ===============================================================
 ' ImportAssetFile
 ' Imports the Asset file into the database
@@ -20,17 +22,19 @@ Private Sub ImportAssetFile()
     Dim FormValidation As Integer
     Dim AssetFileLoc As String
     Dim Asset As ClsAsset
-    Dim Assets As ClsAssets
+    Dim ShtAssets As ClsAssets
     Dim AssetFile As Integer
-    Dim RstAssets As Recordset
+    Dim DBAssets As ClsAssets
     Dim i As Integer
     Dim MaxAssetNo As Integer
+    Dim FuncPassFail As String
     
     Const StrPROCEDURE As String = "ImportAssetFile()"
 
     On Error GoTo ErrorHandler
     
-    Set Assets = New ClsAssets
+    Set ShtAssets = New ClsAssets
+    Set DBAssets = New ClsAssets
     Set Asset = New ClsAsset
 
 '    AssetFileLoc = OpenAssetFile
@@ -41,7 +45,7 @@ Private Sub ImportAssetFile()
     
     AssetFile = FreeFile()
         
-    Set RstAssets = Assets.GetAllAssets
+    DBAssets.GetCollection
     
     Open AssetFileLoc For Input As AssetFile
     
@@ -51,6 +55,8 @@ Private Sub ImportAssetFile()
         i = i + 1
         
         Debug.Print "Starting Line: " & i
+        
+        MaxAssetNo = DBAssets.MaxAssetNo
         
         If i <> 1 Then
         
@@ -67,7 +73,7 @@ Private Sub ImportAssetFile()
             
             If Asset Is Nothing Then Err.Raise HANDLED_ERROR
             
-            Assets.AddItem Asset
+            ShtAssets.AddItem Asset
             
             'find maximum assetno
             If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
@@ -77,47 +83,43 @@ Private Sub ImportAssetFile()
     Wend
     Close #AssetFile
     
-    Stop
-    
-    If Not CopyAssetFile(Assets, RstAssets) Then Err.Raise HANDLED_ERROR
+    FuncPassFail = PreBuildCheck(ShtAssets, DBAssets)
+    FuncPassFail = "Pass"
+    Select Case FuncPassFail
+        Case "Fail"
+            MsgBox "Import failed"
+        Case "Error"
+            Err.Raise HANDLED_ERROR
+        Case "Pass"
             
     Stop
     
-    If Not ValidateAssetFile(Assets, RstAssets) Then Err.Raise HANDLED_ERROR
+            If Not CopyAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
+            
+    Stop
+    
+            If Not ValidateAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
+        
 
     MsgBox "Complete"
+    End Select
 
-    Set Assets = Nothing
+    Set ShtAssets = Nothing
     Set Asset = Nothing
-    Set RstAssets = Nothing
+    Set DBAssets = Nothing
 
 Exit Sub
 
 ErrorExit:
 
 '    ***CleanUpCode***
-    Set Assets = Nothing
+    Set ShtAssets = Nothing
     Set Asset = Nothing
-    Set RstAssets = Nothing
+    Set DBAssets = Nothing
 Exit Sub
 
 ErrorHandler:
 
-    If Err.Number >= 1000 And Err.Number <= 1500 Then
-        
-        If Err.Number = IMPORT_ERROR Then
-            Select Case FormValidation
-                Case Is < 25
-                    MsgBox "There has been an error importing the data on line " & i & ", Field " & FormValidation + 1, vbExclamation, APP_NAME
-                Case Is = 25
-                    MsgBox "There is an error with the number of columns on line " _
-                            & i & " This is commonly caused by the use of commas.  Please replace these by other puctuation marks", vbExclamation, APP_NAME
-            End Select
-            
-            Stop
-            Resume
-        End If
-    End If
       
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
@@ -135,14 +137,17 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
     Dim i As Integer
     Dim TestValue As String
     Dim TestString() As String
+    Dim AssetNo As String
     
     Const StrPROCEDURE As String = "ParseAsset()"
     
     On Error GoTo ErrorHandler
     
+    AssetNo = AssetData(0)
+    
     If UBound(AssetData) < 25 Then
         i = 25
-        Err.Raise IMPORT_ERROR
+        AddToErrorLog AssetNo, "Incorrect use of commas"
     End If
     
     For i = 0 To 25
@@ -150,66 +155,65 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
         TestValue = AssetData(i)
         
         'generic tests first
-        If InStr(TestValue, "'") <> 0 Then Err.Raise IMPORT_ERROR
+        If InStr(TestValue, "'") <> 0 Then AddToErrorLog AssetData(0), "Found apostrophe"
 
         Select Case i
             Case Is = 0
         
 '** add check to ensure unique numeric key"
             
-'** add check to ensure that asset description matches asset no
-
-'** ensure category 1 is not NULL and other fields too
             
             Case Is = 1
-                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
-                If TestValue < 0 Or TestValue > 2 Then Err.Raise IMPORT_ERROR
-        
+                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Allocation Type invalid"
+                If TestValue < 0 Or TestValue > 2 Then AddToErrorLog AssetData(0), "Allocation Type invalid"
             Case Is = 4
                 If IsNumeric(TestValue) Then
-                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Error in Quantity"
                 Else
-                    If TestValue <> "" Then Err.Raise IMPORT_ERROR
+                    If TestValue <> "" Then AddToErrorLog AssetData(0), "Error in Quantity"
                 End If
     
+            Case Is = 5
+                If TestValue = "" Then AddToErrorLog AssetData(0), "Category 1 cannot be empty"
+    
             Case Is = 11
-                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
-                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Min Amount"
+                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Min Amount"
             
             Case Is = 12
-                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
-                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Max Amount"
+                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Max Amount"
             
             Case Is = 13
-                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
-                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Order Levels"
+                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Order Levels"
             
             Case Is = 16
                 
-                If Len(TestValue) <> 13 Then Err.Raise IMPORT_ERROR
+                If Len(TestValue) <> 13 Then AddToErrorLog AssetData(0), "Length of Allowed Reason string incorrect"
                 
                 On Error GoTo ValidationError
                 
                 TestString = Split(TestValue, ":")
                 
-                If TestString(0) <> "0" And TestString(0) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(1) <> "0" And TestString(1) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(2) <> "0" And TestString(2) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(3) <> "0" And TestString(3) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(4) <> "0" And TestString(4) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(5) <> "0" And TestString(5) <> "1" Then Err.Raise IMPORT_ERROR
-                If TestString(6) <> "0" And TestString(6) <> "1" Then Err.Raise IMPORT_ERROR
+                If TestString(0) <> "0" And TestString(0) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(1) <> "0" And TestString(1) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(2) <> "0" And TestString(2) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(3) <> "0" And TestString(3) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(4) <> "0" And TestString(4) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(5) <> "0" And TestString(5) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                If TestString(6) <> "0" And TestString(6) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
     
                 On Error GoTo ErrorHandler
     
             Case Is = 22
                 If TestValue <> "" Then
-                If Not IsNumeric(TestValue) Then Err.Raise IMPORT_ERROR
-                If TestValue < 0 Then Err.Raise IMPORT_ERROR
+                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
+                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
                 End If
             
             Case Is = 25
-                If TestValue <> "!" Then Err.Raise IMPORT_ERROR
+                If TestValue <> "!" Then AddToErrorLog AssetData(0), "Number of columns incorrect, check use of commas"
             
         End Select
         
@@ -261,30 +265,30 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
     Set Asset = New ClsAsset
 
     With Asset
-        .AssetNo = AssetData(0)
-        .AllocationType = AssetData(1)
-        .Brand = AssetData(2)
-        .Description = AssetData(3)
-        If AssetData(4) <> "" Then .QtyInStock = AssetData(4)
-        .Category1 = AssetData(5)
-        .Category2 = AssetData(6)
-        .Category3 = AssetData(7)
-        .Size1 = AssetData(8)
-        .Size2 = AssetData(9)
-        .PurchaseUnit = AssetData(10)
-        .MinAmount = AssetData(11)
-        .MaxAmount = AssetData(12)
-        .OrderLevel = AssetData(13)
+        .AssetNo = Trim(AssetData(0))
+        .AllocationType = Trim(AssetData(1))
+        .Brand = Trim(AssetData(2))
+        .Description = Trim(AssetData(3))
+        If AssetData(4) <> "" Then .QtyInStock = Trim(AssetData(4))
+        .Category1 = Trim(AssetData(5))
+        .Category2 = Trim(AssetData(6))
+        .Category3 = Trim(AssetData(7))
+        .Size1 = Trim(AssetData(8))
+        .Size2 = Trim(AssetData(9))
+        .PurchaseUnit = Trim(AssetData(10))
+        .MinAmount = Trim(AssetData(11))
+        .MaxAmount = Trim(AssetData(12))
+        .OrderLevel = Trim(AssetData(13))
         If AssetData(14) <> "" Then .LeadTime = CInt(AssetData(14))
-        .Keywords = AssetData(15)
-        .AllowedOrderReasons = AssetData(16)
-        .AdditInfo = AssetData(17)
-        .NoOrderMessage = AssetData(18)
-        .Location = AssetData(19)
-        If AssetData(20) <> "" Then .Status = AssetData(20)
+        .Keywords = Trim(AssetData(15))
+        .AllowedOrderReasons = Trim(AssetData(16))
+        .AdditInfo = Trim(AssetData(17))
+        .NoOrderMessage = Trim(AssetData(18))
+        .Location = Trim(AssetData(19))
+        If AssetData(20) <> "" Then .Status = Trim(AssetData(20))
         If AssetData(21) <> "" Then .cost = CInt(AssetData(21))
-'        .Supplier1 = AssetData(22)
-'        .Supplier2 = AssetData(23)
+'        .Supplier1 = trim(AssetData(22)
+'        .Supplier2 = trim(AssetData(23)
     
     End With
 
@@ -314,7 +318,7 @@ End Function
 ' ---------------------------------------------------------------
 Private Function OpenAssetFile() As String
     Dim DlgOpen As FileDialog
-    Dim Assets As ClsAssets
+    Dim ShtAssets As ClsAssets
     Dim NoFiles As Integer
     
     Const StrPROCEDURE As String = "OpenAssetFile()"
@@ -322,7 +326,7 @@ Private Function OpenAssetFile() As String
     On Error GoTo ErrorHandler
 
     Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
-    Set Assets = New ClsAssets
+    Set ShtAssets = New ClsAssets
     
      With DlgOpen
         .Filters.Clear
@@ -341,15 +345,67 @@ Private Function OpenAssetFile() As String
     OpenAssetFile = DlgOpen.SelectedItems(1)
 
     Set DlgOpen = Nothing
-    Set Assets = Nothing
+    Set ShtAssets = Nothing
 Exit Function
 
 ErrorExit:
 
 '    ***CleanUpCode***
     Set DlgOpen = Nothing
-    Set Assets = Nothing
+    Set ShtAssets = Nothing
     OpenAssetFile = "Error"
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' PreBuildCheck
+' Checks before writing to DB
+' ---------------------------------------------------------------
+Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As String
+    Dim i As Integer
+    Dim DBAssetNo As Integer
+    Dim Asset As ClsAsset
+    Dim DBAssetDescription As String
+    Dim Response As Integer
+    
+    Const StrPROCEDURE As String = "PreBuildCheck()"
+
+    On Error GoTo ErrorHandler
+
+    Set Asset = New ClsAsset
+    
+    For Each Asset In DBAssets
+        
+        DBAssetNo = Asset.AssetNo
+        DBAssetDescription = Asset.Description
+        
+        PreBuildCheck = "Pass"
+        
+        If ShtAssets(CStr(DBAssetNo)) Is Nothing Then
+            AddToErrorLog DBAssetNo, DBAssetDescription & " will be deleted from database"
+            
+        Else
+            If ShtAssets(CStr(DBAssetNo)).Description <> DBAssetDescription Then
+                AddToErrorLog DBAssetNo, "Asset will change from " & DBAssetDescription & " to " & ShtAssets(CStr(DBAssetNo)).Description
+            End If
+        End If
+    Next
+
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    PreBuildCheck = "Error"
 
 Exit Function
 
@@ -365,32 +421,27 @@ End Function
 ' CopyAssetFile
 ' Copies the asset file data to the DB
 ' ---------------------------------------------------------------
-Private Function CopyAssetFile(Assets As ClsAssets, RstAssets As Recordset) As Boolean
-    Dim MaxAssetNo As Integer
+Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
     Dim i As Integer
+    Dim ShtAsset As ClsAsset
+    Dim DBAsset As ClsAsset
     
     Const StrPROCEDURE As String = "CopyAssetFile()"
 
     On Error GoTo ErrorHandler
 
-    RstAssets.MoveFirst
     For i = 1 To MaxAssetNo
-        Debug.Print "Assets.AssetNo: " & i
-        Debug.Print "RST.AssetNo: " & RstAssets!AssetNo
+        Debug.Print "ShtAssets.AssetNo: " & i
             
-        If Assets(i).AssetNo = i Then
-                Assets(i).DBSave
-            RstAssets.MoveNext
-            Debug.Print "Add to DB"
-        Else
-            If RstAssets!AssetNo = i Then
-                RstAssets.Delete
-                Debug.Print "Delete from DB"
+        Set ShtAsset = ShtAssets(CStr(i))
+        Set DBAsset = DBAssets(CStr(i))
+        
+        If ShtAsset Is Nothing Then
+            If Not DBAsset Is Nothing Then DBAsset.DBDelete
             Else
-                RstAssets.MoveNext
-                Debug.Print "do nothing"
-            End If
+            ShtAsset.DBSave
         End If
+        
         Debug.Print
     Next
 
@@ -421,51 +472,54 @@ End Function
 ' ValidateAssetFile
 ' Validates asset file with data in database
 ' ---------------------------------------------------------------
-Private Function ValidateAssetFile(Assets As ClsAssets, RstAssets As Recordset) As Boolean
+Private Function ValidateAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
     Dim i As Integer
-    Dim MaxAssetNo As Integer
+    Dim DBAsset As ClsAsset
+    Dim ShtAsset As ClsAsset
     
     Const StrPROCEDURE As String = "ValidateAssetFile()"
 
     On Error GoTo ErrorHandler
 
-    RstAssets.MoveFirst
-    
     For i = 1 To MaxAssetNo
-        Debug.Print "Assets.AssetNo: " & i
-        Debug.Print "RST.AssetNo: " & RstAssets!AssetNo
+        Debug.Print "ShtAssets.AssetNo: " & i
         
-        If Assets(i).AssetNo = i And RstAssets!AssetNo = i Then
-            With Assets(i)
-                If .AssetNo <> RstAssets!AssetNo Then Err.Raise IMPORT_ERROR
-                If .AllocationType <> RstAssets!AllocationType Then Err.Raise IMPORT_ERROR
-                If .Brand <> RstAssets!Brand Then Err.Raise IMPORT_ERROR
-                If .Description <> RstAssets!Description Then Err.Raise IMPORT_ERROR
-                If .QtyInStock <> RstAssets!QtyInStock And .QtyInStock <> "" Then Err.Raise IMPORT_ERROR
-                If .Category1 <> RstAssets!Category1 Then Err.Raise IMPORT_ERROR
-                If .Category2 <> RstAssets!Category2 Then Err.Raise IMPORT_ERROR
-                If .Category3 <> RstAssets!Category3 Then Err.Raise IMPORT_ERROR
-                If .Size1 <> RstAssets!Size1 Then Err.Raise IMPORT_ERROR
-                If .Size2 <> RstAssets!Size2 Then Err.Raise IMPORT_ERROR
-                If .PurchaseUnit <> RstAssets!PurchaseUnit Then Err.Raise IMPORT_ERROR
-                If .MinAmount <> RstAssets!MinAmount Then Err.Raise IMPORT_ERROR
-                If .MaxAmount <> RstAssets!MaxAmount Then Err.Raise IMPORT_ERROR
-                If .OrderLevel <> RstAssets!OrderLevel Then Err.Raise IMPORT_ERROR
-                If .LeadTime <> RstAssets!LeadTime Then Err.Raise IMPORT_ERROR
-                If .Keywords <> RstAssets!Keywords Then Err.Raise IMPORT_ERROR
-                If .AllowedOrderReasons <> RstAssets!AllowedOrderReasons Then Err.Raise IMPORT_ERROR
-                If .AdditInfo <> RstAssets!AdditInfo Then Err.Raise IMPORT_ERROR
-                If .NoOrderMessage <> RstAssets!NoOrderMessage Then Err.Raise IMPORT_ERROR
-                If .Location <> RstAssets!Location Then Err.Raise IMPORT_ERROR
-                If .Status <> RstAssets!Status Then Err.Raise IMPORT_ERROR
-                If .cost <> RstAssets!cost Then Err.Raise IMPORT_ERROR
-        '        .Supplier1 <> AssetData(22) Then Err.Raise IMPORT_ERROR
-        '        .Supplier2 <> AssetData(23) Then Err.Raise IMPORT_ERROR
+        Set ShtAsset = ShtAssets(CStr(i))
+        Set DBAsset = DBAssets(CStr(i))
+        
+        If ShtAsset Is Nothing Then
+            If Not DBAsset Is Nothing Then AddToErrorLog i, "Failed Validation - Mismatch"
+        Else
+            If DBAsset Is Nothing Then
+                AddToErrorLog i, "Failed Validation - Mismatch"
+            Else
+                With ShtAsset
+                     If .AllocationType <> DBAsset.AllocationType Then AddToErrorLog i, "Failed Validation - Allocation Type"
+                    If .Brand <> DBAsset.Brand Then AddToErrorLog i, "Failed Validation - Brand"
+                    If .Description <> DBAsset.Description Then AddToErrorLog i, "Failed Validation - Description"
+                    If .Category1 <> DBAsset.Category1 Then AddToErrorLog i, "Failed Validation - Category 1"
+                    If .Category2 <> DBAsset.Category2 Then AddToErrorLog i, "Failed Validation - Category 2"
+                    If .Category3 <> DBAsset.Category3 Then AddToErrorLog i, "Failed Validation - Category 3"
+                    If .Size1 <> DBAsset.Size1 Then AddToErrorLog i, "Failed Validation - Size 1"
+                    If .Size2 <> DBAsset.Size2 Then AddToErrorLog i, "Failed Validation - Size 2"
+                    If .PurchaseUnit <> DBAsset.PurchaseUnit Then AddToErrorLog i, "Failed Validation - Purchase Unit"
+                    If .MinAmount <> DBAsset.MinAmount Then AddToErrorLog i, "Failed Validation - Min Amount"
+                    If .MaxAmount <> DBAsset.MaxAmount Then AddToErrorLog i, "Failed Validation - Max Amount"
+                    If .OrderLevel <> DBAsset.OrderLevel Then AddToErrorLog i, "Failed Validation - Order Level"
+                    If .LeadTime <> DBAsset.LeadTime Then AddToErrorLog i, "Failed Validation - Lead Time"
+                    If .Keywords <> DBAsset.Keywords Then AddToErrorLog i, "Failed Validation - Keywords"
+                    If .AllowedOrderReasons <> DBAsset.AllowedOrderReasons Then AddToErrorLog i, "Failed Validation - Order Reasons"
+                    If .AdditInfo <> DBAsset.AdditInfo Then AddToErrorLog i, "Failed Validation - Addit Info"
+                    If .NoOrderMessage <> DBAsset.NoOrderMessage Then AddToErrorLog i, "Failed Validation - No Order Message"
+                    If .Location <> DBAsset.Location Then AddToErrorLog i, "Failed Validation - Location"
+                    If .cost <> DBAsset.cost Then AddToErrorLog i, "Failed Validation - Cost"
+            '        .Supplier1 <> AssetData(22) Then AddToErrorLog i, "Failed Validation - Mismatch"
+            '        .Supplier2 <> AssetData(23) Then AddToErrorLog i, "Failed Validation - Mismatch"
+                    If .QtyInStock <> DBAsset.QtyInStock And .QtyInStock > 0 Then AddToErrorLog i, "Failed Validation - Quantity"
 
             End With
-            RstAssets.MoveNext
         End If
-        Debug.Print
+        End If
     Next
 
     ValidateAssetFile = True
@@ -479,10 +533,26 @@ ErrorExit:
 
 Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+ErrorHandler:
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' AddToErrorLog
+' Adds import errors to error log
+' ---------------------------------------------------------------
+Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
+    
+    On Error Resume Next
+
+    ErrorCount = ErrorCount + 1
+    
+    ErrorLog(ErrorCount) = "Asset No " & AssetNo & " - " & StrError
+
+End Sub

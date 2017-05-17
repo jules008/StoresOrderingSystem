@@ -12,6 +12,7 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Improved size list counting to prevent empty size lists
 ' v0,2 - Added GetAllAssets function
+' v0,3 - Removed GetAllAssets and added MaxAssetNo property
 '---------------------------------------------------------------
 ' Date - 17 May 17
 '===============================================================
@@ -27,11 +28,11 @@ Attribute VB_Exposed = False
 ' GetItemList - Gets list of items from category lists, returning them in a recordset
 ' GetSizeLists - Returns size lists for a given asset no
 ' FindAssetNo - Finds Asset No from Asset Description
-' GetAllAssets - Gets all assets and returns in a recordset
 '===============================================================
 
 Option Explicit
 Private pAssets As Collection
+Private pMaxAssetNo As Integer
 
 '---------------------------------------------------------------
 
@@ -39,6 +40,15 @@ Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pAssets.[_NewEnum]
 End Function
+
+'---------------------------------------------------------------
+Public Property Get MaxAssetNo() As Integer
+    MaxAssetNo = pMaxAssetNo
+End Property
+
+Public Property Let MaxAssetNo(ByVal vNewValue As Integer)
+    pMaxAssetNo = vNewValue
+End Property
 
 ' ===============================================================
 ' Method FindItem
@@ -58,6 +68,7 @@ End Function
 
 Public Sub AddItem(Asset As ClsAsset)
     pAssets.Add Asset, Key:=CStr(Asset.AssetNo)
+    If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
 End Sub
 
 ' ===============================================================
@@ -245,23 +256,6 @@ Public Function FindAssetNo(Description As String, Size1 As String, Size2 As Str
 End Function
 
 ' ===============================================================
-' Method GetAllAssets
-' Gets all assets and returns in a recordset
-' ---------------------------------------------------------------
-Public Function GetAllAssets() As Recordset
-    Dim RstAsset As Recordset
-    Dim Asset As ClsAsset
-    Dim i As Integer
-
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE Deleted IS NULL")
-    
-    Set GetAllAssets = RstAsset
-    
-    Set RstAsset = Nothing
-End Function
-
-
-' ===============================================================
 Private Sub Class_Initialize()
     Set pAssets = New Collection
 
@@ -274,5 +268,7 @@ Private Sub Class_Terminate()
 End Sub
 
 '---------------------------------------------------------------
+
+
 
 

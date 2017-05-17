@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsAsset
 ' v0,0 - Initial Version
 ' v0,1 - Change location to string
+' v0,2 - Trimmed values from Database
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 17 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -307,31 +308,31 @@ Public Sub DBGet(AssetNo As Integer)
     Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & AssetNo & " AND Deleted IS NULL")
     With RstAsset
         If .RecordCount > 0 Then
-            If Not IsNull(!Deleted) Then pDeleted = !Deleted
-            If Not IsNull(!AssetNo) Then pAssetNo = !AssetNo
-            If Not IsNull(!Brand) Then pBrand = !Brand
-            If Not IsNull(!Description) Then pDescription = !Description
-'            If Not IsNull(!Cost) Then pCost = !Cost
-            If Not IsNull(!QtyInStock) Then QtyInStock = !QtyInStock
-            If Not IsNull(!Category1) Then pCategory1 = !Category1
-            If Not IsNull(!Category2) Then pCategory2 = !Category2
-            If Not IsNull(!Category3) Then pCategory3 = !Category3
-            If Not IsNull(!Size1) Then pSize1 = !Size1
-            If Not IsNull(!Size2) Then pSize2 = !Size2
-            If Not IsNull(!PurchaseUnit) Then pPurchaseUnit = !PurchaseUnit
-            If Not IsNull(!MinAmount) Then pMinAmount = !MinAmount
-            If Not IsNull(!MaxAmount) Then pMaxAmount = !MaxAmount
-            If Not IsNull(!OrderLevel) Then pOrderLevel = !OrderLevel
-            If Not IsNull(!LeadTime) Then pLeadTime = !LeadTime
-            If Not IsNull(!Status) Then pStatus = !Status
-'            If Not IsNull(!Supplier1) Then pSupplier1 = !Supplier1
-'            If Not IsNull(!Supplier2) Then pSupplier2 = !Supplier2
-            If Not IsNull(!Keywords) Then pKeywords = !Keywords
-            If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = !AllowedOrderReasons
-            If Not IsNull(!AllocationType) Then pAllocationType = !AllocationType
-            If Not IsNull(!Location) Then pLocation = !Location
-            If Not IsNull(!AdditInfo) Then pAdditInfo = !AdditInfo
-            If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = !NoOrderMessage Else pNoOrderMessage = ""
+            If Not IsNull(!Deleted) Then pDeleted = Trim(!Deleted)
+            If Not IsNull(!AssetNo) Then pAssetNo = Trim(!AssetNo)
+            If Not IsNull(!Brand) Then pBrand = Trim(!Brand)
+            If Not IsNull(!Description) Then pDescription = Trim(!Description)
+            If Not IsNull(!cost) Then pCost = Trim(!cost)
+            If Not IsNull(!QtyInStock) Then QtyInStock = Trim(!QtyInStock)
+            If Not IsNull(!Category1) Then pCategory1 = Trim(!Category1)
+            If Not IsNull(!Category2) Then pCategory2 = Trim(!Category2)
+            If Not IsNull(!Category3) Then pCategory3 = Trim(!Category3)
+            If Not IsNull(!Size1) Then pSize1 = Trim(!Size1)
+            If Not IsNull(!Size2) Then pSize2 = Trim(!Size2)
+            If Not IsNull(!PurchaseUnit) Then pPurchaseUnit = Trim(!PurchaseUnit)
+            If Not IsNull(!MinAmount) Then pMinAmount = Trim(!MinAmount)
+            If Not IsNull(!MaxAmount) Then pMaxAmount = Trim(!MaxAmount)
+            If Not IsNull(!OrderLevel) Then pOrderLevel = Trim(!OrderLevel)
+            If Not IsNull(!LeadTime) Then pLeadTime = Trim(!LeadTime)
+            If Not IsNull(!Status) Then pStatus = Trim(!Status)
+'            If Not IsNull(!Supplier1) Then pSupplier1 = Trim(!Supplier1)
+'            If Not IsNull(!Supplier2) Then pSupplier2 = Trim(!Supplier2)
+            If Not IsNull(!Keywords) Then pKeywords = Trim(!Keywords)
+            If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = Trim(!AllowedOrderReasons)
+            If Not IsNull(!AllocationType) Then pAllocationType = Trim(!AllocationType)
+            If Not IsNull(!Location) Then pLocation = Trim(!Location)
+            If Not IsNull(!AdditInfo) Then pAdditInfo = Trim(!AdditInfo)
+            If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = Trim(!NoOrderMessage) Else pNoOrderMessage = ""
 
 '            pSupplier1.DBGet
 '            pSupplier2.DBGet
