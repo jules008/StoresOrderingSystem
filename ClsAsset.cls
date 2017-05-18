@@ -13,6 +13,7 @@ Attribute VB_Exposed = False
 ' v0,1 - Change location to string
 ' v0,2 - Trimmed values from Database
 ' v0,3 - Temporary Supplier strings instead of classes
+' v0,4 - Removed deleted property and changes for Asset Import
 '---------------------------------------------------------------
 ' Date - 18 May 17
 '===============================================================
@@ -25,7 +26,6 @@ Attribute VB_Exposed = False
 '===============================================================
 
 Option Explicit
-Private pDeleted As Date
 Private pAssetNo As Integer
 Private pBrand As String
 Private pDescription As String
@@ -51,15 +51,6 @@ Private pAllocationType As EnumAllocationType
 Private pLocation As String
 Private pAdditInfo As String
 Private pNoOrderMessage As String
-
-'---------------------------------------------------------------
-Public Property Get Deleted() As Date
-    Deleted = pDeleted
-End Property
-
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
-End Property
 
 '---------------------------------------------------------------
 Public Property Get AssetNo() As Integer
@@ -306,10 +297,9 @@ End Property
 Public Sub DBGet(AssetNo As Integer)
     Dim RstAsset As Recordset
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & AssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & AssetNo)
     With RstAsset
         If .RecordCount > 0 Then
-            If Not IsNull(!Deleted) Then pDeleted = Trim(!Deleted)
             If Not IsNull(!AssetNo) Then pAssetNo = Trim(!AssetNo)
             If Not IsNull(!Brand) Then pBrand = Trim(!Brand)
             If Not IsNull(!Description) Then pDescription = Trim(!Description)
@@ -346,12 +336,12 @@ End Sub
 ' Method DBSave
 ' Saves class to Database
 '---------------------------------------------------------------
-Public Sub DBSave()
+Public Sub DBSave(Optional OWAssetNo As Integer)
     Dim RstAsset As Recordset
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(AssetNo) FROM TblAsset ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
@@ -363,7 +353,15 @@ Public Sub DBSave()
     With RstAsset
         If .RecordCount = 0 Then
             .addnew
+            
+            'if an asset no has been passed, then overwrite that asset in the database, otherwise
+            'create new record
+            If OWAssetNo <> 0 Then
+                pAssetNo = OWAssetNo
+            Else
             pAssetNo = LastNo + 1
+            End If
+            
             !AssetNo = pAssetNo
         Else
             .Edit
@@ -400,23 +398,17 @@ End Sub
 
 ' ===============================================================
 ' Method DBDelete(Optional FullDelete As Boolean)
-' Marks record as deleted or fully deletes
+' Fully deletes record from DB
 '---------------------------------------------------------------
-Public Sub DBDelete(Optional FullDelete As Boolean)
+Public Sub DBDelete()
     Dim RstAsset As Recordset
     Dim i As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo)
     With RstAsset
         For i = .RecordCount To 1 Step -1
-            If FullDelete Then
                 .Delete
                 .MoveNext
-            Else
-                .Edit
-                !Deleted = Now
-                .Update
-            End If
         Next
     End With
 

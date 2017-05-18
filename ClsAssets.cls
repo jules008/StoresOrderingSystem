@@ -13,8 +13,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Improved size list counting to prevent empty size lists
 ' v0,2 - Added GetAllAssets function
 ' v0,3 - Removed GetAllAssets and added MaxAssetNo property
+' v0,4 - Delete collection on terminate
 '---------------------------------------------------------------
-' Date - 17 May 17
+' Date - 18 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -99,7 +100,7 @@ Public Sub GetCollection()
     Dim Asset As ClsAsset
     Dim i As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("TblAsset")
     With RstAsset
         If .RecordCount > 0 Then
             .MoveFirst
@@ -263,8 +264,14 @@ End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    Set pAssets = Nothing
+    Dim Asset As ClsAsset
 
+    For Each Asset In pAssets
+        pAssets.Remove CStr(Asset.AssetNo)
+        Set Asset = Nothing
+    Next
+    
+    Set pAssets = Nothing
 End Sub
 
 '---------------------------------------------------------------

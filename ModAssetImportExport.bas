@@ -10,7 +10,7 @@ Option Explicit
 
 Private Const StrMODULE As String = "ModAssetImportExport"
 
-Dim ErrorLog() As String
+Dim ErrorLog(1 To 2000) As String
 Dim ErrorCount As Integer
 ' ===============================================================
 ' ImportAssetFile
@@ -26,12 +26,13 @@ Private Sub ImportAssetFile()
     Dim AssetFile As Integer
     Dim DBAssets As ClsAssets
     Dim i As Integer
+    Dim x As Integer
     Dim MaxAssetNo As Integer
     Dim FuncPassFail As String
     
     Const StrPROCEDURE As String = "ImportAssetFile()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
     
     Set ShtAssets = New ClsAssets
     Set DBAssets = New ClsAssets
@@ -52,20 +53,21 @@ Private Sub ImportAssetFile()
     While Not EOF(AssetFile)
         Line Input #AssetFile, LineInputString
         AssetData = Split(LineInputString, ",")
+        
+        'remove any leading and trailing Quote marks
+        For x = 1 To 25
+            If Left(AssetData(x), 1) = Chr(34) Then AssetData(x) = Right(AssetData(x), Len(AssetData(x)) - 1)
+            If Right(AssetData(x), 1) = Chr(34) Then AssetData(x) = Left(AssetData(x), Len(AssetData(x)) - 1)
+            AssetData(x) = Replace(AssetData(x), Chr(34) & Chr(34), Chr(34))
+        Next
+        
         i = i + 1
         
         MaxAssetNo = DBAssets.MaxAssetNo
         
         If i <> 1 Then
         
-            FormValidation = ParseAsset(AssetData, i)
-            
-            Select Case FormValidation
-                Case 999
-                    Err.Raise HANDLED_ERROR
-                Case Is > 0
-                    Err.Raise IMPORT_ERROR
-            End Select
+            If Not ParseAsset(AssetData, i) Then Err.Raise HANDLED_ERROR
                         
             Set Asset = BuildAsset(AssetData)
             
@@ -81,16 +83,23 @@ Private Sub ImportAssetFile()
     Wend
     Close #AssetFile
     
+    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
+    Stop
+
     If Not PreBuildCheck(ShtAssets, DBAssets) Then Err.Raise HANDLED_ERROR
             
+    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
     Stop
     
             If Not CopyAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
             
+    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
     Stop
     
-            If Not ValidateAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
+    If Not ValidateAssetFile(ShtAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
         
+    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
+    Stop
 
     MsgBox "Complete"
 
@@ -123,7 +132,7 @@ End Sub
 ' ParseAsset
 ' Checks asset data quality
 ' ---------------------------------------------------------------
-Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
+Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     Dim i As Integer
     Dim TestValue As String
     Dim TestString() As String
@@ -131,7 +140,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
     
     Const StrPROCEDURE As String = "ParseAsset()"
     
-    On Error GoTo ErrorHandler
+    On Error Resume Next
     
     AssetNo = AssetData(0)
     
@@ -143,6 +152,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
     For i = 0 To 25
     
         TestValue = AssetData(i)
+        
         
         'generic tests first
         If InStr(TestValue, "'") <> 0 Then AddToErrorLog AssetData(0), "Found apostrophe"
@@ -182,8 +192,6 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
                 
                 If Len(TestValue) <> 13 Then AddToErrorLog AssetData(0), "Length of Allowed Reason string incorrect"
                 
-                On Error GoTo ValidationError
-                
                 TestString = Split(TestValue, ":")
                 
                 If TestString(0) <> "0" And TestString(0) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
@@ -193,8 +201,6 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
                 If TestString(4) <> "0" And TestString(4) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
                 If TestString(5) <> "0" And TestString(5) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
                 If TestString(6) <> "0" And TestString(6) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-    
-                On Error GoTo ErrorHandler
     
             Case Is = 22
                 If TestValue <> "" Then
@@ -208,7 +214,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Integer
         End Select
         
         Next
-        ParseAsset = 0
+        ParseAsset = True
 Exit Function
         
 ValidationError:
@@ -218,7 +224,7 @@ Exit Function
 ErrorExit:
 
 '    ***CleanUpCode***
-    ParseAsset = 999
+    ParseAsset = False
 
 Exit Function
 
@@ -250,7 +256,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
     
     Const StrPROCEDURE As String = "BuildAsset()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     Set Asset = New ClsAsset
 
@@ -276,9 +282,9 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         .NoOrderMessage = Trim(AssetData(18))
         .Location = Trim(AssetData(19))
         If AssetData(20) <> "" Then .Status = Trim(AssetData(20))
-        If AssetData(21) <> "" Then .cost = CInt(AssetData(21))
-'        .Supplier1 = trim(AssetData(22)
-'        .Supplier2 = trim(AssetData(23)
+        If AssetData(22) <> "" Then .cost = AssetData(22)
+        .Supplier1 = Trim(AssetData(23))
+        .Supplier2 = Trim(AssetData(24))
     
     End With
 
@@ -313,7 +319,7 @@ Private Function OpenAssetFile() As String
     
     Const StrPROCEDURE As String = "OpenAssetFile()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
     Set ShtAssets = New ClsAssets
@@ -368,7 +374,7 @@ Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As
     
     Const StrPROCEDURE As String = "PreBuildCheck()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     Set Asset = New ClsAsset
     
@@ -377,7 +383,6 @@ Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As
         DBAssetNo = Asset.AssetNo
         
         Debug.Print DBAssetNo
-        If DBAssetNo = 1822 Then Stop
         
         DBAssetDescription = Asset.Description
         
@@ -391,12 +396,15 @@ Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As
         End If
     Next
 
+    Set Asset = Nothing
+    
     PreBuildCheck = True
 
 Exit Function
 
 ErrorExit:
 
+    Set Asset = Nothing
 '    ***CleanUpCode***
     PreBuildCheck = False
 
@@ -421,7 +429,7 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
     
     Const StrPROCEDURE As String = "CopyAssetFile()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     For i = 1 To MaxAssetNo
             
@@ -429,19 +437,26 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
         Set DBAsset = DBAssets(CStr(i))
         
         If ShtAsset Is Nothing Then
-            If Not DBAsset Is Nothing Then DBAsset.DBDelete True
+            If Not DBAsset Is Nothing Then DBAsset.DBDelete
             Else
-            ShtAsset.DBSave
+            
+            'don't overwrite quantity
+            If ShtAsset.QtyInStock = 0 Then ShtAsset.QtyInStock = DBAsset.QtyInStock
+            ShtAsset.DBSave i
         End If
         
     Next
 
+    Set ShtAsset = Nothing
+    Set DBAsset = Nothing
     CopyAssetFile = True
 
 Exit Function
 
 ErrorExit:
 
+    Set ShtAsset = Nothing
+    Set DBAsset = Nothing
 '    ***CleanUpCode***
     CopyAssetFile = False
 
@@ -460,14 +475,18 @@ End Function
 ' ValidateAssetFile
 ' Validates asset file with data in database
 ' ---------------------------------------------------------------
-Private Function ValidateAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
+Private Function ValidateAssetFile(ShtAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
     Dim i As Integer
+    Dim DBAssets As ClsAssets
     Dim DBAsset As ClsAsset
     Dim ShtAsset As ClsAsset
     
     Const StrPROCEDURE As String = "ValidateAssetFile()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
+
+    Set DBAssets = New ClsAssets
+    DBAssets.GetCollection
 
     For i = 1 To MaxAssetNo
         
@@ -500,8 +519,8 @@ Private Function ValidateAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets
                     If .NoOrderMessage <> DBAsset.NoOrderMessage Then AddToErrorLog i, "Failed Validation - No Order Message"
                     If .Location <> DBAsset.Location Then AddToErrorLog i, "Failed Validation - Location"
                     If .cost <> DBAsset.cost Then AddToErrorLog i, "Failed Validation - Cost"
-            '        .Supplier1 <> AssetData(22) Then AddToErrorLog i, "Failed Validation - Mismatch"
-            '        .Supplier2 <> AssetData(23) Then AddToErrorLog i, "Failed Validation - Mismatch"
+                    If .Supplier1 <> DBAsset.Supplier1 Then AddToErrorLog i, "Failed Validation - Supplier 1"
+                    If .Supplier2 <> DBAsset.Supplier2 Then AddToErrorLog i, "Failed Validation - Supplier 2"
                     If .QtyInStock <> DBAsset.QtyInStock And .QtyInStock > 0 Then AddToErrorLog i, "Failed Validation - Quantity"
 
             End With
@@ -509,12 +528,17 @@ Private Function ValidateAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets
         End If
     Next
 
+    Set ShtAsset = Nothing
+    Set DBAsset = Nothing
+
     ValidateAssetFile = True
 
 Exit Function
 
 ErrorExit:
 
+    Set ShtAsset = Nothing
+    Set DBAsset = Nothing
 '    ***CleanUpCode***
     ValidateAssetFile = False
 
@@ -538,11 +562,10 @@ Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
     
     On Error Resume Next
 
+    If ErrorCount < 2000 Then
     ErrorCount = ErrorCount + 1
-    
-    ReDim ErrorLog(1 To ErrorCount)
     
     ErrorLog(ErrorCount) = "Asset No " & AssetNo & " - " & StrError
     Debug.Print "Asset No " & AssetNo & " - " & StrError
-
+    End If
 End Sub
