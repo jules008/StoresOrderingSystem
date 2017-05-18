@@ -218,41 +218,45 @@ Public Sub UpdateDBScript()
     
     Initialise
     
-    Set TableDef = DB.CreateTableDef("TblDBVersion")
-    
-    With TableDef
-        
-        Set Fld = .CreateField("Version", dbText)
-
-        .Fields.Append Fld
-        DB.TableDefs.Append TableDef
-        
-    End With
+    DB.Execute "ALTER TABLE TblAsset DROP COLUMN Deleted"
         
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
-        .AddNew
-        .Fields(0) = "v0,31"
+        .Edit
+        .Fields(0) = "v0,32"
         .Update
     End With
     
-    Set TableDef = DB.TableDefs("TblAsset")
+    Set RstTable = Nothing
+    Set TableDef = Nothing
+    Set Fld = Nothing
     
-    With TableDef
+End Sub
         
-        For Each Ind In .Indexes
-            Debug.Print Ind.Name
+' ===============================================================
+' UpdateDBScriptUndo
+' Script to update DB
+' ---------------------------------------------------------------
+Public Sub UpdateDBScriptUndo()
+    Dim TableDef As DAO.TableDef
+    Dim Ind As DAO.Index
+    Dim RstTable As Recordset
+    Dim i As Integer
         
-        Next
+    Dim Fld As DAO.Field
         
-        With .Indexes
-            .Delete "PrimaryKey"
-            .Delete "ID"
-        End With
-        .Fields.Delete "ID"
+    Initialise
         
         
+    DB.Execute "ALTER TABLE TblAsset ADD COLUMN Deleted Datetime"
+            
+    Set RstTable = SQLQuery("TblDBVersion")
+    
+    With RstTable
+        .Edit
+        .Fields(0) = "v0,31"
+        .Update
     End With
     
     Set RstTable = Nothing
