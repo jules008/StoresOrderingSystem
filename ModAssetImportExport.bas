@@ -3,7 +3,7 @@ Attribute VB_Name = "ModAssetImportExport"
 ' Module ModAssetImportExport
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 17 May 17
+' Date - 18 May 17
 '===============================================================
 
 Option Explicit
@@ -54,8 +54,6 @@ Private Sub ImportAssetFile()
         AssetData = Split(LineInputString, ",")
         i = i + 1
         
-        Debug.Print "Starting Line: " & i
-        
         MaxAssetNo = DBAssets.MaxAssetNo
         
         If i <> 1 Then
@@ -83,14 +81,7 @@ Private Sub ImportAssetFile()
     Wend
     Close #AssetFile
     
-    FuncPassFail = PreBuildCheck(ShtAssets, DBAssets)
-    FuncPassFail = "Pass"
-    Select Case FuncPassFail
-        Case "Fail"
-            MsgBox "Import failed"
-        Case "Error"
-            Err.Raise HANDLED_ERROR
-        Case "Pass"
+    If Not PreBuildCheck(ShtAssets, DBAssets) Then Err.Raise HANDLED_ERROR
             
     Stop
     
@@ -102,7 +93,6 @@ Private Sub ImportAssetFile()
         
 
     MsgBox "Complete"
-    End Select
 
     Set ShtAssets = Nothing
     Set Asset = Nothing
@@ -369,7 +359,7 @@ End Function
 ' PreBuildCheck
 ' Checks before writing to DB
 ' ---------------------------------------------------------------
-Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As String
+Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As Boolean
     Dim i As Integer
     Dim DBAssetNo As Integer
     Dim Asset As ClsAsset
@@ -385,9 +375,11 @@ Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As
     For Each Asset In DBAssets
         
         DBAssetNo = Asset.AssetNo
-        DBAssetDescription = Asset.Description
         
-        PreBuildCheck = "Pass"
+        Debug.Print DBAssetNo
+        If DBAssetNo = 1822 Then Stop
+        
+        DBAssetDescription = Asset.Description
         
         If ShtAssets(CStr(DBAssetNo)) Is Nothing Then
             AddToErrorLog DBAssetNo, DBAssetDescription & " will be deleted from database"
@@ -399,13 +391,14 @@ Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As
         End If
     Next
 
+    PreBuildCheck = True
 
 Exit Function
 
 ErrorExit:
 
 '    ***CleanUpCode***
-    PreBuildCheck = "Error"
+    PreBuildCheck = False
 
 Exit Function
 
@@ -431,22 +424,17 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
     On Error GoTo ErrorHandler
 
     For i = 1 To MaxAssetNo
-        Debug.Print "ShtAssets.AssetNo: " & i
             
         Set ShtAsset = ShtAssets(CStr(i))
         Set DBAsset = DBAssets(CStr(i))
         
         If ShtAsset Is Nothing Then
-            If Not DBAsset Is Nothing Then DBAsset.DBDelete
+            If Not DBAsset Is Nothing Then DBAsset.DBDelete True
             Else
             ShtAsset.DBSave
         End If
         
-        Debug.Print
     Next
-
-
-
 
     CopyAssetFile = True
 
@@ -482,7 +470,6 @@ Private Function ValidateAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets
     On Error GoTo ErrorHandler
 
     For i = 1 To MaxAssetNo
-        Debug.Print "ShtAssets.AssetNo: " & i
         
         Set ShtAsset = ShtAssets(CStr(i))
         Set DBAsset = DBAssets(CStr(i))
@@ -553,6 +540,9 @@ Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
 
     ErrorCount = ErrorCount + 1
     
+    ReDim ErrorLog(1 To ErrorCount)
+    
     ErrorLog(ErrorCount) = "Asset No " & AssetNo & " - " & StrError
+    Debug.Print "Asset No " & AssetNo & " - " & StrError
 
 End Sub

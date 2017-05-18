@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Change location to string
 ' v0,2 - Trimmed values from Database
+' v0,3 - Temporary Supplier strings instead of classes
 '---------------------------------------------------------------
-' Date - 17 May 17
+' Date - 18 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -42,8 +43,8 @@ Private pMaxAmount As Integer
 Private pOrderLevel As Integer
 Private pLeadTime As Integer
 Private pStatus As EnumAssetStatus
-Private pSupplier1 As ClsSupplier
-Private pSupplier2 As ClsSupplier
+Private pSupplier1 As String
+Private pSupplier2 As String
 Private pKeywords As String
 Private pAllowedOrderReasons As String
 Private pAllocationType As EnumAllocationType
@@ -226,21 +227,21 @@ Public Property Let Status(ByVal VnewValue As EnumAssetStatus)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Supplier1() As ClsSupplier
-    Set Supplier1 = pSupplier1
+Public Property Get Supplier1() As String
+    Supplier1 = pSupplier1
 End Property
 
-Public Property Let Supplier1(ByVal VnewValue As ClsSupplier)
-    Set pSupplier1 = VnewValue
+Public Property Let Supplier1(ByVal VnewValue As String)
+    pSupplier1 = VnewValue
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Supplier2() As ClsSupplier
-    Set Supplier2 = pSupplier2
+Public Property Get Supplier2() As String
+    Supplier2 = pSupplier2
 End Property
 
-Public Property Let Supplier2(ByVal VnewValue As ClsSupplier)
-    Set pSupplier2 = VnewValue
+Public Property Let Supplier2(ByVal VnewValue As String)
+    pSupplier2 = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -325,8 +326,8 @@ Public Sub DBGet(AssetNo As Integer)
             If Not IsNull(!OrderLevel) Then pOrderLevel = Trim(!OrderLevel)
             If Not IsNull(!LeadTime) Then pLeadTime = Trim(!LeadTime)
             If Not IsNull(!Status) Then pStatus = Trim(!Status)
-'            If Not IsNull(!Supplier1) Then pSupplier1 = Trim(!Supplier1)
-'            If Not IsNull(!Supplier2) Then pSupplier2 = Trim(!Supplier2)
+            If Not IsNull(!Supplier1) Then pSupplier1 = Trim(!Supplier1)
+            If Not IsNull(!Supplier2) Then pSupplier2 = Trim(!Supplier2)
             If Not IsNull(!Keywords) Then pKeywords = Trim(!Keywords)
             If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = Trim(!AllowedOrderReasons)
             If Not IsNull(!AllocationType) Then pAllocationType = Trim(!AllocationType)
@@ -382,8 +383,8 @@ Public Sub DBSave()
         !OrderLevel = pOrderLevel
         !LeadTime = pLeadTime
         !Status = pStatus
-'        !Supplier1 = pSupplier1
-'        !Supplier2 = pSupplier2
+        !Supplier1 = pSupplier1
+        !Supplier2 = pSupplier2
         !Keywords = pKeywords
         !AllowedOrderReasons = pAllowedOrderReasons
         !AllocationType = pAllocationType
@@ -445,15 +446,11 @@ End Function
 
 ' ===============================================================
 Private Sub Class_Initialize()
-    Set pSupplier1 = New ClsSupplier
-    Set pSupplier2 = New ClsSupplier
 
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    Set pSupplier1 = Nothing
-    Set pSupplier2 = Nothing
 
 End Sub
 
