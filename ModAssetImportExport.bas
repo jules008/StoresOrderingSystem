@@ -3,7 +3,7 @@ Attribute VB_Name = "ModAssetImportExport"
 ' Module ModAssetImportExport
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 18 May 17
+' Date - 19 May 17
 '===============================================================
 
 Option Explicit
@@ -40,9 +40,20 @@ Private Sub ImportAssetFile()
 
 '    AssetFileLoc = OpenAssetFile
     
+    DBConnect
+    
     If AssetFileLoc = "Error" Then Err.Raise HANDLED_ERROR
     
     AssetFileLoc = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Data\tblasset.csv"
+    
+    'open workbook and sort by asset no
+    Application.DisplayAlerts = False
+    
+    Workbooks.Open AssetFileLoc
+    ActiveWorkbook.ActiveSheet.Range("A:Z").Sort key1:=Range("A2"), Header:=xlYes
+    ActiveWorkbook.Close savechanges:=True
+    
+    Application.DisplayAlerts = True
     
     AssetFile = FreeFile()
         
@@ -91,7 +102,7 @@ Private Sub ImportAssetFile()
     MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
     Stop
     
-            If Not CopyAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
+    If Not CopyAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
             
     MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
     Stop
@@ -110,6 +121,8 @@ Private Sub ImportAssetFile()
 Exit Sub
 
 ErrorExit:
+    
+    Application.DisplayAlerts = True
 
 '    ***CleanUpCode***
     Set ShtAssets = Nothing
@@ -137,6 +150,8 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     Dim TestValue As String
     Dim TestString() As String
     Dim AssetNo As String
+    Static PrevAssetNo As Integer
+    Dim PassGenericTests As Boolean
     
     Const StrPROCEDURE As String = "ParseAsset()"
     
@@ -144,77 +159,87 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     
     AssetNo = AssetData(0)
     
+    PassGenericTests = True
+    
+    'generic tests first
     If UBound(AssetData) < 25 Then
-        i = 25
         AddToErrorLog AssetNo, "Incorrect use of commas"
+        PassGenericTests = False
     End If
     
-    For i = 0 To 25
-    
-        TestValue = AssetData(i)
-        
-        
-        'generic tests first
-        If InStr(TestValue, "'") <> 0 Then AddToErrorLog AssetData(0), "Found apostrophe"
+    If AssetNo = PrevAssetNo Then
+        AddToErrorLog AssetNo, "Duplicate Asset No"
+        PassGenericTests = False
+    End If
 
-        Select Case i
-            Case Is = 0
+    If AssetData(25) <> "!" Then AddToErrorLog AssetNo, "Number of columns incorrect, check use of commas"
+    
+    If PassGenericTests Then
+        For i = 0 To 25
+    
+            TestValue = AssetData(i)
+            
+            If InStr(TestValue, "'") <> 0 Then
+                AddToErrorLog AssetData(0), "Found apostrophe"
+                PassGenericTests = False
+            End If
+            
+            Select Case i
+                Case Is = 0
+                            
+                Case Is = 1
+                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Allocation Type invalid"
+                    If TestValue < 0 Or TestValue > 2 Then AddToErrorLog AssetData(0), "Allocation Type invalid"
+                Case Is = 4
+                    If IsNumeric(TestValue) Then
+                        If TestValue < 0 Then AddToErrorLog AssetData(0), "Error in Quantity"
+                    Else
+                        If TestValue <> "" Then AddToErrorLog AssetData(0), "Error in Quantity"
+                    End If
         
-'** add check to ensure unique numeric key"
-            
-            
-            Case Is = 1
-                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Allocation Type invalid"
-                If TestValue < 0 Or TestValue > 2 Then AddToErrorLog AssetData(0), "Allocation Type invalid"
-            Case Is = 4
-                If IsNumeric(TestValue) Then
-                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Error in Quantity"
-                Else
-                    If TestValue <> "" Then AddToErrorLog AssetData(0), "Error in Quantity"
-                End If
-    
-            Case Is = 5
-                If TestValue = "" Then AddToErrorLog AssetData(0), "Category 1 cannot be empty"
-    
-            Case Is = 11
-                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Min Amount"
-                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Min Amount"
-            
-            Case Is = 12
-                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Max Amount"
-                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Max Amount"
-            
-            Case Is = 13
-                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Order Levels"
-                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Order Levels"
-            
-            Case Is = 16
-                
-                If Len(TestValue) <> 13 Then AddToErrorLog AssetData(0), "Length of Allowed Reason string incorrect"
-                
-                TestString = Split(TestValue, ":")
-                
-                If TestString(0) <> "0" And TestString(0) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(1) <> "0" And TestString(1) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(2) <> "0" And TestString(2) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(3) <> "0" And TestString(3) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(4) <> "0" And TestString(4) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(5) <> "0" And TestString(5) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-                If TestString(6) <> "0" And TestString(6) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
-    
-            Case Is = 22
-                If TestValue <> "" Then
-                If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
-                If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
-                End If
-            
-            Case Is = 25
-                If TestValue <> "!" Then AddToErrorLog AssetData(0), "Number of columns incorrect, check use of commas"
-            
-        End Select
+                Case Is = 5
+                    If TestValue = "" Then AddToErrorLog AssetData(0), "Category 1 cannot be empty"
         
+                Case Is = 11
+                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Min Amount"
+                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Min Amount"
+                
+                Case Is = 12
+                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Max Amount"
+                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Max Amount"
+                
+                Case Is = 13
+                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Order Levels"
+                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Order Levels"
+                
+                Case Is = 16
+                    
+                    If Len(TestValue) <> 13 Then AddToErrorLog AssetData(0), "Length of Allowed Reason string incorrect"
+                    
+                    TestString = Split(TestValue, ":")
+                    
+                    If TestString(0) <> "0" And TestString(0) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(1) <> "0" And TestString(1) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(2) <> "0" And TestString(2) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(3) <> "0" And TestString(3) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(4) <> "0" And TestString(4) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(5) <> "0" And TestString(5) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+                    If TestString(6) <> "0" And TestString(6) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
+        
+                Case Is = 22
+                    If TestValue <> "" Then
+                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
+                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
+                    End If
+                
+            End Select
         Next
-        ParseAsset = True
+    End If
+    
+    PrevAssetNo = AssetNo
+    
+    ParseAsset = True
+
 Exit Function
         
 ValidationError:
