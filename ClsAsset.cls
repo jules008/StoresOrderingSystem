@@ -11,8 +11,11 @@ Attribute VB_Exposed = False
 ' Class ClsAsset
 ' v0,0 - Initial Version
 ' v0,1 - Change location to string
+' v0,2 - Trimmed values from Database
+' v0,3 - Temporary Supplier strings instead of classes
+' v0,4 - Removed deleted property and changes for Asset Import
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 18 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -23,7 +26,6 @@ Attribute VB_Exposed = False
 '===============================================================
 
 Option Explicit
-Private pDeleted As Date
 Private pAssetNo As Integer
 Private pBrand As String
 Private pDescription As String
@@ -41,23 +43,14 @@ Private pMaxAmount As Integer
 Private pOrderLevel As Integer
 Private pLeadTime As Integer
 Private pStatus As EnumAssetStatus
-Private pSupplier1 As ClsSupplier
-Private pSupplier2 As ClsSupplier
+Private pSupplier1 As String
+Private pSupplier2 As String
 Private pKeywords As String
 Private pAllowedOrderReasons As String
 Private pAllocationType As EnumAllocationType
 Private pLocation As String
 Private pAdditInfo As String
 Private pNoOrderMessage As String
-
-'---------------------------------------------------------------
-Public Property Get Deleted() As Date
-    Deleted = pDeleted
-End Property
-
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
-End Property
 
 '---------------------------------------------------------------
 Public Property Get AssetNo() As Integer
@@ -225,21 +218,21 @@ Public Property Let Status(ByVal VnewValue As EnumAssetStatus)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Supplier1() As ClsSupplier
-    Set Supplier1 = pSupplier1
+Public Property Get Supplier1() As String
+    Supplier1 = pSupplier1
 End Property
 
-Public Property Let Supplier1(ByVal VnewValue As ClsSupplier)
-    Set pSupplier1 = VnewValue
+Public Property Let Supplier1(ByVal VnewValue As String)
+    pSupplier1 = VnewValue
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Supplier2() As ClsSupplier
-    Set Supplier2 = pSupplier2
+Public Property Get Supplier2() As String
+    Supplier2 = pSupplier2
 End Property
 
-Public Property Let Supplier2(ByVal VnewValue As ClsSupplier)
-    Set pSupplier2 = VnewValue
+Public Property Let Supplier2(ByVal VnewValue As String)
+    pSupplier2 = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -304,34 +297,33 @@ End Property
 Public Sub DBGet(AssetNo As Integer)
     Dim RstAsset As Recordset
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & AssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & AssetNo)
     With RstAsset
         If .RecordCount > 0 Then
-            If Not IsNull(!Deleted) Then pDeleted = !Deleted
-            If Not IsNull(!AssetNo) Then pAssetNo = !AssetNo
-            If Not IsNull(!Brand) Then pBrand = !Brand
-            If Not IsNull(!Description) Then pDescription = !Description
-'            If Not IsNull(!Cost) Then pCost = !Cost
-            If Not IsNull(!QtyInStock) Then QtyInStock = !QtyInStock
-            If Not IsNull(!Category1) Then pCategory1 = !Category1
-            If Not IsNull(!Category2) Then pCategory2 = !Category2
-            If Not IsNull(!Category3) Then pCategory3 = !Category3
-            If Not IsNull(!Size1) Then pSize1 = !Size1
-            If Not IsNull(!Size2) Then pSize2 = !Size2
-            If Not IsNull(!PurchaseUnit) Then pPurchaseUnit = !PurchaseUnit
-            If Not IsNull(!MinAmount) Then pMinAmount = !MinAmount
-            If Not IsNull(!MaxAmount) Then pMaxAmount = !MaxAmount
-            If Not IsNull(!OrderLevel) Then pOrderLevel = !OrderLevel
-            If Not IsNull(!LeadTime) Then pLeadTime = !LeadTime
-            If Not IsNull(!Status) Then pStatus = !Status
-'            If Not IsNull(!Supplier1) Then pSupplier1 = !Supplier1
-'            If Not IsNull(!Supplier2) Then pSupplier2 = !Supplier2
-            If Not IsNull(!Keywords) Then pKeywords = !Keywords
-            If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = !AllowedOrderReasons
-            If Not IsNull(!AllocationType) Then pAllocationType = !AllocationType
-            If Not IsNull(!Location) Then pLocation = !Location
-            If Not IsNull(!AdditInfo) Then pAdditInfo = !AdditInfo
-            If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = !NoOrderMessage Else pNoOrderMessage = ""
+            If Not IsNull(!AssetNo) Then pAssetNo = Trim(!AssetNo)
+            If Not IsNull(!Brand) Then pBrand = Trim(!Brand)
+            If Not IsNull(!Description) Then pDescription = Trim(!Description)
+            If Not IsNull(!cost) Then pCost = Trim(!cost)
+            If Not IsNull(!QtyInStock) Then QtyInStock = Trim(!QtyInStock)
+            If Not IsNull(!Category1) Then pCategory1 = Trim(!Category1)
+            If Not IsNull(!Category2) Then pCategory2 = Trim(!Category2)
+            If Not IsNull(!Category3) Then pCategory3 = Trim(!Category3)
+            If Not IsNull(!Size1) Then pSize1 = Trim(!Size1)
+            If Not IsNull(!Size2) Then pSize2 = Trim(!Size2)
+            If Not IsNull(!PurchaseUnit) Then pPurchaseUnit = Trim(!PurchaseUnit)
+            If Not IsNull(!MinAmount) Then pMinAmount = Trim(!MinAmount)
+            If Not IsNull(!MaxAmount) Then pMaxAmount = Trim(!MaxAmount)
+            If Not IsNull(!OrderLevel) Then pOrderLevel = Trim(!OrderLevel)
+            If Not IsNull(!LeadTime) Then pLeadTime = Trim(!LeadTime)
+            If Not IsNull(!Status) Then pStatus = Trim(!Status)
+            If Not IsNull(!Supplier1) Then pSupplier1 = Trim(!Supplier1)
+            If Not IsNull(!Supplier2) Then pSupplier2 = Trim(!Supplier2)
+            If Not IsNull(!Keywords) Then pKeywords = Trim(!Keywords)
+            If Not IsNull(!AllowedOrderReasons) Then pAllowedOrderReasons = Trim(!AllowedOrderReasons)
+            If Not IsNull(!AllocationType) Then pAllocationType = Trim(!AllocationType)
+            If Not IsNull(!Location) Then pLocation = Trim(!Location)
+            If Not IsNull(!AdditInfo) Then pAdditInfo = Trim(!AdditInfo)
+            If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = Trim(!NoOrderMessage) Else pNoOrderMessage = ""
 
 '            pSupplier1.DBGet
 '            pSupplier2.DBGet
@@ -344,12 +336,12 @@ End Sub
 ' Method DBSave
 ' Saves class to Database
 '---------------------------------------------------------------
-Public Sub DBSave()
+Public Sub DBSave(Optional OWAssetNo As Integer)
     Dim RstAsset As Recordset
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(AssetNo) FROM TblAsset ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
@@ -361,7 +353,15 @@ Public Sub DBSave()
     With RstAsset
         If .RecordCount = 0 Then
             .addnew
+            
+            'if an asset no has been passed, then overwrite that asset in the database, otherwise
+            'create new record
+            If OWAssetNo <> 0 Then
+                pAssetNo = OWAssetNo
+            Else
             pAssetNo = LastNo + 1
+            End If
+            
             !AssetNo = pAssetNo
         Else
             .Edit
@@ -381,8 +381,8 @@ Public Sub DBSave()
         !OrderLevel = pOrderLevel
         !LeadTime = pLeadTime
         !Status = pStatus
-'        !Supplier1 = pSupplier1
-'        !Supplier2 = pSupplier2
+        !Supplier1 = pSupplier1
+        !Supplier2 = pSupplier2
         !Keywords = pKeywords
         !AllowedOrderReasons = pAllowedOrderReasons
         !AllocationType = pAllocationType
@@ -398,23 +398,17 @@ End Sub
 
 ' ===============================================================
 ' Method DBDelete(Optional FullDelete As Boolean)
-' Marks record as deleted or fully deletes
+' Fully deletes record from DB
 '---------------------------------------------------------------
-Public Sub DBDelete(Optional FullDelete As Boolean)
+Public Sub DBDelete()
     Dim RstAsset As Recordset
     Dim i As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo & " AND Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo)
     With RstAsset
         For i = .RecordCount To 1 Step -1
-            If FullDelete Then
                 .Delete
                 .MoveNext
-            Else
-                .Edit
-                !Deleted = Now
-                .Update
-            End If
         Next
     End With
 
@@ -444,15 +438,11 @@ End Function
 
 ' ===============================================================
 Private Sub Class_Initialize()
-    Set pSupplier1 = New ClsSupplier
-    Set pSupplier2 = New ClsSupplier
 
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    Set pSupplier1 = Nothing
-    Set pSupplier2 = Nothing
 
 End Sub
 

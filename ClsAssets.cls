@@ -11,8 +11,11 @@ Attribute VB_Exposed = False
 ' Class ClsAssets
 ' v0,0 - Initial Version
 ' v0,1 - Improved size list counting to prevent empty size lists
+' v0,2 - Added GetAllAssets function
+' v0,3 - Removed GetAllAssets and added MaxAssetNo property
+' v0,4 - Delete collection on terminate
 '---------------------------------------------------------------
-' Date - 16 Apr 17
+' Date - 18 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -30,6 +33,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 Private pAssets As Collection
+Private pMaxAssetNo As Integer
 
 '---------------------------------------------------------------
 
@@ -37,6 +41,15 @@ Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = pAssets.[_NewEnum]
 End Function
+
+'---------------------------------------------------------------
+Public Property Get MaxAssetNo() As Integer
+    MaxAssetNo = pMaxAssetNo
+End Property
+
+Public Property Let MaxAssetNo(ByVal vNewValue As Integer)
+    pMaxAssetNo = vNewValue
+End Property
 
 ' ===============================================================
 ' Method FindItem
@@ -56,6 +69,7 @@ End Function
 
 Public Sub AddItem(Asset As ClsAsset)
     pAssets.Add Asset, Key:=CStr(Asset.AssetNo)
+    If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
 End Sub
 
 ' ===============================================================
@@ -86,7 +100,7 @@ Public Sub GetCollection()
     Dim Asset As ClsAsset
     Dim i As Integer
 
-    Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE Deleted IS NULL")
+    Set RstAsset = ModDatabase.SQLQuery("TblAsset")
     With RstAsset
         If .RecordCount > 0 Then
             .MoveFirst
@@ -250,8 +264,18 @@ End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    Set pAssets = Nothing
+    Dim Asset As ClsAsset
 
+    For Each Asset In pAssets
+        pAssets.Remove CStr(Asset.AssetNo)
+        Set Asset = Nothing
+    Next
+    
+    Set pAssets = Nothing
 End Sub
 
 '---------------------------------------------------------------
+
+
+
+

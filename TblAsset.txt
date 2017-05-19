@@ -19,7 +19,6 @@ AdditInfo,  dbText
 NoOrderMessage,  dbText
 Location,  dbText
 Status,  dbText
-Deleted,  dbText
 Cost,  dbDouble
 Supplier1,  dbText
 Supplier2,  dbText

@@ -4,8 +4,10 @@ Attribute VB_Name = "ModDatabase"
 ' v0,0 - Initial Version
 ' v0,1 - Improved message box
 ' v0,2 - Added GetDBVer function
+' v0,33 - Asset Import functionality
+' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 02 May 17
+' Date - 17 May 17
 '===============================================================
 
 Option Explicit
@@ -203,83 +205,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' ImportAssetFile
-' Imports the Asset file into the database
-' ---------------------------------------------------------------
-Private Sub ImportAssetFile()
-    Dim DlgOpen As FileDialog
-    Dim LineInputString As String
-    Dim AssetData() As String
-    Dim AssetFileLoc As String
-    Dim NoFiles As Integer
-    Dim AssetFile As Integer
-    Dim RstAssets As Recordset
-    Dim i As Integer
-    
-    Const StrPROCEDURE As String = "ImportAssetFile()"
-
-    On Error GoTo ErrorHandler
-    Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
-    
-     With DlgOpen
-        .Filters.Clear
-        .Filters.Add "CSV Files (*.csv)", "*.csv"
-        .AllowMultiSelect = False
-        .Title = "Select Spreadsheet of Doom"
-        .Show
-    End With
-    
-    'get no files selected
-    NoFiles = DlgOpen.SelectedItems.Count
-    
-    'exit if no files selected
-    If NoFiles = 0 Then Err.Raise NO_FILE_SELECTED
-  
-    AssetFileLoc = DlgOpen.SelectedItems(1)
-
-    AssetFile = FreeFile()
-    
-    If Dir(AssetFileLoc) = "" Then Err.Raise NO_FILE_SELECTED
-    
-    'get Asset Recordset
-    Set RstAssets = SQLQuery("TblAssets")
-    
-    Open AssetFileLoc For Input As AssetFile
-    
-    While Not EOF(AssetFile)
-        Line Input #AssetFile, LineInputString
-        AssetData = Split(LineInputString, ",")
-        i = i + 1
-        
-        
-        
-    Wend
-    
-    Close #AssetFile
-
-
-
-
-
-    Set RstAssets = Nothing
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-    Set RstAssets = Nothing
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
 ' UpdateDBScript
 ' Script to update DB
 ' ---------------------------------------------------------------
@@ -293,41 +218,45 @@ Public Sub UpdateDBScript()
     
     Initialise
     
-    Set TableDef = DB.CreateTableDef("TblDBVersion")
-    
-    With TableDef
-        
-        Set Fld = .CreateField("Version", dbText)
-
-        .Fields.Append Fld
-        DB.TableDefs.Append TableDef
-        
-    End With
+    DB.Execute "ALTER TABLE TblAsset DROP COLUMN Deleted"
         
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
-        .AddNew
-        .Fields(0) = "v0,31"
+        .Edit
+        .Fields(0) = "v0,32"
         .Update
     End With
     
-    Set TableDef = DB.TableDefs("TblAsset")
+    Set RstTable = Nothing
+    Set TableDef = Nothing
+    Set Fld = Nothing
     
-    With TableDef
+End Sub
         
-        For Each Ind In .Indexes
-            Debug.Print Ind.Name
+' ===============================================================
+' UpdateDBScriptUndo
+' Script to update DB
+' ---------------------------------------------------------------
+Public Sub UpdateDBScriptUndo()
+    Dim TableDef As DAO.TableDef
+    Dim Ind As DAO.Index
+    Dim RstTable As Recordset
+    Dim i As Integer
         
-        Next
+    Dim Fld As DAO.Field
         
-        With .Indexes
-            .Delete "PrimaryKey"
-            .Delete "ID"
-        End With
-        .Fields.Delete "ID"
+    Initialise
         
         
+    DB.Execute "ALTER TABLE TblAsset ADD COLUMN Deleted Datetime"
+            
+    Set RstTable = SQLQuery("TblDBVersion")
+    
+    With RstTable
+        .Edit
+        .Fields(0) = "v0,31"
+        .Update
     End With
     
     Set RstTable = Nothing
@@ -370,3 +299,4 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+

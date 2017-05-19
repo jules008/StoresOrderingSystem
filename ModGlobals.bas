@@ -9,8 +9,10 @@ Attribute VB_Name = "ModGlobals"
 ' v0,5 - Added Deleted Order Status
 ' v0,6 - Added No File Selected Error
 ' v0,61 - Added DB Version constant
+' v0,7 - Added Import Error
+' v0,8 - DB Change
 '---------------------------------------------------------------
-' Date - 02 May 17
+' Date - 18 May 17
 '===============================================================
 
 Option Explicit
@@ -24,7 +26,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,31"
+Public Const DB_VER = "v0,32"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
@@ -50,6 +52,7 @@ Public Const NO_INI_FILE As Long = 1016
 Public Const NO_STOCK_AVAIL As Long = 1017
 Public Const DB_WRONG_VER As Long = 1018
 Public Const NO_FILE_SELECTED As Long = 1018
+Public Const IMPORT_ERROR As Long = 1019
 
 Public Const NO_ASSET_ON_ORDER As Long = 1501
 Public Const NO_LINE_ITEM As Long = 1502
