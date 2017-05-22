@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,3 - Changes for disable line item functionality
 ' v0,4 - Increased Order retrieval performance
 ' v0,5 - Now passing OnAction as paramater
+' v0,6 - Delivery Button and add icons
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 20 May 17
 '===============================================================
 
 Option Explicit
@@ -36,6 +37,11 @@ Private Function BuildUserMangtBtn() As Boolean
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "User Management"
+        .Icon = ShtMain.Shapes("TEMPLATE - User").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
     End With
 
     MainScreen.Menu.AddItem BtnUserMangt
@@ -79,6 +85,11 @@ Private Function BuildOrderSwitchBtn() As Boolean
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Show Closed Orders"
+        .Icon = ShtMain.Shapes("TEMPLATE - Closed Orders").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
     End With
 
     MainScreen.Menu.AddItem BtnOrderSwitch
@@ -122,6 +133,11 @@ Private Function BuildRemoteOrderBtn() As Boolean
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "New Phone Order"
+        .Icon = ShtMain.Shapes("TEMPLATE - Phone").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
     End With
 
     MainScreen.Menu.AddItem BtnRemoteOrder
@@ -144,6 +160,54 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' BuildDeliveryBtn
+' Adds the new phone order buttomn to the screen
+' ---------------------------------------------------------------
+Private Function BuildDeliveryBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildDeliveryBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnDelivery
+        
+        .Height = BTN_DELIVERY_HEIGHT
+        .Left = BTN_DELIVERY_LEFT
+        .Top = BTN_DELIVERY_TOP
+        .Width = BTN_DELIVERY_WIDTH
+        .Name = "BtnDelivery"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(11)'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Add Delivery"
+        .Icon = ShtMain.Shapes("TEMPLATE - Delivery").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
+    
+    End With
+
+    MainScreen.Menu.AddItem BtnDelivery
+    
+    BuildDeliveryBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildDeliveryBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' BuildStoresFrame1
@@ -237,24 +301,32 @@ Public Function BuildStoresScreen() As Boolean
     Set BtnUserMangt = New ClsUIMenuItem
     Set BtnOrderSwitch = New ClsUIMenuItem
     Set BtnRemoteOrder = New ClsUIMenuItem
+    Set BtnDelivery = New ClsUIMenuItem
+    
+    ModLibrary.PerfSettingsOn
     
     If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildStoresFrame1 Then Err.Raise HANDLED_ERROR
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
     If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
     If Not BuildRemoteOrderBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildDeliveryBtn Then Err.Raise HANDLED_ERROR
     If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
     
+    ModLibrary.PerfSettingsOff
     
     BuildStoresScreen = True
        
 Exit Function
 
 ErrorExit:
+    ModLibrary.PerfSettingsOff
+
     Set StoresFrame1 = Nothing
     Set BtnUserMangt = Nothing
     Set BtnOrderSwitch = Nothing
     Set BtnRemoteOrder = Nothing
+    Set BtnDelivery = Nothing
     Terminate
     
     BuildStoresScreen = False
@@ -294,6 +366,12 @@ Restart:
                 If Not BtnOrderSwitchSel Then Err.Raise HANDLED_ERROR
         
             Case EnumRemoteOrder
+                
+                If Not FrmPerson.ShowForm(True) Then Err.Raise HANDLED_ERROR
+                
+                If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+            
+            Case EnumDeliveryBtn
                 
                 If Not FrmPerson.ShowForm(True) Then Err.Raise HANDLED_ERROR
                 

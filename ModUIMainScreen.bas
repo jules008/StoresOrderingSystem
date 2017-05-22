@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,1 - added performance mode switching
 ' v0,22 - Build Right frame order list
 ' v0,3 - Build Left Frame
+' v0,4 - Turned performance settings off on error
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 20 May 17
 '===============================================================
 
 Option Explicit
@@ -236,6 +237,8 @@ Public Function BuildMainScreen() As Boolean
 Exit Function
 
 ErrorExit:
+    
+    ModLibrary.PerfSettingsOff
 
     BuildMainScreen = False
     

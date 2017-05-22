@@ -11,8 +11,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,61 - Added DB Version constant
 ' v0,7 - Added Import Error
 ' v0,8 - DB Change
+' v0,9 - Delivery Button
 '---------------------------------------------------------------
-' Date - 18 May 17
+' Date - 20 May 17
 '===============================================================
 
 Option Explicit
@@ -26,7 +27,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,32"
+Public Const DB_VER = "v0,33"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
@@ -99,6 +100,7 @@ Public BtnNewOrder As ClsUIMenuItem
 Public BtnUserMangt As ClsUIMenuItem
 Public BtnOrderSwitch As ClsUIMenuItem
 Public BtnRemoteOrder As ClsUIMenuItem
+Public BtnDelivery As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -302,6 +304,7 @@ Enum EnumBtnNo
     EnumUserMngt = 8
     EnumOrderSwitch = 9
     EnumRemoteOrder = 10
+    EnumDeliveryBtn = 11
 End Enum
 
 ' ===============================================================

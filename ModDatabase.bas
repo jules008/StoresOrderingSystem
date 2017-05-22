@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 17 May 17
+' Date - 20 May 17
 '===============================================================
 
 Option Explicit
@@ -216,15 +216,20 @@ Public Sub UpdateDBScript()
     
     Dim Fld As DAO.Field
     
-    Initialise
+    DBConnect
     
-    DB.Execute "ALTER TABLE TblAsset DROP COLUMN Deleted"
+    DB.Execute "CREATE TABLE TblDelivery"
+    DB.Execute "ALTER TABLE TblDelivery ADD COLUMN DeliveryNo INT "
+    DB.Execute "ALTER TABLE TblDelivery ADD COLUMN SupplierName CHAR [50]"
+    DB.Execute "ALTER TABLE TblDelivery ADD COLUMN DeliveryDate DATE"
+    DB.Execute "ALTER TABLE TblDelivery ADD COLUMN AssetNo INT"
+    DB.Execute "ALTER TABLE TblDelivery ADD COLUMN Quantity INT"
         
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v0,32"
+        .Fields(0) = "v0,33"
         .Update
     End With
     
@@ -246,16 +251,15 @@ Public Sub UpdateDBScriptUndo()
         
     Dim Fld As DAO.Field
         
-    Initialise
+    DBConnect
         
-        
-    DB.Execute "ALTER TABLE TblAsset ADD COLUMN Deleted Datetime"
+    DB.Execute "DROP TABLE TblDelivery"
             
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v0,31"
+        .Fields(0) = "v0,32"
         .Update
     End With
     

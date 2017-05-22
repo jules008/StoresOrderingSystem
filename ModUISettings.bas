@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,2 - Added Remote Order Button
 ' v0,3 - Right Frame Order List
 ' v0,4 - Left Frame Order List
+' v0,5 - Delivery button and tidy up
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 20 May 17
 '===============================================================
 
 Option Explicit
@@ -136,6 +137,11 @@ Public Const BTN_REMOTE_ORDER_WIDTH As Integer = 175
 Public Const BTN_REMOTE_ORDER_LEFT As Integer = 850
 Public Const BTN_REMOTE_ORDER_TOP As Integer = 100
 
+Public Const BTN_DELIVERY_HEIGHT As Integer = 30
+Public Const BTN_DELIVERY_WIDTH As Integer = 175
+Public Const BTN_DELIVERY_LEFT As Integer = 850
+Public Const BTN_DELIVERY_TOP As Integer = 140
+
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550
 Public Const ORDER_LINEITEM_LEFT As Integer = 25
@@ -144,19 +150,6 @@ Public Const ORDER_LINEITEM_NOCOLS As Integer = 6
 Public Const ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100:100:100"
 Public Const ORDER_LINEITEM_ROWOFFSET As Integer = 20
 Public Const ORDER_LINEITEM_TITLES As String = "Order No:No of Items:Requested By:Station:Assigned To:Order Status"
-
-
-' ---------------------------------------------------------------
-' New Order Workflow
-' ---------------------------------------------------------------
-Public Const WF_MAINSCREEN_TOP As Integer = 70
-Public Const WF_MAINSCREEN_LEFT As Integer = 100
-Public Const WF_MAINSCREEN_HEIGHT As Integer = 500
-Public Const WF_MAINSCREEN_WIDTH As Integer = 800
-Public Const WF_CLOSE_ICON_TOP As Integer = 5
-Public Const WF_CLOSE_ICON_LEFT As Integer = 5
-Public Const WF_CLOSE_ICON_HEIGHT As Integer = 10
-Public Const WF_CLOSE_ICON_WIDTH As Integer = 10
 
 ' ===============================================================
 ' Style Declarations
@@ -276,23 +269,4 @@ Public Const BTN_NEWORDER_FONT_COLOUR As Long = COLOUR_2
 Public Const BTN_NEWORDER_FONT_BOLD As Boolean = True
 Public Const BTN_NEWORDER_FONT_X_JUST As Integer = xlHAlignCenter
 Public Const BTN_NEWORDER_FONT_Y_JUST As Integer = xlVAlignCenter
-
-' ---------------------------------------------------------------
-' Main Screen
-' ---------------------------------------------------------------
-
-' ---------------------------------------------------------------
-' New Order Workflow
-' ---------------------------------------------------------------
-Public Const WF_MAINSCREEN_BORDER_WIDTH As Long = 2
-Public Const WF_MAINSCREEN_BORDER_COLOUR As Long = COLOUR_1
-Public Const WF_MAINSCREEN_FILL_1 As Long = COLOUR_8
-Public Const WF_MAINSCREEN_FILL_2 As Long = COLOUR_8
-Public Const WF_MAINSCREEN_SHADOW As Long = msoShadow21
-Public Const WF_MAINSCREEN_FONT_STYLE As String = "Calibri"
-Public Const WF_MAINSCREEN_FONT_SIZE As Integer = 36
-Public Const WF_MAINSCREEN_FONT_COLOUR As Long = COLOUR_2
-Public Const WF_MAINSCREEN_FONT_BOLD As Boolean = True
-Public Const WF_MAINSCREEN_FONT_X_JUST As Integer = xlHAlignCenter
-Public Const WF_MAINSCREEN_FONT_Y_JUST As Integer = xlVAlignCenter
 
