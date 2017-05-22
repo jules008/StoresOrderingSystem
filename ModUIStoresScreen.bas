@@ -9,7 +9,7 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,5 - Now passing OnAction as paramater
 ' v0,6 - Delivery Button and add icons
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 22 May 17
 '===============================================================
 
 Option Explicit
@@ -373,7 +373,7 @@ Restart:
             
             Case EnumDeliveryBtn
                 
-                If Not FrmPerson.ShowForm(True) Then Err.Raise HANDLED_ERROR
+                If Not FrmDelivery.ShowForm Then Err.Raise HANDLED_ERROR
                 
                 If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
         End Select

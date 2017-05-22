@@ -1,0 +1,5 @@
+DeliveryNo,  dbLong
+SupplierName,  dbText
+DeliveryDate,  dbDate
+AssetNo,  dbLong
+Quantity,  dbLong

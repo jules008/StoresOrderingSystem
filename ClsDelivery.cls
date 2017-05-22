@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 ' Class ClsDelivery
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 22 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,6 +26,7 @@ Private pDeliveryNo As Integer
 Private pSupplierName As String
 Private pDeliveryDate As Date
 Private pAssetNo As Integer
+Private pAssetDescr As String
 Private pQuantity As Integer
 
 '---------------------------------------------------------------
@@ -80,6 +81,15 @@ End Property
 
 Public Property Let Quantity(ByVal vNewValue As Integer)
     pQuantity = vNewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get AssetDescr() As String
+    AssetDescr = pAssetDescr
+End Property
+
+Public Property Let AssetDescr(ByVal vNewValue As String)
+    pAssetDescr = vNewValue
 End Property
 
 '---------------------------------------------------------------
