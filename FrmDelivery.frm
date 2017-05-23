@@ -1,9 +1,9 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDelivery 
-   ClientHeight    =   10140
+   ClientHeight    =   8925
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   11280
+   ClientWidth     =   9525
    OleObjectBlob   =   "FrmDelivery.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -116,6 +116,7 @@ Private Sub BtnAdd_Click()
     With Delivery
         .AssetNo = Asset.AssetNo
         .AssetDescr = Asset.Description
+        .SupplierName = TxtSupplier
         .DeliveryDate = TxtDate
         .Quantity = TxtQty
         .DBSave
@@ -145,7 +146,9 @@ ErrorExit:
     Set Delivery = Nothing
     Set Assets = Nothing
     Set Asset = Nothing
-'    ***CleanUpCode***
+
+    FormTerminate
+    Terminate
 
 Exit Sub
 
@@ -162,6 +165,14 @@ ErrorHandler:
     Else
         Resume ErrorExit
     End If
+End Sub
+
+' ===============================================================
+' BtnApply_Click
+' Process Delivery
+' ---------------------------------------------------------------
+Private Sub BtnApply_Click()
+    ProcessDelivery
 End Sub
 
 ' ===============================================================
@@ -300,7 +311,8 @@ Exit Sub
 
 ErrorExit:
 
-'    ***CleanUpCode***
+    FormTerminate
+    Terminate
 
 Exit Sub
 
@@ -369,8 +381,10 @@ Exit Function
 
 ErrorExit:
 
-'    ***CleanUpCode***
     ClearSearch = False
+
+    FormTerminate
+    Terminate
 
 Exit Function
 
@@ -668,8 +682,6 @@ Private Sub CmoSize2_Change()
     
     CmoSize2.BackColor = COLOUR_3
     
-'    Asset.DBGet (Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2))
-        
     Set Assets = Nothing
 
 Exit Sub
@@ -782,5 +794,50 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' ProcessDelivery
+' Adds delivery items to stock
+' ---------------------------------------------------------------
+Private Function ProcessDelivery() As Boolean
+    Dim Response As Integer
+    
+    Const StrPROCEDURE As String = "ProcessDelivery()"
 
+    On Error GoTo ErrorHandler
+
+    If Not Deliveries Is Nothing Then
+    
+        Response = MsgBox("Do you want to process the delivery and alter stock details? " & Chr(13) & Chr(13) _
+                            & "Yes - Alter stock" & Chr(13) _
+                            & "No - Save delivery record only, no stock changes", vbInformation + vbYesNo, APP_NAME)
+    
+        If Response = 6 Then
+
+            If Not FrmDeliveryCxs.ShowForm(Deliveries) Then Err.Raise HANDLED_ERROR
+            Set Deliveries = Nothing
+        Else
+            MsgBox "Delivery added to database", vbInformation
+            Unload Me
+            
+        End If
+    End If
+
+    ProcessDelivery = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    ProcessDelivery = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
