@@ -113,6 +113,8 @@ Private Sub BtnAdd_Click()
     
     Asset.DBGet AssetNo
     
+    If Asset Is Nothing Then Err.Raise NO_ASSET_FOUND
+    
     With Delivery
         .AssetNo = Asset.AssetNo
         .AssetDescr = Asset.Description
