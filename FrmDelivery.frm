@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 22 May 17
+' Date - 23 May 17
 '===============================================================
 Option Explicit
 
@@ -35,8 +35,6 @@ Public Function ShowForm() As Boolean
     
     On Error GoTo ErrorHandler
                 
-    If Not PopulateForm Then Err.Raise HANDLED_ERROR
-    
     Show
     ShowForm = True
     
@@ -66,71 +64,6 @@ ErrorHandler:
 End Function
 
 ' ===============================================================
-' PopulateForm
-' Populates form controls
-' ---------------------------------------------------------------
-Private Function PopulateForm() As Boolean
-    Dim Delivery As ClsDelivery
-    Dim Asset As ClsAsset
-    Dim i As Integer
-    
-    Const StrPROCEDURE As String = "PopulateForm()"
-    
-    On Error GoTo ErrorHandler
-    
-    Set Asset = New ClsAsset
-    
-    If Not Asset Is Nothing Then
-        With Asset
-            CmoSize1 = .Size1
-            CmoSize2 = .Size2
-        End With
-    End If
-    
-    Set Delivery = New ClsDelivery
-    
-    With LstOrderItems
-        .Clear
-        i = 0
-        For Each Delivery In Deliveries
-            .AddItem
-            .List(i, 0) = Delivery.AssetDescr
-            .List(i, 1) = "" 'size1
-            .List(i, 2) = "" 'size2
-            .List(i, 3) = Delivery.Quantity
-        
-            i = i + 1
-        Next
-    
-    End With
-    Set Delivery = Nothing
-    Set Asset = Nothing
-    PopulateForm = True
-
-Exit Function
-
-ErrorExit:
-    
-    Set Delivery = Nothing
-    Set Asset = Nothing
-    Set Delivery = Nothing
-    
-    PopulateForm = False
-    
-    FormTerminate
-    Terminate
-
-Exit Function
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-' ===============================================================
 ' FormTerminate
 ' Terminates the form gracefully
 ' ---------------------------------------------------------------
@@ -152,6 +85,8 @@ Private Sub BtnAdd_Click()
     Dim Delivery As ClsDelivery
     Dim Assets As ClsAssets
     Dim Asset As ClsAsset
+    Dim AssetNo As Integer
+    Dim i As Integer
     
     Dim Validation As EnumFormValidation
     
@@ -172,7 +107,12 @@ Private Sub BtnAdd_Click()
     Set Assets = New ClsAssets
     Set Delivery = New ClsDelivery
     
-    Asset.DBGet Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2)
+    AssetNo = Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2)
+    
+    If AssetNo = 0 Then Err.Raise NO_ASSET_FOUND
+    
+    Asset.DBGet AssetNo
+    
     With Delivery
         .AssetNo = Asset.AssetNo
         .AssetDescr = Asset.Description
@@ -181,9 +121,19 @@ Private Sub BtnAdd_Click()
         .DBSave
     End With
 
+    With LstOrderItems
+        i = .ListCount
+        .AddItem
+        .List(i, 0) = Delivery.DeliveryNo
+        .List(i, 1) = Delivery.AssetDescr
+        .List(i, 2) = Asset.Size1
+        .List(i, 3) = Asset.Size2
+        .List(i, 4) = Delivery.Quantity
+    End With
+
     Deliveries.AddItem Delivery
     
-    If Not PopulateForm Then Err.Raise HANDLED_ERROR
+    If Not ClearSearch Then Err.Raise HANDLED_ERROR
     
 GracefulExit:
     Set Delivery = Nothing
@@ -249,20 +199,20 @@ End Sub
 ' Removes selected lineitem
 ' ---------------------------------------------------------------
 Private Sub BtnRemove_Click()
-    ItemNo As Integer
+    Dim ItemNo As Integer
     
     Const StrPROCEDURE As String = "BtnRemove_Click()"
     
     On Error GoTo ErrorHandler
 
-    If LstAssets.ListCount = 0 Then Exit Sub
-    If LstAssets.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
+    If LstOrderItems.ListCount = 0 Then Exit Sub
 
-    With LstAssets
-        ItemNo = .List(.ListIndex, 0)
+    If LstOrderItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
         
-        Deliveries.RemoveItem CStr(ItemNo)
+    With LstOrderItems
+        ItemNo = .List(.ListIndex, 0)
         Deliveries(CStr(ItemNo)).DBDelete
+        Deliveries.RemoveItem CStr(ItemNo)
         
         .RemoveItem (.ListIndex)
         
@@ -292,6 +242,24 @@ ErrorHandler:
     Else
         Resume ErrorExit
     End If
+End Sub
+
+' ===============================================================
+' TxtDate_Change
+' Change event for date txt box
+' ---------------------------------------------------------------
+Private Sub TxtDate_Change()
+    TxtQty.BackColor = COLOUR_3
+
+End Sub
+
+' ===============================================================
+' TxtQty_Change
+' Change event for quantity txt box
+' ---------------------------------------------------------------
+Private Sub TxtQty_Change()
+    TxtQty.BackColor = COLOUR_3
+
 End Sub
 
 ' ===============================================================
@@ -343,6 +311,16 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+' ===============================================================
+' TxtSupplier_Change
+' Change event for supplier txt box
+' ---------------------------------------------------------------
+Private Sub TxtSupplier_Change()
+    TxtSupplier.BackColor = COLOUR_3
+
+End Sub
+
 ' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise
@@ -368,6 +346,42 @@ Private Sub UserForm_Terminate()
 End Sub
 
 ' ===============================================================
+' ClearSearch
+' Clears form ready for new item search
+' ---------------------------------------------------------------
+Private Function ClearSearch() As Boolean
+    Const StrPROCEDURE As String = "ClearSearch()"
+
+    On Error GoTo ErrorHandler
+
+    TxtSearch = ""
+    TxtQty = ""
+    CmoSize1 = ""
+    CmoSize2 = ""
+    CmoSize1.Visible = False
+    CmoSize2.Visible = False
+    LblSize1.Visible = False
+    LblSize2.Visible = False
+
+    ClearSearch = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    ClearSearch = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+' ===============================================================
 ' FormInitialise
 ' initialises controls on form at start up
 ' ---------------------------------------------------------------
@@ -378,18 +392,17 @@ Private Function FormInitialise() As Boolean
 
     Set Deliveries = New ClsDeliveries
 
-    TxtSupplier.SetFocus
-    CmoSize1.Visible = False
-    CmoSize2.Visible = False
-    LblSize1.Visible = False
-    LblSize2.Visible = False
+    If Not ClearSearch Then Err.Raise HANDLED_ERROR
+    
+    If Not ShtLists.RefreshAssetList Then Err.Raise HANDLED_ERROR
 
     With LstHeading
         .AddItem
-        .List(0, 0) = "Asset"
-        .List(0, 1) = "Size 1"
-        .List(0, 2) = "Size 2"
-        .List(0, 3) = "Qty"
+        .List(0, 0) = "Asset No"
+        .List(0, 1) = "Asset"
+        .List(0, 2) = "Size 1"
+        .List(0, 3) = "Size 2"
+        .List(0, 4) = "Qty"
     End With
     
     FormInitialise = True
@@ -424,6 +437,13 @@ Private Function ValidateForm() As EnumFormValidation
     On Error GoTo ErrorHandler
 
     With TxtSearch
+        If .Value = "" Then
+            .BackColor = COLOUR_6
+            ValidateForm = ValidationError
+        End If
+    End With
+    
+    With TxtDate
         If .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
@@ -589,6 +609,8 @@ End Sub
 ' ---------------------------------------------------------------
 Private Sub CmoSize1_Change()
     Dim Assets As ClsAssets
+    Dim StrSize2Arry() As String
+    Dim i As Integer
     
     Const StrPROCEDURE As String = "CmoSize1_Change()"
 
@@ -598,9 +620,19 @@ Private Sub CmoSize1_Change()
     
     CmoSize1.BackColor = COLOUR_3
     
-'    Asset.DBGet (Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2))
-     
     If CmoSize1 = "" Then CmoSize2 = ""
+
+    StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2)
+
+    If UBound(StrSize2Arry) <> LBound(StrSize2Arry) Then
+        LblSize2.Visible = True
+        CmoSize2.Visible = True
+        
+        CmoSize2.Clear
+        For i = LBound(StrSize2Arry) To UBound(StrSize2Arry)
+            CmoSize2.AddItem StrSize2Arry(i)
+        Next
+    End If
 
     Set Assets = Nothing
 Exit Sub

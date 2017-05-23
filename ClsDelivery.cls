@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 ' Class ClsDelivery
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 22 May 17
+' Date - 23 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -160,7 +160,7 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
     Dim RstDelivery As Recordset
     Dim i As Integer
 
-    Set RstDelivery = ModDatabase.SQLQuery("SELECT * FROM TblDelivery WHERE DeliveryNo = " & pDeliveryNo & " AND Deleted IS NULL")
+    Set RstDelivery = ModDatabase.SQLQuery("SELECT * FROM TblDelivery WHERE DeliveryNo = " & pDeliveryNo)
     With RstDelivery
         For i = .RecordCount To 1 Step -1
             .Delete

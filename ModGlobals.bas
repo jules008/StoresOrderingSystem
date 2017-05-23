@@ -13,7 +13,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,8 - DB Change
 ' v0,9 - Delivery Button
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 23 May 17
 '===============================================================
 
 Option Explicit
@@ -63,6 +63,7 @@ Public Const SYSTEM_FAILURE As Long = 1505
 Public Const NO_LOSS_REPORT As Long = 1506
 Public Const NO_USER_AVAILABLE As Long = 1507
 Public Const NO_REQUESTOR As Long = 1508
+Public Const NO_ASSET_FOUND As Long = 1509
 Public Const HANDLED_ERROR As Long = 9999
 Public Const USER_CANCEL As Long = 18
 

@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Added GetAllAssets function
 ' v0,3 - Removed GetAllAssets and added MaxAssetNo property
 ' v0,4 - Delete collection on terminate
+' v0,5 - Changed get size lists
 '---------------------------------------------------------------
-' Date - 18 May 17
+' Date - 23 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -205,7 +206,11 @@ Public Function GetSizeLists(Description As String, ListNo As Integer) As String
 
 
     With RstSizeList
+        If .RecordCount = 0 Then
+            ReDim StrSizeArry(0 To 0)
+        Else
         ReDim StrSizeArry(1 To .RecordCount)
+        
         RecordCnt = .RecordCount
         i = 0
         .MoveFirst
@@ -222,9 +227,6 @@ Public Function GetSizeLists(Description As String, ListNo As Integer) As String
             End If
             .MoveNext
         Loop
-        
-        If RecordCnt = 0 Then
-            ReDim StrSizeArry(0 To 0)
         End If
         
     End With
@@ -251,7 +253,11 @@ Public Function FindAssetNo(Description As String, Size1 As String, Size2 As Str
     
     Set RstAssetNo = ModDatabase.SQLQuery("SELECT AssetNo FROM TblAsset WHERE Description = '" & Description & "'" & StrSearch)
     
+    If RstAssetNo.RecordCount > 0 Then
     FindAssetNo = RstAssetNo!AssetNo
+    Else
+        FindAssetNo = 0
+    End If
     
     Set RstAssetNo = Nothing
 End Function
