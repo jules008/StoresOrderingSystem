@@ -203,6 +203,8 @@ End Sub
 Private Sub BtnDatePicker_Click()
     FrmDatePicker.Show
     TxtDate = Format(FrmDatePicker.Tag, "dd/mm/yy")
+    TxtQty.BackColor = COLOUR_3
+
 End Sub
 
 ' ===============================================================
@@ -260,7 +262,7 @@ End Sub
 ' Change event for date txt box
 ' ---------------------------------------------------------------
 Private Sub TxtDate_Change()
-    TxtQty.BackColor = COLOUR_3
+    TxtDate.BackColor = COLOUR_3
 
 End Sub
 
@@ -499,9 +501,7 @@ Private Function ValidateForm() As EnumFormValidation
         End If
     End With
 
-    If ValidateForm = ValidationError Then
-        Err.Raise FORM_INPUT_EMPTY
-    Else
+    If ValidateForm <> ValidationError Then
         ValidateForm = FormOK
     End If
     
@@ -805,7 +805,9 @@ Private Function ProcessDelivery() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not Deliveries Is Nothing Then
+    If Deliveries Is Nothing Then Exit Function
+    
+    If Deliveries.Count = 0 Then Exit Function
     
         Response = MsgBox("Do you want to process the delivery and alter stock details? " & Chr(13) & Chr(13) _
                             & "Yes - Alter stock" & Chr(13) _
@@ -815,12 +817,12 @@ Private Function ProcessDelivery() As Boolean
 
             If Not FrmDeliveryCxs.ShowForm(Deliveries) Then Err.Raise HANDLED_ERROR
             Set Deliveries = Nothing
+            LstOrderItems.Clear
         Else
             MsgBox "Delivery added to database", vbInformation
             Unload Me
             
         End If
-    End If
 
     ProcessDelivery = True
 
