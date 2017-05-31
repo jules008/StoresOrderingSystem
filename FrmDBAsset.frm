@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' V0,1 - Add new Asset functionality
 ' v0,2 - Lock down Stock reduction
+' v0,3 - Change keyword seperator to ;
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 31 May 17
 '===============================================================
 Option Explicit
 
@@ -126,7 +127,7 @@ Private Function PopulateForm() As Boolean
     End With
     
     With LstKeywords
-        Keywords = Split(Asset.Keywords, ",")
+        Keywords = Split(Asset.Keywords, ";")
         
         .Clear
         For i = LBound(Keywords) To UBound(Keywords)
@@ -533,6 +534,7 @@ Private Function UpdateChanges() As Boolean
     
     'Allowed reasons
     For i = 0 To 6
+        
         If Me.Controls("ChkOrder" & i) = True Then LocReason = "1" Else LocReason = "0"
         
         StrAllowedReasons = StrAllowedReasons & LocReason & ":"
@@ -542,10 +544,10 @@ Private Function UpdateChanges() As Boolean
     
     'Keywords
     With LstKeywords
-        For i = 0 To .ListCount - 2
-            StrKeywords = StrKeywords & .List(i) & ","
+        For i = 1 To .ListCount
+            If i < .ListCount Then StrKeywords = StrKeywords & .List(i - 1) & ";"
+            If i = .ListCount Then StrKeywords = StrKeywords & .List(i - 1)
         Next
-        StrKeywords = StrKeywords & .List(i)
     End With
     
     'update asset

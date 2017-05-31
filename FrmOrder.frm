@@ -24,8 +24,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Fix Error 287 by opening Outlook if it is closed
 ' v0,5 - Added checks before removing line items
 ' v0,6 - 287 issue, tried different Outlook detector
+' v0,7 - Do not save order if no lineitems
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 31 May 17
 '===============================================================
 Option Explicit
 
@@ -409,7 +410,7 @@ Private Sub BtnSubmit_Click()
 
     If Order Is Nothing Then Err.Raise NO_ORDER, Description:="System failure, no Order"
     
-    If Order.OrderNo = 0 Then
+    If Order.OrderNo = 0 And Order.LineItems.Count <> 0 Then
         Order.DBSave
         TxtOrderNo = Order.OrderNo
                 

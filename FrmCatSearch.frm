@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,3 - update purchase unit when size changed
 ' v0,4 - add validation to prevent quantity of 0
 ' v0,5 - Override 'No Order' message for Phone Orders
+' v0,6 - Bug fix - size 2 list does not update when Size 1 changes
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 31 May 17
 '===============================================================
 Option Explicit
 
@@ -652,7 +653,9 @@ End Sub
 ' Event when entry changes
 ' ---------------------------------------------------------------
 Private Sub CmoSize1_Change()
+    Dim StrSize2Arry() As String
     Dim Assets As ClsAssets
+    Dim i As Integer
     
     Const StrPROCEDURE As String = "CmoSize1_Change()"
 
@@ -662,13 +665,25 @@ Private Sub CmoSize1_Change()
     
     CmoSize1.BackColor = COLOUR_3
     
+    StrSize2Arry() = Assets.GetSizeLists(CmoItem, 2, CmoSize1)
+    
+    If CmoSize1 = "" Then CmoSize2 = ""
+
+    If UBound(StrSize2Arry) <> LBound(StrSize2Arry) Then
+        LblSize2.Visible = True
+        CmoSize2.Visible = True
+        
+        CmoSize2.Clear
+        For i = LBound(StrSize2Arry) To UBound(StrSize2Arry)
+            CmoSize2.AddItem StrSize2Arry(i)
+        Next
+    End If
+    
     Lineitem.Asset.DBGet (Assets.FindAssetNo(CmoItem, CmoSize1, CmoSize2))
     
     If Not UpdateStockMessage(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
     
     TxtPurchaseUnit = Lineitem.Asset.PurchaseUnit
-    
-    If CmoSize1 = "" Then CmoSize2 = ""
 
     Set Assets = Nothing
 Exit Sub

@@ -12,8 +12,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,7 - Added DB Version Error
 ' v0,8 - 287 issue, tried new Outlook detector
 ' v0,9 - Added Emma to Unknown user alert
+' v0,10 - Correct spelling of moreton and stop error messages
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 31 May 17
 '===============================================================
 
 Option Explicit
@@ -100,9 +101,13 @@ Public Function CentralErrorHandler( _
 
         If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
     
-        
         If Not DEV_MODE Then
+            
+            If TEST_MODE Then
             Response = MsgBox(ErrMsgTxt, vbYesNo + vbDefaultButton1 + vbCritical, APP_NAME)
+            Else
+                Response = 6
+            End If
         
             If Response = 6 Then
                 With MailSystem
@@ -113,9 +118,11 @@ Public Function CentralErrorHandler( _
                     .MailItem.Body = "Please add any further information such " _
                                        & "what you were doing at the time of the error" _
                                        & ", and what candidate were you working on etc "
-                    .DisplayEmail
+                                       
+                    If TEST_MODE Then .DisplayEmail Else .SendEmail
                 End With
             End If
+            
             Set MailSystem = Nothing
         End If
         ' Clear the static error message variable once
@@ -164,7 +171,7 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             Set MailSystem = New ClsMailSystem
             
             With MailSystem
-                .MailItem.To = "Julian Turner; Emma Moreton"
+                .MailItem.To = "Julian Turner; Emma Morton"
                 .MailItem.Subject = "Unknown User - " & APP_NAME
                 .MailItem.Importance = olImportanceHigh
                 .MailItem.Body = "A new user needs to be added to the database - " _

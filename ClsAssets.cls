@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Removed GetAllAssets and added MaxAssetNo property
 ' v0,4 - Delete collection on terminate
 ' v0,5 - Changed get size lists
+' v0,6 - Bug fix - changing size 1 selection does not update Size 2 options
 '---------------------------------------------------------------
-' Date - 23 May 17
+' Date - 31 May 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -195,15 +196,18 @@ End Function
 ' Method GetSizeLists
 ' Returns size lists for a given asset no
 '---------------------------------------------------------------
-Public Function GetSizeLists(Description As String, ListNo As Integer) As String()
+Public Function GetSizeLists(Description As String, ListNo As Integer, Optional Size1 As String) As String()
     Dim RstSizeList As Recordset
     Dim StrSizeArry() As String
     Dim RecordCnt As Integer
+    Dim SQL As String
     Dim i As Integer
     
-    Set RstSizeList = ModDatabase.SQLQuery("SELECT DISTINCT Size" & ListNo & " FROM TblAsset" & _
-                                    " WHERE Description = '" & Description & "'")
+    If Size1 = "" Then SQL = "SELECT DISTINCT Size" & ListNo & " FROM TblAsset WHERE Description = '" & Description & "'"
 
+    If Size1 <> "" Then SQL = "SELECT DISTINCT Size2 FROM TblAsset WHERE Description = '" & Description & "' AND Size1 = '" & Size1 & "'"
+    
+    Set RstSizeList = ModDatabase.SQLQuery(SQL)
 
     With RstSizeList
         If .RecordCount = 0 Then

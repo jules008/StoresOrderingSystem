@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Bug fix - Changing size1 does not update size 2 choices
 '---------------------------------------------------------------
-' Date - 23 May 17
+' Date - 31 May 17
 '===============================================================
 Option Explicit
 
@@ -134,6 +135,8 @@ Private Sub BtnAdd_Click()
         .List(i, 4) = Delivery.Quantity
     End With
 
+    If Deliveries Is Nothing Then Err.Raise HANDLED_ERROR, Description:="No Deliveries Object"
+    
     Deliveries.AddItem Delivery
     
     If Not ClearSearch Then Err.Raise HANDLED_ERROR
@@ -638,7 +641,7 @@ Private Sub CmoSize1_Change()
     
     If CmoSize1 = "" Then CmoSize2 = ""
 
-    StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2)
+    StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2, CmoSize1)
 
     If UBound(StrSize2Arry) <> LBound(StrSize2Arry) Then
         LblSize2.Visible = True
@@ -728,7 +731,7 @@ Private Function ItemChange() As Boolean
         
         Set LocAsset = New ClsAsset
         StrSize1Arry() = Assets.GetSizeLists(TxtSearch, 1)
-        StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2)
+        StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2, CmoSize1)
         
         CmoSize1.Clear
         CmoSize2.Clear

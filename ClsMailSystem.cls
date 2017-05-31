@@ -8,7 +8,8 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '==========================================================
-' V0 0.01 - Initial Version
+' V0,1 - Initial Version
+' v0,2 - Attempt at correcting email error
 ' Date - 11/10/16
 '==========================================================
 ' Methods
@@ -103,7 +104,7 @@ End Sub
 
 '===============================================================
 Private Sub Class_Initialize()
-    Set pOutlookApp = New Outlook.Application
+    Set pOutlookApp = CreateObject("Outlook.Application")
     Set pMailItem = pOutlookApp.CreateItem(0)
     Set pReturnMail = New ClsMailItem
 End Sub

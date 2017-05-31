@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' v0,1 - improved message box
 ' v0,2 - Fix Error 287 by opening Outlook if closed
 ' v0,3 - 287 issue, tried new Outlook detector
+' v0,4 - Add shane and emma to support message
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 31 May 17
 '===============================================================
 
 Option Explicit
@@ -254,7 +255,7 @@ Private Function BtnFeedbackSend() As Boolean
     Set MailSystem = New ClsMailSystem
     
     With MailSystem.MailItem
-        .To = "Julian Turner"
+        .To = "Julian Turner; Emma Morton; Shane Redhead"
         .Subject = "Stores IT Project - Feedback received from " & Application.UserName
         .Body = SupportFrame1.DashObs("CommentBox").Text
         If SEND_EMAILS Then .Send

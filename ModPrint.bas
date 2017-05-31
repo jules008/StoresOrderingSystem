@@ -6,8 +6,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,2 - Change from Location object to string
 ' v0,3 - Added Location to Print Order Form
 ' v0,4 - Print two copies of Order Form
+' v0,5 - Call clearform function correctly
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 31 May 17
 '===============================================================
 
 Option Explicit
@@ -151,7 +152,7 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
 
     On Error GoTo ErrorHandler
 
-    ShtOrderList.ClearForm
+    If Not ShtOrderList.ClearForm Then Err.Raise HANDLED_ERROR
     
     Set RngOrderNo = ShtOrderList.Range("C3")
     Set RngReqBy = ShtOrderList.Range("F3")
