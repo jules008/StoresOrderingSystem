@@ -457,7 +457,9 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
     On Error Resume Next
 
     For i = 1 To MaxAssetNo
-            
+        
+        Debug.Print "Copying " & i & " of " & MaxAssetNo
+        
         Set ShtAsset = ShtAssets(CStr(i))
         Set DBAsset = DBAssets(CStr(i))
         
@@ -517,6 +519,8 @@ Private Function ValidateAssetFile(ShtAssets As ClsAssets, MaxAssetNo As Integer
         
         Set ShtAsset = ShtAssets(CStr(i))
         Set DBAsset = DBAssets(CStr(i))
+        
+        Debug.Print "Validating " & i & " of " & MaxAssetNo
         
         If ShtAsset Is Nothing Then
             If Not DBAsset Is Nothing Then AddToErrorLog i, "Failed Validation - Mismatch"
