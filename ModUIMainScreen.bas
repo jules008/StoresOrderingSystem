@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,22 - Build Right frame order list
 ' v0,3 - Build Left Frame
 ' v0,4 - Turned performance settings off on error
+' v0,5 - Refresh both order panels of order delete
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 01 Jun 17
 '===============================================================
 
 Option Explicit
@@ -706,6 +707,7 @@ Private Sub OpenOrder(OrderNo As Integer)
     ShtMain.Unprotect
     
     If Not RefreshMyOrderList Then Err.Raise HANDLED_ERROR
+    If Not RefreshRecentOrderList Then Err.Raise HANDLED_ERROR
     
     ModLibrary.PerfSettingsOff
     ShtMain.Protect

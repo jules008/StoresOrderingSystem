@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Bug fix - FindOrders
 ' v0,6 - Added MyOrders function
 ' v0,7 - Added RecentOrders function
+' v0,8 - Filter out deleted orders
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 01 Jun 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -217,6 +218,7 @@ Public Function MyOrders() As Recordset
                                         & "WHERE " _
                                           & "TblOrder.Status < 4 " _
                                           & "AND TblOrder.RequestorID = '" & CurrentUser.CrewNo & " '" _
+                                          & "AND TblOrder.deleted IS NULL " _
                                         & "Group BY " _
                                           & "TblOrder.OrderNo, " _
                                           & "TblOrder.OrderDate, " _
@@ -251,8 +253,9 @@ Public Function RecentOrders() As Recordset
                                           & "LEFT JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                           & "LEFT JOIN TblPerson ON TblOrder.RequestorID = TblPerson.CrewNo " _
                                         & "WHERE " _
-                                          & "TblOrder.Status < 4 AND " _
-                                          & "TblPerson.StationID = " & CurrentUser.Station.StationID & " " _
+                                          & "TblOrder.Status < 4 " _
+                                          & "AND TblPerson.StationID = " & CurrentUser.Station.StationID & " " _
+                                          & "AND TblOrder.deleted IS NULL " _
                                         & "Group BY " _
                                           & "TblOrder.OrderNo, " _
                                           & "TblOrder.OrderDate, " _

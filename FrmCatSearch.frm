@@ -22,8 +22,9 @@ Attribute VB_Exposed = False
 ' v0,4 - add validation to prevent quantity of 0
 ' v0,5 - Override 'No Order' message for Phone Orders
 ' v0,6 - Bug fix - size 2 list does not update when Size 1 changes
+' v0,7 - Clean up when cancelling form
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 01 Jun 17
 '===============================================================
 Option Explicit
 
@@ -217,10 +218,41 @@ Private Sub BtnClosePage_Click()
 
     On Error Resume Next
     
+    If Not CancelOrder Then Err.Raise HANDLED_ERROR
+    
     FormTerminate
     
 End Sub
 
+' ===============================================================
+' CancelOrder
+' Cleans up after order is cancelled
+' ---------------------------------------------------------------
+Private Function CancelOrder() As Boolean
+    Const StrPROCEDURE As String = "CancelOrder()"
+
+    On Error GoTo ErrorHandler
+
+    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+
+    CancelOrder = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    CancelOrder = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 ' ===============================================================
 ' BtnNext_Click
 ' saves order and moves onto next form
@@ -754,6 +786,17 @@ Private Sub UserForm_Initialize()
     
     FormInitialise
     
+End Sub
+
+' ===============================================================
+' UserForm_QueryClose
+' Tidies up if user cancels order
+' ---------------------------------------------------------------
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+
+    If CloseMode = 0 Then
+        If Not CancelOrder Then Err.Raise HANDLED_ERROR
+    End If
 End Sub
 
 ' ===============================================================

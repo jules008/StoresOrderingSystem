@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Bug fix for Phone Order
 ' v0,3 - Hide 'select a vehicle' message when not required
 ' v0,31 - Second go at hiding message
+' v0,4 - Clean up if user cancels form
 '---------------------------------------------------------------
-' Date - 25 Apr 17
+' Date - 01 Jun 17
 '===============================================================
 Option Explicit
 
@@ -73,6 +74,35 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' CancelOrder
+' Cleans up after order is cancelled
+' ---------------------------------------------------------------
+Private Function CancelOrder() As Boolean
+    Const StrPROCEDURE As String = "CancelOrder()"
+
+    On Error GoTo ErrorHandler
+
+    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+
+    CancelOrder = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    CancelOrder = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' PopulateForm
@@ -170,8 +200,21 @@ Private Sub BtnClose_Click()
 
     On Error Resume Next
     
+    If Not CancelOrder Then Err.Raise HANDLED_ERROR
+    
     FormTerminate
     
+End Sub
+
+' ===============================================================
+' UserForm_QueryClose
+' Tidies up if user cancels order
+' ---------------------------------------------------------------
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+
+    If CloseMode = 0 Then
+        If Not CancelOrder Then Err.Raise HANDLED_ERROR
+    End If
 End Sub
 
 ' ===============================================================

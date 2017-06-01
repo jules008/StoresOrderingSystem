@@ -20,8 +20,9 @@ Attribute VB_Exposed = False
 ' v0,2 - bug fix - change crewno to read string not integer
 ' v0,3 - Set Phone Order flag
 ' v0,4 - Phone Order Bug Fix
+' v0,5 - Clean up if user cancels form
 '---------------------------------------------------------------
-' Date - 16 May 17
+' Date - 01 Jun 17
 '===============================================================
 Option Explicit
 
@@ -89,6 +90,35 @@ ErrorHandler:
 End Function
 
 ' ===============================================================
+' CancelOrder
+' Cleans up after order is cancelled
+' ---------------------------------------------------------------
+Private Function CancelOrder() As Boolean
+    Const StrPROCEDURE As String = "CancelOrder()"
+
+    On Error GoTo ErrorHandler
+
+    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+
+    CancelOrder = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    CancelOrder = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+' ===============================================================
 ' PopulateForm
 ' Populates form controls
 ' ---------------------------------------------------------------
@@ -148,8 +178,21 @@ Private Sub BtnClose_Click()
 
     On Error Resume Next
     
+    If Not CancelOrder Then Err.Raise HANDLED_ERROR
+        
     FormTerminate
     
+End Sub
+
+' ===============================================================
+' UserForm_QueryClose
+' Tidies up if user cancels order
+' ---------------------------------------------------------------
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+
+    If CloseMode = 0 Then
+        If Not CancelOrder Then Err.Raise HANDLED_ERROR
+    End If
 End Sub
 
 ' ===============================================================

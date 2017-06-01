@@ -7,8 +7,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,3 - Added Location to Print Order Form
 ' v0,4 - Print two copies of Order Form
 ' v0,5 - Call clearform function correctly
+' v0,6 - Add location to receipt
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 01 Jun 17
 '===============================================================
 
 Option Explicit
@@ -68,17 +69,43 @@ End Function
 Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
     Dim PrintFilePath As String
     Dim iFile As Integer
+    Dim i As Integer
+    Dim StationID As String
+    Dim StationName As String
+    Dim VehReg As String
     Dim Lineitem As ClsLineItem
+    Dim DeliveryTo As String
     
     Const StrPROCEDURE As String = "PrintOrderReceipt()"
 
     On Error GoTo ErrorHandler
 
+    With Order
+        Select Case .LineItems(i + 1).Asset.AllocationType
+            Case Person
+                DeliveryTo = .LineItems(i + 1).ForPerson.Station.Name & " (" & .LineItems(i + 1).ForPerson.UserName & ")"
+                
+            Case Vehicle
+                VehReg = .LineItems(i + 1).ForVehicle.VehReg
+                StationID = .LineItems(i + 1).ForVehicle.StationID
+                
+                If StationID <> "" Then
+                    StationName = Stations(StationID).Name
+                Else
+                    StationName = "No Station"
+                End If
+                
+                DeliveryTo = StationName & " (" & VehReg & ")"
+    
+            Case Station
+                DeliveryTo = .LineItems(i + 1).ForStation.Name
+            
+        End Select
+    
     PrintFilePath = CreateTmpFile
     
     iFile = FreeFile()
     
-    With Order
         Open PrintFilePath For Append As #iFile
             Print #iFile, "==================================================="
             Print #iFile,
@@ -96,6 +123,7 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
                     Print #iFile, "Qty: " & .Quantity
                     Print #iFile, "Size1: " & .Asset.Size1
                     Print #iFile, "Size2: " & .Asset.Size2
+                    Print #iFile, "For: " & DeliveryTo
                 End With
             Next
             Print #iFile, "==================================================="
