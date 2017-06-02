@@ -6,11 +6,11 @@ ReturnReqd,  dbBoolean
 itemsReturned,  dbBoolean
 ItemsDelivered,  dbBoolean
 ItemsIssued,  dbBoolean
-AssetID,  dbText
-LossReportID,  dbText
-ReqReason,  dbText
-ForPersonID,  dbText
+AssetID,  dbLong
+LossReportID,  dbLong
+ReqReason,  dbLong
+ForPersonID,  dbLong
 Status,  dbLong
-ForStationID,  dbText
-ForVehicleID,  dbText
+ForStationID,  dbLong
+ForVehicleID,  dbLong
 OnHoldReason,  dbText

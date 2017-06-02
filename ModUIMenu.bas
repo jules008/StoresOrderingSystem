@@ -4,8 +4,9 @@ Attribute VB_Name = "ModUIMenu"
 ' v0,0 - Initial Version
 ' v0,1 - changes to performance mode switching
 ' v0,2 - Refresh front screen orders after new order placed
+' v0,3 - Report1 Button and moved ResetScreen procedures in
 '---------------------------------------------------------------
-' Date - 15 May 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit
@@ -278,6 +279,7 @@ Restart:
                 
                 [menuitemno] = 1
 
+                If Not ResetScreen Then Err.Raise HANDLED_ERROR
                 If Not ModUIMainScreen.BuildMainScreen Then Err.Raise HANDLED_ERROR
                                 
                 With MenuBar
@@ -294,6 +296,7 @@ Restart:
                 
                 If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
                 
+                If Not ResetScreen Then Err.Raise HANDLED_ERROR
                 If Not ModUIStoresScreen.BuildStoresScreen Then Err.Raise HANDLED_ERROR
                 
                 ShtMain.Unprotect
@@ -317,6 +320,7 @@ Restart:
                 ModLibrary.PerfSettingsOn
                 
                 If Not ResetScreen Then Err.Raise HANDLED_ERROR
+                If Not ModUIReporting.BuildReporting Then Err.Raise HANDLED_ERROR
                 
                 ShtMain.ClearOrderList
                 

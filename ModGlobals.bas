@@ -12,8 +12,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,7 - Added Import Error
 ' v0,8 - DB Change
 ' v0,9 - Delivery Button
+' v0,10 - Reports1 Button
 '---------------------------------------------------------------
-' Date - 23 May 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit
@@ -94,14 +95,27 @@ Public MenuItem As ClsUIMenuItem
 Public MainFrame As ClsUIFrame
 Public LeftFrame As ClsUIFrame
 Public RightFrame As ClsUIFrame
-Public SupportFrame1 As ClsUIFrame
-Public StoresFrame1 As ClsUIFrame
 Public Header As ClsUIHeader
 Public BtnNewOrder As ClsUIMenuItem
+
+' ---------------------------------------------------------------
+' Support Screen
+' ---------------------------------------------------------------
+Public SupportFrame1 As ClsUIFrame
+
+' ---------------------------------------------------------------
+' Stores Screen
+' ---------------------------------------------------------------
+Public StoresFrame1 As ClsUIFrame
 Public BtnUserMangt As ClsUIMenuItem
 Public BtnOrderSwitch As ClsUIMenuItem
 Public BtnRemoteOrder As ClsUIMenuItem
 Public BtnDelivery As ClsUIMenuItem
+
+' ---------------------------------------------------------------
+' Reports Screen
+' ---------------------------------------------------------------
+Public BtnReport1 As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -306,6 +320,7 @@ Enum EnumBtnNo
     EnumOrderSwitch = 9
     EnumRemoteOrder = 10
     EnumDeliveryBtn = 11
+    EnumReport1Btn = 12
 End Enum
 
 ' ===============================================================

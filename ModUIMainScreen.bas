@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,3 - Build Left Frame
 ' v0,4 - Turned performance settings off on error
 ' v0,5 - Refresh both order panels of order delete
+' v0,6 - Moved ResetScreen to main Menu procedure
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit
@@ -223,7 +224,6 @@ Public Function BuildMainScreen() As Boolean
     
     ModLibrary.PerfSettingsOn
     
-    If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildMainFrame Then Err.Raise HANDLED_ERROR
     If Not BuildLeftFrame Then Err.Raise HANDLED_ERROR
     If Not BuildRightFrame Then Err.Raise HANDLED_ERROR

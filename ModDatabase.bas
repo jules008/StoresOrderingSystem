@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit

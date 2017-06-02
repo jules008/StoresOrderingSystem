@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,3 - Right Frame Order List
 ' v0,4 - Left Frame Order List
 ' v0,5 - Delivery button and tidy up
+' v0,6 - Report1 Button
 '---------------------------------------------------------------
-' Date - 20 May 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit
@@ -150,6 +151,14 @@ Public Const ORDER_LINEITEM_NOCOLS As Integer = 6
 Public Const ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100:100:100"
 Public Const ORDER_LINEITEM_ROWOFFSET As Integer = 20
 Public Const ORDER_LINEITEM_TITLES As String = "Order No:No of Items:Requested By:Station:Assigned To:Order Status"
+
+' ---------------------------------------------------------------
+' Report Screen
+' ---------------------------------------------------------------
+Public Const BTN_REPORT_1_HEIGHT As Integer = 30
+Public Const BTN_REPORT_1_WIDTH As Integer = 175
+Public Const BTN_REPORT_1_LEFT As Integer = 180
+Public Const BTN_REPORT_1_TOP As Integer = 30
 
 ' ===============================================================
 ' Style Declarations

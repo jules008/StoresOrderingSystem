@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,4 - Increased Order retrieval performance
 ' v0,5 - Now passing OnAction as paramater
 ' v0,6 - Delivery Button and add icons
+' v0,7 - Moved ResetScreen to main menu 
 '---------------------------------------------------------------
-' Date - 22 May 17
+' Date - 02 Jun 17
 '===============================================================
 
 Option Explicit
@@ -305,7 +306,6 @@ Public Function BuildStoresScreen() As Boolean
     
     ModLibrary.PerfSettingsOn
     
-    If Not ResetScreen Then Err.Raise HANDLED_ERROR
     If Not BuildStoresFrame1 Then Err.Raise HANDLED_ERROR
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
     If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
