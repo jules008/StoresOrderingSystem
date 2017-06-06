@@ -3,7 +3,7 @@ Attribute VB_Name = "ModUIReporting"
 ' Module ModUIReporting
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 06 Jun 17
 '===============================================================
 
 Option Explicit
@@ -150,6 +150,9 @@ End Function
 ' Manages system users
 ' ---------------------------------------------------------------
 Private Function BtnReport1Sel() As Boolean
+    Dim RstQuery As Recordset
+    Dim ColWidths(0 To 10) As Integer
+    Dim Headings(0 To 10) As String
 
     Const StrPROCEDURE As String = "BtnReport1Sel()"
 
@@ -163,7 +166,38 @@ Restart:
     
     If CurrentUser.AccessLvl < SupervisorLvl_3 Then Err.Raise ACCESS_DENIED
 
-    If Not ModReports.Report1Query Then Err.Raise HANDLED_ERROR
+    Set RstQuery = ModReports.Report1Query
+    
+    If RstQuery Is Nothing Then Err.Raise HANDLED_ERROR
+    
+    'col widths
+    ColWidths(0) = 8
+    ColWidths(1) = 60
+    ColWidths(2) = 20
+    ColWidths(3) = 20
+    ColWidths(4) = 10
+    ColWidths(5) = 25
+    ColWidths(6) = 25
+    ColWidths(7) = 25
+    ColWidths(8) = 25
+    ColWidths(9) = 25
+    ColWidths(10) = 25
+    
+    'headings
+    Headings(0) = "Asset No"
+    Headings(1) = "Description"
+    Headings(2) = "Size 1"
+    Headings(3) = "Size 2"
+    Headings(4) = "Quantity"
+    Headings(5) = "For Person"
+    Headings(6) = "For Station"
+    Headings(7) = "For Vehicle"
+    Headings(8) = "For Station"
+    Headings(9) = "Veh Station"
+    Headings(10) = "Request Reason"
+    
+    
+    If Not ModReports.CreateReport(RstQuery, ColWidths, Headings) Then Err.Raise HANDLED_ERROR
     
 GracefulExit:
 

@@ -3,7 +3,7 @@ Attribute VB_Name = "ModReports"
 ' Module ModReports
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 06 Jun 17
 '===============================================================
 
 Option Explicit
@@ -11,42 +11,46 @@ Option Explicit
 Private Const StrMODULE As String = "ModReports"
 
 ' ===============================================================
-' CreateReport1
-' Creates Report 1
+' CreateReport
+' Creates Report from Recordset
 ' ---------------------------------------------------------------
-Private Function CreateReport1() As Boolean
+Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headings() As String) As Boolean
     Dim ReportBook As Workbook
-    Dim RstQuery As Recordset
     Dim RngQry As Range
+    Dim i As Integer
     
-    Const StrPROCEDURE As String = "CreateReport1()"
+    Const StrPROCEDURE As String = "CreateReport()"
 
     On Error GoTo ErrorHandler
 
-    Set RstQuery = ModReports.Report1Query
-    
-    If RstQuery Is Nothing Then Err.Raise HANDLED_ERROR
-    
     Set ReportBook = Workbooks.Add
+    
+    With ReportBook.Worksheets(1)
+        Set RngQry = .Range("A1")
+        
+        'headings and col widths
+        For i = 0 To UBound(Headings)
+            RngQry.Offset(0, i) = Headings(i)
+            RngQry.Offset(0, i).ColumnWidth = ColWidths(i)
+        Next
+        
+        'format heading
+    
 
-    With ReportBook
-        Set RngQry = .Worksheets(1).Range("A1")
-        RngQry.CopyFromRecordset RstQuery
+        RngQry.Offset(1, 0).CopyFromRecordset RstData
     
     End With
     
     Set RngQry = Nothing
-    Set RstQuery = Nothing
-    CreateReport1 = True
+    CreateReport = True
 
 Exit Function
 
 ErrorExit:
 
     Set RngQry = Nothing
-    Set RstQuery = Nothing
 '    ***CleanUpCode***
-    CreateReport1 = False
+    CreateReport = False
 
 Exit Function
 

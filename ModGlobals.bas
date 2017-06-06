@@ -14,7 +14,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,9 - Delivery Button
 ' v0,10 - Reports1 Button
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 06 Jun 17
 '===============================================================
 
 Option Explicit
@@ -28,7 +28,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,33"
+Public Const DB_VER = "v0,34"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
