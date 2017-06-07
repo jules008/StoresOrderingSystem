@@ -3,7 +3,7 @@ Attribute VB_Name = "ModReports"
 ' Module ModReports
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 06 Jun 17
+' Date - 07 Jun 17
 '===============================================================
 
 Option Explicit
@@ -17,6 +17,7 @@ Private Const StrMODULE As String = "ModReports"
 Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headings() As String) As Boolean
     Dim ReportBook As Workbook
     Dim RngQry As Range
+    Dim RngHeader As Range
     Dim i As Integer
     
     Const StrPROCEDURE As String = "CreateReport()"
@@ -35,13 +36,24 @@ Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headi
         Next
         
         'format heading
+        Set RngHeader = .Range(Cells(1, 1), Cells(1, UBound(Headings) + 1))
     
+        With RngHeader
+            .Interior.Color = COLOUR_9
+            .Borders.Color = COLOUR_2
+            .Font.Bold = True
+        
+            'set filter
+            .AutoFilter
+        End With
 
         RngQry.Offset(1, 0).CopyFromRecordset RstData
     
     End With
     
     Set RngQry = Nothing
+    Set RngHeader = Nothing
+    Set ReportBook = Nothing
     CreateReport = True
 
 Exit Function
@@ -49,6 +61,8 @@ Exit Function
 ErrorExit:
 
     Set RngQry = Nothing
+    Set RngHeader = Nothing
+    Set ReportBook = Nothing
 '    ***CleanUpCode***
     CreateReport = False
 
@@ -76,6 +90,9 @@ Public Function Report1Query() As Recordset
     Set RstQuery = ModDatabase.SQLQuery("SELECT " _
                                   & "TblAsset.AssetNo AS [Asset No], " _
                                   & "TblAsset.Description AS Description, " _
+                                  & "TblAsset.Category1, " _
+                                  & "TblAsset.Category2, " _
+                                  & "TblAsset.Category3, " _
                                   & "TblAsset.Size1, " _
                                   & "TblAsset.Size2, " _
                                   & "TblLineItem.Quantity AS Quantity, " _
@@ -87,15 +104,14 @@ Public Function Report1Query() As Recordset
                                 & "From " _
                                   & "(((((TblLineItem " _
                                   & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                                  & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.ID) " _
+                                  & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
                                   & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID) " _
                                   & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
-                                  & "LEFT JOIN TblReqReason ON TblLineItem.ReqReason = TblReqReason.ID) " _
+                                  & "LEFT JOIN TblReqReason ON TblLineItem.ReqReason = TblReqReason.ReqReasonNo) " _
                                   & "LEFT JOIN TblStation TblStation1 ON TblVehicle.StationID = TblStation1.StationID " _
                                 & "WHERE " _
                                   & "TblAsset.AssetNo IS NOT NULL " _
-                                & "ORDER BY " _
-                                  & "TblLineItem.OrderNo")
+                                  & "ORDER BY TblLineItem.OrderNo")
 
 
 

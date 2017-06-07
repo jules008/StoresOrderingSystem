@@ -9,7 +9,7 @@ ItemsIssued,  dbBoolean
 AssetID,  dbLong
 LossReportID,  dbLong
 ReqReason,  dbLong
-ForPersonID,  dbLong
+ForPersonID,  dbText
 Status,  dbLong
 ForStationID,  dbLong
 ForVehicleID,  dbLong

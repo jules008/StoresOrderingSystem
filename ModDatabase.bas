@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 06 Jun 17
+' Date - 07 Jun 17
 '===============================================================
 
 Option Explicit
@@ -221,7 +221,6 @@ Public Sub UpdateDBScript()
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN AssetID INT "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN LossReportID INT "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ReqReason INT "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForPersonID INT "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForStationID INT "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForVehicleID INT "
         
@@ -256,7 +255,6 @@ Public Sub UpdateDBScriptUndo()
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN AssetID CHAR (20) "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN LossReportID CHAR (20) "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ReqReason CHAR (20) "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForPersonID CHAR (20) "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForStationID CHAR (20) "
     DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForVehicleID CHAR (20) "
             

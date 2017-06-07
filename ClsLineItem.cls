@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsLineItem
 ' v0,0 - Initial Version
 ' v0,1 - Save Asset with Line item
+' v0,2 - Force Null if allocation type is not station
 '---------------------------------------------------------------
-' Date - 09 Apr 17
+' Date - 07 Jun 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -252,7 +253,6 @@ Public Sub DBSave()
         !Quantity = pQuantity
         !ReqReason = pReqReason
         !ReturnReqd = pReturnReqd
-        !ForStationID = pForStation.StationID
         !ForVehicleID = pForVehicle.VehNo
         !ForPersonID = pForPerson.CrewNo
         !Status = pStatus
@@ -260,6 +260,12 @@ Public Sub DBSave()
         !ItemsDelivered = pItemsDelivered
         !ItemsIssued = pItemsIssued
         !OnHoldReason = pOnHoldReason
+        
+        If pAsset.AllocationType = Station Then
+            !ForStationID = pForStation.StationID
+        Else
+            !ForStationID = Null
+        End If
         .Update
    
         pAsset.DBSave
