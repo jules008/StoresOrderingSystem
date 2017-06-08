@@ -9,8 +9,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,5 - reverted back to restart back to previous menu item
 ' v0,6 - Stopped the removal of '-' from the user name
 ' v0,7 - Added DB Version Check
+' v0,8 - Update any rogue usernames
 '---------------------------------------------------------------
-' Date - 02 May 17
+' Date - 08 May 17
 '===============================================================
 
 Option Explicit
@@ -129,6 +130,8 @@ Public Function GetUserName() As Boolean
     Const StrPROCEDURE As String = "GetUserName()"
 
     On Error GoTo ErrorHandler
+    
+    If Not UpdateUsername Then Err.Raise HANDLED_ERROR
     
     If TEST_MODE Then
         If ShtSettings.Range("C15") = True Then
@@ -262,6 +265,36 @@ ErrorHandler:
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' UpdateUsername
+' Checks to see whether username needs to be changed and then updates
+' ---------------------------------------------------------------
+Private Function UpdateUsername() As Boolean
+    Const StrPROCEDURE As String = "UpdateUsername()"
+
+    On Error GoTo ErrorHandler
+
+    If Application.Username = "PaulJ Wright" Then Application.Username = "Paul Wright"
+
+    UpdateUsername = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    UpdateUsername = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
