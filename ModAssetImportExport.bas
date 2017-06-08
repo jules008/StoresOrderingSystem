@@ -2,35 +2,40 @@ Attribute VB_Name = "ModAssetImportExport"
 '===============================================================
 ' Module ModAssetImportExport
 ' v0,0 - Initial Version
+' v0,1 - Improved version
 '---------------------------------------------------------------
-' Date - 19 May 17
+' Date - 08 Jun 17
 '===============================================================
 
 Option Explicit
 
 Private Const StrMODULE As String = "ModAssetImportExport"
 
-Dim ErrorLog(1 To 2000) As String
-Dim ErrorCount As Integer
+Private ErrorLog(1 To 2000) As String
+Private WarningLog(1 To 2000) As String
+Public ErrorCount As Integer
+Public WarningCount As Integer
+Private DBAssets As ClsAssets
+Private ShtAssets As ClsAssets
+Private MaxAssetNo As Integer
+
 ' ===============================================================
-' ImportAssetFile
-' Imports the Asset file into the database
+' Stage1_LoadFile
+' Loads and parses the asset file
 ' ---------------------------------------------------------------
-Private Sub ImportAssetFile()
+Public Function Stage1_LoadFile() As Boolean
+    Static Rw As Integer
     Dim LineInputString As String
     Dim AssetData() As String
     Dim FormValidation As Integer
     Dim AssetFileLoc As String
     Dim Asset As ClsAsset
-    Dim ShtAssets As ClsAssets
     Dim AssetFile As Integer
-    Dim DBAssets As ClsAssets
-    Dim i As Integer
     Dim x As Integer
-    Dim MaxAssetNo As Integer
+    Dim RowNo As Integer
     Dim FuncPassFail As String
     
-    Const StrPROCEDURE As String = "ImportAssetFile()"
+    Const StrPROCEDURE As String = "Stage1_LoadFile()"
 
     On Error Resume Next
     
@@ -45,6 +50,8 @@ Private Sub ImportAssetFile()
     If AssetFileLoc = "Error" Then Err.Raise HANDLED_ERROR
     
     AssetFileLoc = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Data\tblasset.csv"
+    
+    RowNo = ModLibrary.GetTextLineNo(AssetFileLoc)
     
     'open workbook and sort by asset no
     Application.DisplayAlerts = False
@@ -72,13 +79,13 @@ Private Sub ImportAssetFile()
             AssetData(x) = Replace(AssetData(x), Chr(34) & Chr(34), Chr(34))
         Next
         
-        i = i + 1
+        Rw = Rw + 1
         
         MaxAssetNo = DBAssets.MaxAssetNo
         
-        If i <> 1 Then
+        If Rw <> 1 Then
         
-            If Not ParseAsset(AssetData, i) Then Err.Raise HANDLED_ERROR
+            If Not ParseAsset(AssetData, Rw) Then Err.Raise HANDLED_ERROR
                         
             Set Asset = BuildAsset(AssetData)
             
@@ -91,55 +98,38 @@ Private Sub ImportAssetFile()
                         
             Debug.Print "Asset Added!"
         End If
+
+        Rw = FrmDataImport.UpdateProgrGges(RowNo, Rw, 1)
+            
+        If Rw = 0 Then Err.Raise HANDLED_ERROR, Description:="Error updating gauges"
+            
     Wend
-    Close #AssetFile
-    
-    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
-    Stop
-
-    If Not PreBuildCheck(ShtAssets, DBAssets) Then Err.Raise HANDLED_ERROR
-            
-    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
-    Stop
-    
-    If Not CopyAssetFile(ShtAssets, DBAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
-            
-    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
-    Stop
-    
-    If Not ValidateAssetFile(ShtAssets, MaxAssetNo) Then Err.Raise HANDLED_ERROR
         
-    MsgBox ErrorCount & " errors have been found", vbCritical, APP_NAME
-    Stop
+    Close #AssetFile
 
-    MsgBox "Complete"
+    Stage1_LoadFile = True
 
-    Set ShtAssets = Nothing
-    Set Asset = Nothing
-    Set DBAssets = Nothing
-
-Exit Sub
+Exit Function
 
 ErrorExit:
     
+    Stage1_LoadFile = False
     Application.DisplayAlerts = True
 
 '    ***CleanUpCode***
-    Set ShtAssets = Nothing
     Set Asset = Nothing
-    Set DBAssets = Nothing
-Exit Sub
+Exit Function
 
 ErrorHandler:
 
       
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
         Resume ErrorExit
     End If
-End Sub
+End Function
 
 ' ===============================================================
 ' ParseAsset
@@ -387,51 +377,75 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' PreBuildCheck
+' Stage2_PreBuild
 ' Checks before writing to DB
 ' ---------------------------------------------------------------
-Private Function PreBuildCheck(ShtAssets As ClsAssets, DBAssets As ClsAssets) As Boolean
+Public Function Stage2_PreBuild() As Boolean
     Dim i As Integer
     Dim DBAssetNo As Integer
-    Dim Asset As ClsAsset
+    Dim DBAsset As ClsAsset
+    Dim ShtAsset As ClsAsset
     Dim DBAssetDescription As String
     Dim Response As Integer
     
-    Const StrPROCEDURE As String = "PreBuildCheck()"
+    Const StrPROCEDURE As String = "Stage2_PreBuild()"
 
     On Error Resume Next
 
-    Set Asset = New ClsAsset
+    For i = 1 To MaxAssetNo
     
-    For Each Asset In DBAssets
+        Set DBAsset = New ClsAsset
+        Set ShtAsset = New ClsAsset
+                
+        Set DBAsset = DBAssets(CStr(i))
+        Set ShtAsset = ShtAssets(CStr(i))
+    
+        If DBAsset Is Nothing Then
         
-        DBAssetNo = Asset.AssetNo
+            If Not ShtAsset Is Nothing Then
         
-        Debug.Print DBAssetNo
+                'Add
+                AddToWarningLog i, ShtAsset.Description & " will be added to database"
         
-        DBAssetDescription = Asset.Description
+            End If
+        Else
         
-        If ShtAssets(CStr(DBAssetNo)) Is Nothing Then
-            AddToErrorLog DBAssetNo, DBAssetDescription & " will be deleted from database"
+            If ShtAsset Is Nothing Then
+                
+                'delete
+                AddToWarningLog i, DBAsset.Description & " will be deleted from database"
             
         Else
-            If ShtAssets(CStr(DBAssetNo)).Description <> DBAssetDescription Then
-                AddToErrorLog DBAssetNo, "Asset will change from " & DBAssetDescription & " to " & ShtAssets(CStr(DBAssetNo)).Description
+                
+                If ShtAsset.Description <> DBAsset.Description Then
+                
+                    'changed
+                    AddToWarningLog i, "Asset will change from " & DBAsset.Description & " to " & ShtAsset.Description
+                End If
             End If
         End If
+        
+        Rw = FrmDataImport.UpdateProgrGges(i, Rw, 2)
+            
+        If Rw = 0 Then Err.Raise HANDLED_ERROR, Description:="Error updating gauges"
+        
     Next
 
-    Set Asset = Nothing
+        Debug.Print DBAssetNo
     
-    PreBuildCheck = True
+    Set DBAsset = Nothing
+    Set ShtAsset = Nothing
+    
+    Stage2_PreBuild = True
 
 Exit Function
 
 ErrorExit:
 
-    Set Asset = Nothing
+    Set DBAsset = Nothing
+    Set ShtAsset = Nothing
 '    ***CleanUpCode***
-    PreBuildCheck = False
+    Stage2_PreBuild = False
 
 Exit Function
 
@@ -468,7 +482,7 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
             Else
             
             'don't overwrite quantity
-            If ShtAsset.QtyInStock = 0 Then ShtAsset.QtyInStock = DBAsset.QtyInStock
+            ShtAsset.QtyInStock = DBAsset.QtyInStock
             ShtAsset.DBSave i
         End If
         
@@ -598,3 +612,50 @@ Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
     Debug.Print "Asset No " & AssetNo & " - " & StrError
     End If
 End Sub
+
+' ===============================================================
+' AddToWarningLog
+' Adds import warnings to warning log
+' ---------------------------------------------------------------
+Private Sub AddToWarningLog(ByVal AssetNo As String, StrWarning As String)
+    
+    On Error Resume Next
+
+    If WarningCount < 2000 Then
+    WarningCount = WarningCount + 1
+    
+    WarningLog(WarningCount) = "Asset No " & AssetNo & " - " & StrWarning
+    Debug.Print "Asset No " & AssetNo & " - " & StrWarning
+    End If
+End Sub
+
+' ===============================================================
+' Terminate
+' Closes down asset collections
+' ---------------------------------------------------------------
+Private Function Terminate() As Boolean
+    Const StrPROCEDURE As String = "Terminate()"
+
+    On Error GoTo ErrorHandler
+
+    Set ShtAssets = Nothing
+    Set DBAssets = Nothing
+
+    Terminate = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Terminate = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
