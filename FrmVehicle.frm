@@ -45,7 +45,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
         Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
-    Debug.Print Me.Visible
+    'debug.print Me.Visible
     Show
     ShowForm = True
 

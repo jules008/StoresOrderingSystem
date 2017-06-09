@@ -26,15 +26,15 @@ Public Sub Terminate()
     ShtMain.Unprotect
     
     For Each Frame In MainScreen.Frames
-        Debug.Print Frame.Name
+        'debug.print Frame.Name
         For Each DashObj In Frame.DashObs
-            Debug.Print DashObj.Name
+            'debug.print DashObj.Name
             DashObj.ShpDashObj.Delete
             Set DashObj = Nothing
         Next
         
         For Each MenuItem In Frame.Menu
-            Debug.Print MenuItem.Name
+            'debug.print MenuItem.Name
             MenuItem.ShpMenuItem.Delete
             MenuItem.Icon.Delete
             Set MenuItem = Nothing
@@ -76,7 +76,7 @@ Private Sub DeleteAllShapes()
     For i = ShtMain.Shapes.Count To 1 Step -1
     
         Set Shp = ShtMain.Shapes(i)
-        Debug.Print i & "/" & ShtMain.Shapes.Count & " " & Shp.Name
+        'debug.print i & "/" & ShtMain.Shapes.Count & " " & Shp.Name
         
         If Left(Shp.Name, 8) <> "TEMPLATE" Then Shp.Delete
     Next

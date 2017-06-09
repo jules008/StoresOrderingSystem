@@ -4,15 +4,15 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,0 - Initial Version
 ' v0,1 - Improved version
 '---------------------------------------------------------------
-' Date - 08 Jun 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
 
 Private Const StrMODULE As String = "ModAssetImportExport"
 
-Private ErrorLog(1 To 2000) As String
-Private WarningLog(1 To 2000) As String
+Public ErrorLog(0 To 2000) As String
+Public WarningLog(0 To 2000) As String
 Public ErrorCount As Integer
 Public WarningCount As Integer
 Private DBAssets As ClsAssets
@@ -24,9 +24,11 @@ Private MaxAssetNo As Integer
 ' Loads and parses the asset file
 ' ---------------------------------------------------------------
 Public Function Stage1_LoadFile() As Boolean
-    Static Rw As Integer
+    Dim FSO As New FileSystemObject
+    Dim Rw As Integer
     Dim LineInputString As String
     Dim AssetData() As String
+    Dim FileName As String
     Dim FormValidation As Integer
     Dim AssetFileLoc As String
     Dim Asset As ClsAsset
@@ -37,20 +39,17 @@ Public Function Stage1_LoadFile() As Boolean
     
     Const StrPROCEDURE As String = "Stage1_LoadFile()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
     
     Set ShtAssets = New ClsAssets
     Set DBAssets = New ClsAssets
     Set Asset = New ClsAsset
 
-'    AssetFileLoc = OpenAssetFile
-    
+    AssetFileLoc = OpenAssetFile
     DBConnect
     
     If AssetFileLoc = "Error" Then Err.Raise HANDLED_ERROR
-    
-    AssetFileLoc = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Data\tblasset.csv"
-    
+    FileName = FSO.GetFileName(AssetFileLoc)
     RowNo = ModLibrary.GetTextLineNo(AssetFileLoc)
     
     'open workbook and sort by asset no
@@ -96,7 +95,7 @@ Public Function Stage1_LoadFile() As Boolean
             'find maximum assetno
             If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
                         
-            Debug.Print "Asset Added!"
+            'debug.print "Asset Added!"
         End If
 
         Rw = FrmDataImport.UpdateProgrGges(RowNo, Rw, 1)
@@ -107,12 +106,14 @@ Public Function Stage1_LoadFile() As Boolean
         
     Close #AssetFile
 
+    Set FSO = Nothing
     Stage1_LoadFile = True
 
 Exit Function
 
 ErrorExit:
     
+    Set FSO = Nothing
     Stage1_LoadFile = False
     Application.DisplayAlerts = True
 
@@ -145,7 +146,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     
     Const StrPROCEDURE As String = "ParseAsset()"
     
-    On Error Resume Next
+    On Error GoTo ErrorHandler
     
     AssetNo = AssetData(0)
     
@@ -271,7 +272,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
     
     Const StrPROCEDURE As String = "BuildAsset()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
 
     Set Asset = New ClsAsset
 
@@ -334,7 +335,7 @@ Private Function OpenAssetFile() As String
     
     Const StrPROCEDURE As String = "OpenAssetFile()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
 
     Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
     Set ShtAssets = New ClsAssets
@@ -344,7 +345,7 @@ Private Function OpenAssetFile() As String
         .Filters.Add "CSV Files (*.csv)", "*.csv"
         .AllowMultiSelect = False
         .Title = "Select Spreadsheet of Doom"
-'        .Show
+        .Show
     End With
     
     'get no files selected
@@ -381,7 +382,7 @@ End Function
 ' Checks before writing to DB
 ' ---------------------------------------------------------------
 Public Function Stage2_PreBuild() As Boolean
-    Dim i As Integer
+    Dim Rw As Integer
     Dim DBAssetNo As Integer
     Dim DBAsset As ClsAsset
     Dim ShtAsset As ClsAsset
@@ -390,22 +391,22 @@ Public Function Stage2_PreBuild() As Boolean
     
     Const StrPROCEDURE As String = "Stage2_PreBuild()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
 
-    For i = 1 To MaxAssetNo
+    For Rw = 1 To MaxAssetNo
     
         Set DBAsset = New ClsAsset
         Set ShtAsset = New ClsAsset
                 
-        Set DBAsset = DBAssets(CStr(i))
-        Set ShtAsset = ShtAssets(CStr(i))
+        Set DBAsset = DBAssets(CStr(Rw))
+        Set ShtAsset = ShtAssets(CStr(Rw))
     
         If DBAsset Is Nothing Then
         
             If Not ShtAsset Is Nothing Then
         
                 'Add
-                AddToWarningLog i, ShtAsset.Description & " will be added to database"
+                AddToWarningLog Rw, ShtAsset.Description & " will be added to database"
         
             End If
         Else
@@ -413,25 +414,25 @@ Public Function Stage2_PreBuild() As Boolean
             If ShtAsset Is Nothing Then
                 
                 'delete
-                AddToWarningLog i, DBAsset.Description & " will be deleted from database"
+                AddToWarningLog Rw, DBAsset.Description & " will be deleted from database"
             
         Else
                 
                 If ShtAsset.Description <> DBAsset.Description Then
                 
                     'changed
-                    AddToWarningLog i, "Asset will change from " & DBAsset.Description & " to " & ShtAsset.Description
+                    AddToWarningLog Rw, "Asset will change from " & DBAsset.Description & " to " & ShtAsset.Description
                 End If
             End If
         End If
         
-        Rw = FrmDataImport.UpdateProgrGges(i, Rw, 2)
+        Rw = FrmDataImport.UpdateProgrGges(MaxAssetNo, Rw, 2)
             
         If Rw = 0 Then Err.Raise HANDLED_ERROR, Description:="Error updating gauges"
         
     Next
 
-        Debug.Print DBAssetNo
+        'debug.print DBAssetNo
     
     Set DBAsset = Nothing
     Set ShtAsset = Nothing
@@ -458,24 +459,24 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' CopyAssetFile
+' Stage3_CopyData
 ' Copies the asset file data to the DB
 ' ---------------------------------------------------------------
-Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
-    Dim i As Integer
+Public Function Stage3_CopyData() As Boolean
+    Dim Rw As Integer
     Dim ShtAsset As ClsAsset
     Dim DBAsset As ClsAsset
     
-    Const StrPROCEDURE As String = "CopyAssetFile()"
+    Const StrPROCEDURE As String = "Stage3_CopyData()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
 
-    For i = 1 To MaxAssetNo
+    For Rw = 1 To MaxAssetNo
         
-        Debug.Print "Copying " & i & " of " & MaxAssetNo
+        'debug.print "Copying " & Rw & " of " & MaxAssetNo
         
-        Set ShtAsset = ShtAssets(CStr(i))
-        Set DBAsset = DBAssets(CStr(i))
+        Set ShtAsset = ShtAssets(CStr(Rw))
+        Set DBAsset = DBAssets(CStr(Rw))
         
         If ShtAsset Is Nothing Then
             If Not DBAsset Is Nothing Then DBAsset.DBDelete
@@ -483,14 +484,16 @@ Private Function CopyAssetFile(ShtAssets As ClsAssets, DBAssets As ClsAssets, Ma
             
             'don't overwrite quantity
             ShtAsset.QtyInStock = DBAsset.QtyInStock
-            ShtAsset.DBSave i
+            ShtAsset.DBSave Rw
         End If
+        Rw = FrmDataImport.UpdateProgrGges(MaxAssetNo, Rw, 3)
         
+        If Rw = 0 Then Err.Raise HANDLED_ERROR, Description:="Error updating gauges"
     Next
 
     Set ShtAsset = Nothing
     Set DBAsset = Nothing
-    CopyAssetFile = True
+    Stage3_CopyData = True
 
 Exit Function
 
@@ -499,7 +502,7 @@ ErrorExit:
     Set ShtAsset = Nothing
     Set DBAsset = Nothing
 '    ***CleanUpCode***
-    CopyAssetFile = False
+    Stage3_CopyData = False
 
 Exit Function
 
@@ -513,68 +516,72 @@ End Function
 
 
 ' ===============================================================
-' ValidateAssetFile
+' Stage4_Validate
 ' Validates asset file with data in database
 ' ---------------------------------------------------------------
-Private Function ValidateAssetFile(ShtAssets As ClsAssets, MaxAssetNo As Integer) As Boolean
-    Dim i As Integer
-    Dim DBAssets As ClsAssets
+Public Function Stage4_Validate() As Boolean
+    Dim Rw As Integer
     Dim DBAsset As ClsAsset
     Dim ShtAsset As ClsAsset
     
-    Const StrPROCEDURE As String = "ValidateAssetFile()"
+    Const StrPROCEDURE As String = "Stage4_Validate()"
 
-    On Error Resume Next
+    On Error GoTo ErrorHandler
 
+    Set DBAssets = Nothing
     Set DBAssets = New ClsAssets
     DBAssets.GetCollection
 
-    For i = 1 To MaxAssetNo
+    For Rw = 1 To MaxAssetNo
         
-        Set ShtAsset = ShtAssets(CStr(i))
-        Set DBAsset = DBAssets(CStr(i))
+        Set ShtAsset = ShtAssets(CStr(Rw))
+        Set DBAsset = DBAssets(CStr(Rw))
         
-        Debug.Print "Validating " & i & " of " & MaxAssetNo
+        'debug.print "Validating " & Rw & " of " & MaxAssetNo
         
         If ShtAsset Is Nothing Then
-            If Not DBAsset Is Nothing Then AddToErrorLog i, "Failed Validation - Mismatch"
+            If Not DBAsset Is Nothing Then AddToErrorLog Rw, "Failed Validation - Mismatch"
         Else
             If DBAsset Is Nothing Then
-                AddToErrorLog i, "Failed Validation - Mismatch"
+                AddToErrorLog Rw, "Failed Validation - Mismatch"
             Else
                 With ShtAsset
-                     If .AllocationType <> DBAsset.AllocationType Then AddToErrorLog i, "Failed Validation - Allocation Type"
-                    If .Brand <> DBAsset.Brand Then AddToErrorLog i, "Failed Validation - Brand"
-                    If .Description <> DBAsset.Description Then AddToErrorLog i, "Failed Validation - Description"
-                    If .Category1 <> DBAsset.Category1 Then AddToErrorLog i, "Failed Validation - Category 1"
-                    If .Category2 <> DBAsset.Category2 Then AddToErrorLog i, "Failed Validation - Category 2"
-                    If .Category3 <> DBAsset.Category3 Then AddToErrorLog i, "Failed Validation - Category 3"
-                    If .Size1 <> DBAsset.Size1 Then AddToErrorLog i, "Failed Validation - Size 1"
-                    If .Size2 <> DBAsset.Size2 Then AddToErrorLog i, "Failed Validation - Size 2"
-                    If .PurchaseUnit <> DBAsset.PurchaseUnit Then AddToErrorLog i, "Failed Validation - Purchase Unit"
-                    If .MinAmount <> DBAsset.MinAmount Then AddToErrorLog i, "Failed Validation - Min Amount"
-                    If .MaxAmount <> DBAsset.MaxAmount Then AddToErrorLog i, "Failed Validation - Max Amount"
-                    If .OrderLevel <> DBAsset.OrderLevel Then AddToErrorLog i, "Failed Validation - Order Level"
-                    If .LeadTime <> DBAsset.LeadTime Then AddToErrorLog i, "Failed Validation - Lead Time"
-                    If .Keywords <> DBAsset.Keywords Then AddToErrorLog i, "Failed Validation - Keywords"
-                    If .AllowedOrderReasons <> DBAsset.AllowedOrderReasons Then AddToErrorLog i, "Failed Validation - Order Reasons"
-                    If .AdditInfo <> DBAsset.AdditInfo Then AddToErrorLog i, "Failed Validation - Addit Info"
-                    If .NoOrderMessage <> DBAsset.NoOrderMessage Then AddToErrorLog i, "Failed Validation - No Order Message"
-                    If .Location <> DBAsset.Location Then AddToErrorLog i, "Failed Validation - Location"
-                    If .cost <> DBAsset.cost Then AddToErrorLog i, "Failed Validation - Cost"
-                    If .Supplier1 <> DBAsset.Supplier1 Then AddToErrorLog i, "Failed Validation - Supplier 1"
-                    If .Supplier2 <> DBAsset.Supplier2 Then AddToErrorLog i, "Failed Validation - Supplier 2"
-                    If .QtyInStock <> DBAsset.QtyInStock And .QtyInStock > 0 Then AddToErrorLog i, "Failed Validation - Quantity"
+                    If .AllocationType <> DBAsset.AllocationType Then AddToErrorLog Rw, "Failed Validation - Allocation Type"
+                    If .Brand <> DBAsset.Brand Then AddToErrorLog Rw, "Failed Validation - Brand"
+                    If .Description <> DBAsset.Description Then AddToErrorLog Rw, "Failed Validation - Description"
+                    If .Category1 <> DBAsset.Category1 Then AddToErrorLog Rw, "Failed Validation - Category 1"
+                    If .Category2 <> DBAsset.Category2 Then AddToErrorLog Rw, "Failed Validation - Category 2"
+                    If .Category3 <> DBAsset.Category3 Then AddToErrorLog Rw, "Failed Validation - Category 3"
+                    If .Size1 <> DBAsset.Size1 Then AddToErrorLog Rw, "Failed Validation - Size 1"
+                    If .Size2 <> DBAsset.Size2 Then AddToErrorLog Rw, "Failed Validation - Size 2"
+                    If .PurchaseUnit <> DBAsset.PurchaseUnit Then AddToErrorLog Rw, "Failed Validation - Purchase Unit"
+                    If .MinAmount <> DBAsset.MinAmount Then AddToErrorLog Rw, "Failed Validation - Min Amount"
+                    If .MaxAmount <> DBAsset.MaxAmount Then AddToErrorLog Rw, "Failed Validation - Max Amount"
+                    If .OrderLevel <> DBAsset.OrderLevel Then AddToErrorLog Rw, "Failed Validation - Order Level"
+                    If .LeadTime <> DBAsset.LeadTime Then AddToErrorLog Rw, "Failed Validation - Lead Time"
+                    If .Keywords <> DBAsset.Keywords Then AddToErrorLog Rw, "Failed Validation - Keywords"
+                    If .AllowedOrderReasons <> DBAsset.AllowedOrderReasons Then AddToErrorLog Rw, "Failed Validation - Order Reasons"
+                    If .AdditInfo <> DBAsset.AdditInfo Then AddToErrorLog Rw, "Failed Validation - Addit Info"
+                    If .NoOrderMessage <> DBAsset.NoOrderMessage Then AddToErrorLog Rw, "Failed Validation - No Order Message"
+                    If .Location <> DBAsset.Location Then AddToErrorLog Rw, "Failed Validation - Location"
+                    If .cost <> DBAsset.cost Then AddToErrorLog Rw, "Failed Validation - Cost"
+                    If .Supplier1 <> DBAsset.Supplier1 Then AddToErrorLog Rw, "Failed Validation - Supplier 1"
+                    If .Supplier2 <> DBAsset.Supplier2 Then AddToErrorLog Rw, "Failed Validation - Supplier 2"
+                    If .QtyInStock <> DBAsset.QtyInStock And .QtyInStock > 0 Then AddToErrorLog Rw, "Failed Validation - Quantity"
 
             End With
         End If
         End If
+        Rw = FrmDataImport.UpdateProgrGges(MaxAssetNo, Rw, 4)
+            
+        If Rw = 0 Then Err.Raise HANDLED_ERROR, Description:="Error updating gauges"
+
     Next
 
     Set ShtAsset = Nothing
     Set DBAsset = Nothing
 
-    ValidateAssetFile = True
+    Stage4_Validate = True
 
 Exit Function
 
@@ -583,7 +590,7 @@ ErrorExit:
     Set ShtAsset = Nothing
     Set DBAsset = Nothing
 '    ***CleanUpCode***
-    ValidateAssetFile = False
+    Stage4_Validate = False
 
 Exit Function
 
@@ -609,7 +616,7 @@ Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
     ErrorCount = ErrorCount + 1
     
     ErrorLog(ErrorCount) = "Asset No " & AssetNo & " - " & StrError
-    Debug.Print "Asset No " & AssetNo & " - " & StrError
+'    Debug.Print "Asset No " & AssetNo & " - " & StrError
     End If
 End Sub
 
@@ -630,25 +637,27 @@ Private Sub AddToWarningLog(ByVal AssetNo As String, StrWarning As String)
 End Sub
 
 ' ===============================================================
-' Terminate
+' ImportTerminate
 ' Closes down asset collections
 ' ---------------------------------------------------------------
-Private Function Terminate() As Boolean
-    Const StrPROCEDURE As String = "Terminate()"
+Public Function ImportTerminate() As Boolean
+    Const StrPROCEDURE As String = "ImportTerminate()"
 
     On Error GoTo ErrorHandler
 
+    ErrorCount = 0
+    WarningCount = 0
     Set ShtAssets = Nothing
     Set DBAssets = Nothing
 
-    Terminate = True
+    ImportTerminate = True
 
 Exit Function
 
 ErrorExit:
 
 '    ***CleanUpCode***
-    Terminate = False
+    ImportTerminate = False
 
 Exit Function
 
@@ -659,3 +668,24 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' ClearLog
+' Clears all errors and warnings from log
+' ---------------------------------------------------------------
+Public Sub ClearLog()
+    Dim i As Integer
+    
+    On Error Resume Next
+    
+    ErrorCount = 0
+    WarningCount = 0
+    
+    For i = LBound(ErrorLog) To UBound(ErrorLog)
+        ErrorLog(i) = ""
+    Next
+    
+    For i = LBound(WarningLog) To UBound(WarningLog)
+        WarningLog(i) = ""
+    Next
+End Sub

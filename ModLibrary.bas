@@ -8,7 +8,7 @@ Attribute VB_Name = "ModLibrary"
 ' v0,4 - Tried new Outlook detector
 ' v0,5 - Added GetTextLineNo
 '---------------------------------------------------------------
-' Date - 08 Jun 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -264,6 +264,10 @@ End Function
 Public Function GetTextLineNo(FileName As String) As Integer
     Dim wb As Workbook
     
+    For Each wb In Workbooks
+        If wb.FullName = FileName Then wb.Close (False)
+    Next wb
+   
     Set wb = Workbooks.Open(FileName)
     
     If Not wb Is Nothing Then
