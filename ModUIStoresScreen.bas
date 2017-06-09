@@ -9,8 +9,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,5 - Now passing OnAction as paramater
 ' v0,6 - Delivery Button and add icons
 ' v0,7 - Moved ResetScreen to main menu 
+' v0,8 - Data Management Button
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -64,6 +65,55 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' BuildManageDataBtn
+' Adds the new order button to the main screen
+' ---------------------------------------------------------------
+Private Function BuildManageDataBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildManageDataBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnManageData
+        
+        .Height = BTN_MANAGE_DATA_HEIGHT
+        .Left = BTN_MANAGE_DATA_LEFT
+        .Top = BTN_MANAGE_DATA_TOP
+        .Width = BTN_MANAGE_DATA_WIDTH
+        .Name = "BtnManageData"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(13)'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Data Management"
+        .Icon = ShtMain.Shapes("TEMPLATE - DataManage").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
+    End With
+
+    MainScreen.Menu.AddItem BtnManageData
+    
+    BuildManageDataBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildManageDataBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 
 ' ===============================================================
 ' BuildOrderSwitchBtn
@@ -303,14 +353,18 @@ Public Function BuildStoresScreen() As Boolean
     Set BtnOrderSwitch = New ClsUIMenuItem
     Set BtnRemoteOrder = New ClsUIMenuItem
     Set BtnDelivery = New ClsUIMenuItem
+    Set BtnManageData = New ClsUIMenuItem
     
     ModLibrary.PerfSettingsOn
+    
     
     If Not BuildStoresFrame1 Then Err.Raise HANDLED_ERROR
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
     If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
     If Not BuildRemoteOrderBtn Then Err.Raise HANDLED_ERROR
     If Not BuildDeliveryBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildManageDataBtn Then Err.Raise HANDLED_ERROR
+    
     If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
     
     ModLibrary.PerfSettingsOff
@@ -327,6 +381,8 @@ ErrorExit:
     Set BtnOrderSwitch = Nothing
     Set BtnRemoteOrder = Nothing
     Set BtnDelivery = Nothing
+    Set BtnManageData = Nothing
+    
     Terminate
     
     BuildStoresScreen = False
@@ -376,6 +432,11 @@ Restart:
                 If Not FrmDelivery.ShowForm Then Err.Raise HANDLED_ERROR
                 
                 If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+                
+            Case EnumManageDataBtn
+                
+                If Not FrmDataManagmt.ShowForm Then Err.Raise HANDLED_ERROR
+                
         End Select
     
 GracefulExit:

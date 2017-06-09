@@ -72,7 +72,8 @@ Public Function Stage1_LoadFile() As Boolean
         AssetData = Split(LineInputString, ",")
         
         'remove any leading and trailing Quote marks
-        For x = 1 To 25
+        For x = 1 To UBound(AssetData)
+            
             If Left(AssetData(x), 1) = Chr(34) Then AssetData(x) = Right(AssetData(x), Len(AssetData(x)) - 1)
             If Right(AssetData(x), 1) = Chr(34) Then AssetData(x) = Left(AssetData(x), Len(AssetData(x)) - 1)
             AssetData(x) = Replace(AssetData(x), Chr(34) & Chr(34), Chr(34))
@@ -146,14 +147,14 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     
     Const StrPROCEDURE As String = "ParseAsset()"
     
-    On Error GoTo ErrorHandler
+    On Error Resume Next
     
     AssetNo = AssetData(0)
     
     PassGenericTests = True
     
     'generic tests first
-    If UBound(AssetData) < 25 Then
+    If UBound(AssetData) <> 24 Then
         AddToErrorLog AssetNo, "Incorrect use of commas"
         PassGenericTests = False
     End If
@@ -163,8 +164,6 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
         PassGenericTests = False
     End If
 
-    If AssetData(25) <> "!" Then AddToErrorLog AssetNo, "Number of columns incorrect, check use of commas"
-    
     If PassGenericTests Then
         For i = 0 To 25
     
@@ -217,7 +216,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
                     If TestString(5) <> "0" And TestString(5) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
                     If TestString(6) <> "0" And TestString(6) <> "1" Then AddToErrorLog AssetData(0), "Error in Allowed Reason string"
         
-                Case Is = 22
+                Case Is = 21
                     If TestValue <> "" Then
                     If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
                     If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
@@ -272,7 +271,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
     
     Const StrPROCEDURE As String = "BuildAsset()"
 
-    On Error GoTo ErrorHandler
+    On Error Resume Next
 
     Set Asset = New ClsAsset
 

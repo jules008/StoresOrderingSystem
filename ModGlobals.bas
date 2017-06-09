@@ -13,8 +13,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,8 - DB Change
 ' v0,9 - Delivery Button
 ' v0,10 - Reports1 Button
+' v,11 - Data Management Button
 '---------------------------------------------------------------
-' Date - 06 Jun 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -111,6 +112,7 @@ Public BtnUserMangt As ClsUIMenuItem
 Public BtnOrderSwitch As ClsUIMenuItem
 Public BtnRemoteOrder As ClsUIMenuItem
 Public BtnDelivery As ClsUIMenuItem
+Public BtnManageData As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Reports Screen
@@ -321,6 +323,7 @@ Enum EnumBtnNo
     EnumRemoteOrder = 10
     EnumDeliveryBtn = 11
     EnumReport1Btn = 12
+    EnumManageDataBtn = 13
 End Enum
 
 ' ===============================================================

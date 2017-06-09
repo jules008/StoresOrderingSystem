@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,4 - Left Frame Order List
 ' v0,5 - Delivery button and tidy up
 ' v0,6 - Report1 Button
+' v0,7 - Data Management Button
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -142,6 +143,11 @@ Public Const BTN_DELIVERY_HEIGHT As Integer = 30
 Public Const BTN_DELIVERY_WIDTH As Integer = 175
 Public Const BTN_DELIVERY_LEFT As Integer = 850
 Public Const BTN_DELIVERY_TOP As Integer = 140
+
+Public Const BTN_MANAGE_DATA_HEIGHT As Integer = 30
+Public Const BTN_MANAGE_DATA_WIDTH As Integer = 175
+Public Const BTN_MANAGE_DATA_LEFT As Integer = 850
+Public Const BTN_MANAGE_DATA_TOP As Integer = 180
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550

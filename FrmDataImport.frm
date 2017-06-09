@@ -34,6 +34,7 @@ Public Function ShowForm() As Boolean
     
     On Error GoTo ErrorHandler
     
+    Show
     ShowForm = True
 
 Exit Function
