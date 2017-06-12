@@ -4,7 +4,7 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,0 - Initial Version
 ' v0,1 - Improved version
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 12 Jun 17
 '===============================================================
 
 Option Explicit
@@ -154,7 +154,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     PassGenericTests = True
     
     'generic tests first
-    If UBound(AssetData) <> 24 Then
+    If UBound(AssetData) <> 23 Then
         AddToErrorLog AssetNo, "Incorrect use of commas"
         PassGenericTests = False
     End If
@@ -165,7 +165,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     End If
 
     If PassGenericTests Then
-        For i = 0 To 25
+        For i = 0 To 23
     
             TestValue = AssetData(i)
             
@@ -297,9 +297,9 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         .NoOrderMessage = Trim(AssetData(18))
         .Location = Trim(AssetData(19))
         If AssetData(20) <> "" Then .Status = Trim(AssetData(20))
-        If AssetData(22) <> "" Then .cost = AssetData(22)
-        .Supplier1 = Trim(AssetData(23))
-        .Supplier2 = Trim(AssetData(24))
+        If AssetData(21) <> "" Then .cost = AssetData(21)
+        .Supplier1 = Trim(AssetData(22))
+        .Supplier2 = Trim(AssetData(23))
     
     End With
 
