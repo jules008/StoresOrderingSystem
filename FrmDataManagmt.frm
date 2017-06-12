@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 12 Jun 17
 '===============================================================
 Option Explicit
 
@@ -65,8 +65,8 @@ End Function
 ' Exports all asset data into spreadsheet
 ' ---------------------------------------------------------------
 Private Sub BtnAssetExport_Click()
-    Dim ColWidths(0 To 24) As Integer
-    Dim Headings(0 To 24) As String
+    Dim ColWidths(0 To 23) As Integer
+    Dim Headings(0 To 23) As String
     Dim RstAssets As Recordset
     
     Const StrPROCEDURE As String = "BtnAssetExport_Click()"
@@ -98,7 +98,6 @@ Private Sub BtnAssetExport_Click()
     ColWidths(21) = 20
     ColWidths(22) = 20
     ColWidths(23) = 20
-    ColWidths(24) = 10
     
     'headings
     Headings(0) = "Asset No"
@@ -125,7 +124,6 @@ Private Sub BtnAssetExport_Click()
     Headings(21) = "Cost"
     Headings(22) = "Supplier 1"
     Headings(23) = "Supplier 2"
-    Headings(24) = "Check (!)"
     
     Set RstAssets = ModDatabase.SQLQuery("TblAsset")
 
