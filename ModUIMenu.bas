@@ -440,14 +440,14 @@ Public Function ResetScreen() As Boolean
     For Each Frame In MainScreen.Frames
         If Frame.Name <> "MenuBar" Then
             For Each DashObj In Frame.DashObs
-                Debug.Print DashObj.Name
+'                Debug.Print DashObj.Name
                 Frame.DashObs.RemoveItem DashObj.Name
                 DashObj.ShpDashObj.Delete
                 Set DashObj = Nothing
             Next
             
             For Each UILineItem In Frame.LineItems
-                Debug.Print UILineItem.Name
+'                Debug.Print UILineItem.Name
                 Frame.LineItems.RemoveItem UILineItem.Name
                 UILineItem.ShpLineItem.Delete
                 Set UILineItem = Nothing

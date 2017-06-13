@@ -6,8 +6,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,2 - improved message box
 ' v0,3 - Added IsProcessRunning Procedure
 ' v0,4 - Tried new Outlook detector
+' v0,5 - Added GetTextLineNo
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -254,4 +255,28 @@ Function OutlookRunning() As Boolean
     Else
         OutlookRunning = True
     End If
+End Function
+
+' ===============================================================
+' GetTextLineNo
+' returns the number of lines in a csv or text file
+' ---------------------------------------------------------------
+Public Function GetTextLineNo(FileName As String) As Integer
+    Dim wb As Workbook
+    
+    For Each wb In Workbooks
+        If wb.FullName = FileName Then wb.Close (False)
+    Next wb
+   
+    Set wb = Workbooks.Open(FileName)
+    
+    If Not wb Is Nothing Then
+        With wb.Worksheets(1)
+        
+            GetTextLineNo = .Cells(.Rows.Count, "A").End(xlUp).Row
+            wb.Close savechanges:=False
+        End With
+    End If
+    
+    Set wb = Nothing
 End Function

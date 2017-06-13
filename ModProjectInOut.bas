@@ -128,7 +128,7 @@ Public Sub ExportDBTables()
     For Each TableExport In DB.TableDefs
         If Not (TableExport.Name Like "MSys*" Or TableExport.Name Like "~*") Then
             
-            Debug.Print TableExport.Name
+            'debug.print TableExport.Name
             
             PrintFilePath = ExportFilePath & TableExport.Name & ".txt"
         

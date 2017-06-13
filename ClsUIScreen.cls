@@ -180,7 +180,7 @@ Public Sub Kill()
     Dim Frame As ClsUIFrame
     
     For Each Frame In pFrames
-        Debug.Print Frame.Name
+        'debug.print Frame.Name
         If Frame.Name <> "MenuBar" Then Frame.ShpFrame.Delete
         Set Frame = Nothing
     Next

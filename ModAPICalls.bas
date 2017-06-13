@@ -2,8 +2,9 @@ Attribute VB_Name = "ModAPICalls"
 '===============================================================
 ' Module ModAPICalls
 ' v0,0 - Initial Version
+' v0,1 - Added Sleep function
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 09 Jun 17
 '===============================================================
 
 Option Explicit
@@ -16,6 +17,12 @@ Private Const StrMODULE As String = "ModAPICalls"
 ' ---------------------------------------------------------------
 Public Declare Sub CopyMemory _
 Lib "kernel32" Alias "RtlMoveMemory" (pDst As Any, pSrc As Any, ByVal ByteLen As Long)
+
+' ===============================================================
+' Sleep
+' Pauses execution for a defined number of milliseconds
+' ---------------------------------------------------------------
+Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
 ' ===============================================================
 ' GetScreenHeight
