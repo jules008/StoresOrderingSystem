@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Delete collection on terminate
 ' v0,5 - Changed get size lists
 ' v0,6 - Bug fix - changing size 1 selection does not update Size 2 options
+' v0,7 - Added On Error Resume Next to Add asset
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 13 Jun 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -70,6 +71,7 @@ End Function
 '---------------------------------------------------------------
 
 Public Sub AddItem(Asset As ClsAsset)
+    On Error Resume Next
     pAssets.Add Asset, Key:=CStr(Asset.AssetNo)
     If Asset.AssetNo > MaxAssetNo Then MaxAssetNo = Asset.AssetNo
 End Sub
