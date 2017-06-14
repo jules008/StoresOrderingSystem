@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 07 Jun 17
+' Date - 14 Jun 17
 '===============================================================
 
 Option Explicit
@@ -218,21 +218,24 @@ Public Sub UpdateDBScript()
     
     DBConnect
     
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN AssetID INT "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN LossReportID INT "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ReqReason INT "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForStationID INT "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForVehicleID INT "
+    
+    DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
+    
+    DB.Execute "DELETE FROM TblLineItem WHERE OrderNo IS NULL"
+    DB.Execute "DELETE FROM TblLineItem WHERE OrderNo =0"
+    DB.Execute "UPDATE TblLineItem SET ForVehicleID = NULL WHERE ForVehicleID=0"
+    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForPersonID LIKE ' '"
+    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForVehicleID IS NOT NULL"
         
-    Set RstTable = SQLQuery("TblDBVersion")
+'    Set RstTable = SQLQuery("TblDBVersion")
+'
+'    With RstTable
+'        .Edit
+'        .Fields(0) = "v0,34"
+'        .Update
+'    End With
     
-    With RstTable
-        .Edit
-        .Fields(0) = "v0,34"
-        .Update
-    End With
-    
-    Set RstTable = Nothing
+'    Set RstTable = Nothing
     Set TableDef = Nothing
     Set Fld = Nothing
     
@@ -252,19 +255,17 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
         
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN AssetID CHAR (20) "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN LossReportID CHAR (20) "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ReqReason CHAR (20) "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForStationID CHAR (20) "
-    DB.Execute "ALTER TABLE TblLineItem ALTER COLUMN ForVehicleID CHAR (20) "
+    DB.Execute "DROP TABLE TblLineItem"
+    DB.Execute "SELECT * INTO TblLineItem FROM TblLineItemBAK"
+    DB.Execute "DROP TABLE TblLineItemBAK"
             
-    Set RstTable = SQLQuery("TblDBVersion")
-    
-    With RstTable
-        .Edit
-        .Fields(0) = "v0,33"
-        .Update
-    End With
+'    Set RstTable = SQLQuery("TblDBVersion")
+'
+'    With RstTable
+'        .Edit
+'        .Fields(0) = "v0,33"
+'        .Update
+'    End With
     
     Set RstTable = Nothing
     Set TableDef = Nothing
