@@ -223,8 +223,8 @@ Public Sub UpdateDBScript()
     
     DB.Execute "DELETE FROM TblLineItem WHERE OrderNo IS NULL"
     DB.Execute "DELETE FROM TblLineItem WHERE OrderNo =0"
-    DB.Execute "UPDATE TblLineItem SET ForVehicleID = NULL WHERE ForVehicleID=0"
-    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForPersonID NOT LIKE ' '"
+    DB.Execute "UPDATE TblLineItem SET ForVehicleID = NULL WHERE ForVehicleID = 0"
+    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForPersonID NOT LIKE ''"
     DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForVehicleID IS NOT NULL"
         
 '    Set RstTable = SQLQuery("TblDBVersion")
