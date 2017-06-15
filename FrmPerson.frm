@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Set Phone Order flag
 ' v0,4 - Phone Order Bug Fix
 ' v0,5 - Clean up if user cancels form
+' v0,6 - Bug fix - not filling in ForPerson 
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 15 Jun 17
 '===============================================================
 Option Explicit
 
@@ -213,12 +214,11 @@ Private Sub BtnNext_Click()
         
         Case Is = FormOK
         
+            If OptMe Then Lineitem.ForPerson = Order.Requestor
+            
             If RemoteOrder Then
-                If OptMe Then Order.Requestor = CurrentUser
                 Order.PhoneOrder = True
             Else
-                If OptMe Then Lineitem.ForPerson = CurrentUser
-                
                 If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
                 If Not Order Is Nothing Then Order.PhoneOrder = False
             End If

@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Bug fix for Phone Order
 ' v0,2 - Bug fix when using using Prev Button
 ' v0,3 - Clean up if user cancels order
+' v0,4 - Bug fix - phone order not filling in ForStation
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 15 Jun 17
 '===============================================================
 Option Explicit
 
@@ -219,7 +220,7 @@ Private Sub BtnNext_Click()
                 If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
                 
                 If OptMe = True Then
-                    Lineitem.ForStation = CurrentUser.Station
+                    Lineitem.ForStation = Lineitem.Parent.Requestor.Station
                 Else
                     Lineitem.ForStation = Stations(CStr(LstStations.ListIndex))
                 End If

@@ -192,7 +192,7 @@ Public Function FindOrders(CrewNo As String) As Recordset
     If RstOrder.RecordCount = 0 Then
         Set FindOrders = Nothing
     Else
-    	Set FindOrders = RstOrder
+        Set FindOrders = RstOrder
     End If
     Set RstOrder = Nothing
 End Function
