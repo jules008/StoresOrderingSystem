@@ -11,7 +11,7 @@ Attribute VB_Name = "ModStartUp"
 ' v0,7 - Added DB Version Check
 ' v0,8 - Update any rogue usernames
 '---------------------------------------------------------------
-' Date - 08 May 17
+' Date - 14 Jun 17
 '===============================================================
 
 Option Explicit
@@ -283,6 +283,8 @@ Private Function UpdateUsername() As Boolean
 
     If Application.Username = "PaulJ Wright" Then Application.Username = "Paul Wright"
 
+    If Application.UserName = "#" Then Application.UserName = "Samuel Hayward"
+    
     UpdateUsername = True
 
 Exit Function
