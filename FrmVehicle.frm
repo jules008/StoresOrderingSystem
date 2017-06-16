@@ -20,8 +20,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Hide 'select a vehicle' message when not required
 ' v0,31 - Second go at hiding message
 ' v0,4 - Clean up if user cancels form
+' v0,5 - Added validation to prevent no vehicle being selected for HQ
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 16 Jun 17
 '===============================================================
 Option Explicit
 
@@ -45,7 +46,6 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
         Set Lineitem = LocLineItem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
-    'debug.print Me.Visible
     Show
     ShowForm = True
 
@@ -411,6 +411,9 @@ Private Sub LstVehicles_Click()
     Set RstVehTypes = Vehicles.GetVehicleTypes
     
     With LstVehicles
+        
+        .BackColor = COLOUR_3
+
         If .List(.ListIndex, 1) = "Other...." Then
             LblText2.Visible = True
             CmoVehicleTypes.Visible = True
@@ -532,6 +535,19 @@ Private Function ValidateForm() As EnumFormValidation
     Const StrPROCEDURE As String = "ValidateForm()"
 
     On Error GoTo ErrorHandler
+    
+    If Lineitem.ForVehicle Is Nothing Then
+        MsgBox "Please select a vehicle", vbExclamation, APP_NAME
+        ValidateForm = ValidationError
+        Exit Function
+    End If
+    
+    With LstVehicles
+        If Lineitem.ForVehicle.VehNo = 0 Then
+            .BackColor = COLOUR_6
+            ValidateForm = ValidationError
+        End If
+    End With
     
     With CmoVehicleTypes
         If .Visible = True And .ListIndex = -1 Then

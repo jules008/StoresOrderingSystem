@@ -8,7 +8,7 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,4 - Increased Order retrieval performance
 ' v0,5 - Now passing OnAction as paramater
 ' v0,6 - Delivery Button and add icons
-' v0,7 - Moved ResetScreen to main menu 
+' v0,7 - Moved ResetScreen to main menu
 ' v0,8 - Data Management Button
 '---------------------------------------------------------------
 ' Date - 09 Jun 17

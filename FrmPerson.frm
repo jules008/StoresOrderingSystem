@@ -21,9 +21,10 @@ Attribute VB_Exposed = False
 ' v0,3 - Set Phone Order flag
 ' v0,4 - Phone Order Bug Fix
 ' v0,5 - Clean up if user cancels form
-' v0,6 - Bug fix - not filling in ForPerson 
+' v0,6 - Bug fix - not filling in ForPerson
+' v0,7 - Bug fix - reference lineitem parent not order
 '---------------------------------------------------------------
-' Date - 15 Jun 17
+' Date - 16 Jun 17
 '===============================================================
 Option Explicit
 
@@ -214,7 +215,7 @@ Private Sub BtnNext_Click()
         
         Case Is = FormOK
         
-            If OptMe Then Lineitem.ForPerson = Order.Requestor
+            If OptMe Then Lineitem.ForPerson = Lineitem.Parent.Requestor
             
             If RemoteOrder Then
                 Order.PhoneOrder = True
