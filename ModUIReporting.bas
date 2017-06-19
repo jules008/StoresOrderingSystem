@@ -2,8 +2,9 @@ Attribute VB_Name = "ModUIReporting"
 '===============================================================
 ' Module ModUIReporting
 ' v0,0 - Initial Version
+' v0,1 - Updated query 1
 '---------------------------------------------------------------
-' Date - 07 Jun 17
+' Date - 19 Jun 17
 '===============================================================
 
 Option Explicit
@@ -151,8 +152,8 @@ End Function
 ' ---------------------------------------------------------------
 Private Function BtnReport1Sel() As Boolean
     Dim RstQuery As Recordset
-    Dim ColWidths(0 To 12) As Integer
-    Dim Headings(0 To 12) As String
+    Dim ColWidths(0 To 14) As Integer
+    Dim Headings(0 To 14) As String
 
     Const StrPROCEDURE As String = "BtnReport1Sel()"
 
@@ -172,33 +173,37 @@ Restart:
     
     'col widths
     ColWidths(0) = 8
-    ColWidths(1) = 60
-    ColWidths(2) = 20
-    ColWidths(3) = 20
+    ColWidths(1) = 15
+    ColWidths(2) = 25
+    ColWidths(3) = 60
     ColWidths(4) = 20
     ColWidths(5) = 20
     ColWidths(6) = 20
-    ColWidths(7) = 10
-    ColWidths(8) = 25
-    ColWidths(9) = 25
+    ColWidths(7) = 20
+    ColWidths(8) = 20
+    ColWidths(9) = 10
     ColWidths(10) = 25
     ColWidths(11) = 25
     ColWidths(12) = 25
+    ColWidths(13) = 25
+    ColWidths(14) = 25
     
     'headings
-    Headings(0) = "Asset No"
-    Headings(1) = "Description"
-    Headings(2) = "Category 1"
-    Headings(3) = "Category 2"
-    Headings(4) = "Category 3"
-    Headings(5) = "Size 1"
-    Headings(6) = "Size 2"
-    Headings(7) = "Quantity"
-    Headings(8) = "For Person"
-    Headings(9) = "For Station"
-    Headings(10) = "For Vehicle"
-    Headings(11) = "Veh Station"
-    Headings(12) = "Request Reason"
+    Headings(0) = "Order No"
+    Headings(1) = "Order Date"
+    Headings(2) = "Ordered By"
+    Headings(3) = "Description"
+    Headings(4) = "Category 1"
+    Headings(5) = "Category 2"
+    Headings(6) = "Category 3"
+    Headings(7) = "Size 1"
+    Headings(8) = "Size 2"
+    Headings(9) = "Quantity"
+    Headings(10) = "For Person"
+    Headings(11) = "For Station"
+    Headings(12) = "For Vehicle"
+    Headings(13) = "Veh Station"
+    Headings(14) = "Request Reason"
     
     
     If Not ModReports.CreateReport(RstQuery, ColWidths, Headings) Then Err.Raise HANDLED_ERROR

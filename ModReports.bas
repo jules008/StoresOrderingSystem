@@ -2,8 +2,9 @@ Attribute VB_Name = "ModReports"
 '===============================================================
 ' Module ModReports
 ' v0,0 - Initial Version
+' v0,1 - Updated Query 1
 '---------------------------------------------------------------
-' Date - 07 Jun 17
+' Date - 19 Jun 17
 '===============================================================
 
 Option Explicit
@@ -82,38 +83,46 @@ End Function
 ' ---------------------------------------------------------------
 Public Function Report1Query() As Recordset
     Dim RstQuery As Recordset
+    Dim StrSelect As String
+    Dim StrFrom As String
+    Dim StrWhere As String
     
     Const StrPROCEDURE As String = "Report1Query()"
 
     On Error GoTo ErrorHandler
 
-    Set RstQuery = ModDatabase.SQLQuery("SELECT " _
-                                  & "TblAsset.AssetNo AS [Asset No], " _
-                                  & "TblAsset.Description AS Description, " _
-                                  & "TblAsset.Category1, " _
-                                  & "TblAsset.Category2, " _
-                                  & "TblAsset.Category3, " _
-                                  & "TblAsset.Size1, " _
-                                  & "TblAsset.Size2, " _
-                                  & "TblLineItem.Quantity AS Quantity, " _
-                                  & "TblPerson.Username AS [For Person], " _
-                                  & "TblStation.Name AS [For Station], " _
-                                  & "TblVehicle.VehReg AS [For Vehicle], " _
-                                  & "TblStation1.Name AS [Vehicle Station], " _
-                                  & "TblReqReason.ReqReason AS [Request Reason] " _
-                                & "From " _
-                                  & "(((((TblLineItem " _
-                                  & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                                  & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
-                                  & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID) " _
-                                  & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
-                                  & "LEFT JOIN TblReqReason ON TblLineItem.ReqReason = TblReqReason.ReqReasonNo) " _
-                                  & "LEFT JOIN TblStation TblStation1 ON TblVehicle.StationID = TblStation1.StationID " _
-                                & "WHERE " _
-                                  & "TblAsset.AssetNo IS NOT NULL " _
-                                  & "ORDER BY TblLineItem.OrderNo")
-
-
+    StrSelect = "SELECT " _
+                    & "TblOrder.OrderNo AS [Order No], " _
+                    & "TblOrder.OrderDate AS [Order Date], " _
+                    & "TblPerson1.Username AS [Ordered By], " _
+                    & "TblAsset.Description AS Description, " _
+                    & "TblAsset.Category1 AS [Category 1], " _
+                    & "TblAsset.Category2 AS [Category 2], " _
+                    & "TblAsset.Category3 AS [Category 3], " _
+                    & "TblAsset.Size1 AS [Size 1], " _
+                    & "TblAsset.Size2 AS [Size 2], " _
+                    & "TblLineItem.Quantity AS Quantity, " _
+                    & "TblPerson.Username AS [For Person], " _
+                    & "TblStation.Name AS [For Station], " _
+                    & "TblVehicle.VehReg AS [For Vehicle], " _
+                    & "TblStation1.Name AS [Vehicle Station], " _
+                    & "TblReqReason.ReqReason AS [Request Reason] "
+                    
+    StrFrom = "FROM " _
+                    & "(((((((TblLineItem " _
+                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
+                    & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID) " _
+                    & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
+                    & "LEFT JOIN TblReqReason ON TblLineItem.ReqReason = TblReqReason.ReqReasonNo) " _
+                    & "LEFT JOIN TblStation TblStation1 ON TblVehicle.StationID = TblStation1.StationID) " _
+                    & "LEFT JOIN TblOrder ON TblLineItem.OrderNo = TblOrder.OrderNo) " _
+                    & "LEFT JOIN TblPerson TblPerson1 ON TblOrder.RequestorID = TblPerson1.CrewNo "
+                    
+    StrWhere = "WHERE " _
+                    & "TblAsset.AssetNo IS NOT NULL "
+    
+    Set RstQuery = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere)
 
     Set Report1Query = RstQuery
 
