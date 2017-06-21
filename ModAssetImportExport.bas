@@ -3,8 +3,9 @@ Attribute VB_Name = "ModAssetImportExport"
 ' Module ModAssetImportExport
 ' v0,0 - Initial Version
 ' v0,1 - Improved version
+' v0,2 - Test to ensure DBAsset is not nothing before copying qty
 '---------------------------------------------------------------
-' Date - 12 Jun 17
+' Date - 21 Jun 17
 '===============================================================
 
 Option Explicit
@@ -479,10 +480,10 @@ Public Function Stage3_CopyData() As Boolean
         
         If ShtAsset Is Nothing Then
             If Not DBAsset Is Nothing Then DBAsset.DBDelete
-            Else
-            
+        Else
+        
             'don't overwrite quantity
-            ShtAsset.QtyInStock = DBAsset.QtyInStock
+            If Not DBAsset Is Nothing Then ShtAsset.QtyInStock = DBAsset.QtyInStock
             ShtAsset.DBSave Rw
         End If
         Rw = FrmDataImport.UpdateProgrGges(MaxAssetNo, Rw, 3)
