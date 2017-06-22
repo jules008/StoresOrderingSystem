@@ -9,8 +9,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,5 - Delivery button and tidy up
 ' v0,6 - Report1 Button
 ' v0,7 - Data Management Button
+' v0,8 - Added Report2 Button
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 22 Jun 17
 '===============================================================
 
 Option Explicit
@@ -165,6 +166,11 @@ Public Const BTN_REPORT_1_HEIGHT As Integer = 30
 Public Const BTN_REPORT_1_WIDTH As Integer = 175
 Public Const BTN_REPORT_1_LEFT As Integer = 180
 Public Const BTN_REPORT_1_TOP As Integer = 30
+
+Public Const BTN_REPORT_2_HEIGHT As Integer = 30
+Public Const BTN_REPORT_2_WIDTH As Integer = 175
+Public Const BTN_REPORT_2_LEFT As Integer = 365
+Public Const BTN_REPORT_2_TOP As Integer = 30
 
 ' ===============================================================
 ' Style Declarations

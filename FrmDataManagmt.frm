@@ -15,8 +15,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Added format to report columns
 '---------------------------------------------------------------
-' Date - 12 Jun 17
+' Date - 22 Jun 17
 '===============================================================
 Option Explicit
 
@@ -67,6 +68,7 @@ End Function
 Private Sub BtnAssetExport_Click()
     Dim ColWidths(0 To 23) As Integer
     Dim Headings(0 To 23) As String
+    Dim ColFormats(0 To 23) As String
     Dim RstAssets As Recordset
     
     Const StrPROCEDURE As String = "BtnAssetExport_Click()"
@@ -125,9 +127,35 @@ Private Sub BtnAssetExport_Click()
     Headings(22) = "Supplier 1"
     Headings(23) = "Supplier 2"
     
+    'formats
+    ColFormats(0) = "General"
+    ColFormats(1) = "General"
+    ColFormats(2) = "General"
+    ColFormats(3) = "General"
+    ColFormats(4) = "General"
+    ColFormats(5) = "General"
+    ColFormats(6) = "General"
+    ColFormats(7) = "General"
+    ColFormats(8) = "General"
+    ColFormats(9) = "General"
+    ColFormats(10) = "General"
+    ColFormats(11) = "General"
+    ColFormats(12) = "General"
+    ColFormats(13) = "General"
+    ColFormats(14) = "General"
+    ColFormats(15) = "General"
+    ColFormats(16) = "General"
+    ColFormats(17) = "General"
+    ColFormats(18) = "General"
+    ColFormats(19) = "General"
+    ColFormats(20) = "General"
+    ColFormats(21) = "General"
+    ColFormats(22) = "General"
+    ColFormats(23) = "General"
+    
     Set RstAssets = ModDatabase.SQLQuery("TblAsset")
 
-    If Not ModReports.CreateReport(RstAssets, ColWidths, Headings) Then Err.Raise HANDLED_ERROR
+    If Not ModReports.CreateReport(RstAssets, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
     
     Set RstAssets = Nothing
     
