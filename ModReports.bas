@@ -3,8 +3,9 @@ Attribute VB_Name = "ModReports"
 ' Module ModReports
 ' v0,0 - Initial Version
 ' v0,1 - Updated Query 1
+' v0,2 - Added query for Report 2
 '---------------------------------------------------------------
-' Date - 19 Jun 17
+' Date - 22 Jun 17
 '===============================================================
 
 Option Explicit
@@ -15,10 +16,12 @@ Private Const StrMODULE As String = "ModReports"
 ' CreateReport
 ' Creates Report from Recordset
 ' ---------------------------------------------------------------
-Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headings() As String) As Boolean
+Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headings() As String, ColFormats() As String) As Boolean
     Dim ReportBook As Workbook
     Dim RngQry As Range
     Dim RngHeader As Range
+    Dim ShtReport As Worksheet
+    
     Dim i As Integer
     
     Const StrPROCEDURE As String = "CreateReport()"
@@ -26,14 +29,20 @@ Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headi
     On Error GoTo ErrorHandler
 
     Set ReportBook = Workbooks.Add
+    Set ShtReport = ReportBook.Worksheets(1)
     
-    With ReportBook.Worksheets(1)
+    With ShtReport
         Set RngQry = .Range("A1")
         
         'headings and col widths
         For i = 0 To UBound(Headings)
             RngQry.Offset(0, i) = Headings(i)
             RngQry.Offset(0, i).ColumnWidth = ColWidths(i)
+        Next
+        
+        'formats
+        For i = 0 To UBound(ColFormats)
+            .Columns(i + 1).NumberFormat = ColFormats(i)
         Next
         
         'format heading
@@ -55,6 +64,7 @@ Public Function CreateReport(RstData As Recordset, ColWidths() As Integer, Headi
     Set RngQry = Nothing
     Set RngHeader = Nothing
     Set ReportBook = Nothing
+    Set ShtReport = Nothing
     CreateReport = True
 
 Exit Function
@@ -64,6 +74,8 @@ ErrorExit:
     Set RngQry = Nothing
     Set RngHeader = Nothing
     Set ReportBook = Nothing
+    Set ShtReport = Nothing
+    
 '    ***CleanUpCode***
     CreateReport = False
 
@@ -143,3 +155,57 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' Report2Query
+' SQL query for Report 2 returning results as recordset
+' ---------------------------------------------------------------
+Public Function Report2Query() As Recordset
+    Dim RstQuery As Recordset
+    Dim StrSelect As String
+    Dim StrFrom As String
+    Dim StrWhere As String
+    
+    Const StrPROCEDURE As String = "Report2Query()"
+
+    On Error GoTo ErrorHandler
+
+    StrSelect = "SELECT " _
+                    & "TblAsset.AssetNo, " _
+                    & "TblAsset.Description, " _
+                    & "TblAsset.QtyInStock, " _
+                    & "TblAsset.Category1, " _
+                    & "TblAsset.Category2, " _
+                    & "TblAsset.Category3, " _
+                    & "TblAsset.Size1, " _
+                    & "TblAsset.Size2, " _
+                    & "TblAsset.Cost AS [Item Cost], " _
+                    & "TblAsset.QtyInStock * TblAsset.Cost AS [Total Cost] "
+                    
+    StrFrom = "FROM " _
+                    & "TblAsset "
+    StrWhere = ""
+
+    Set RstQuery = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere)
+
+    Set Report2Query = RstQuery
+
+    Set RstQuery = Nothing
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set Report2Query = Nothing
+    Set RstQuery = Nothing
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+

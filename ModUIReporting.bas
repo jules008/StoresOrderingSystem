@@ -3,8 +3,9 @@ Attribute VB_Name = "ModUIReporting"
 ' Module ModUIReporting
 ' v0,0 - Initial Version
 ' v0,1 - Updated query 1
+' v0,2 - Addded Report 2
 '---------------------------------------------------------------
-' Date - 19 Jun 17
+' Date - 22 Jun 17
 '===============================================================
 
 Option Explicit
@@ -24,6 +25,7 @@ Public Function BuildReporting() As Boolean
     ModLibrary.PerfSettingsOn
     
     If Not BuildReport1Btn Then Err.Raise HANDLED_ERROR
+    If Not BuildReport2Btn Then Err.Raise HANDLED_ERROR
         
     ModLibrary.PerfSettingsOff
                     
@@ -93,6 +95,51 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
+' BuildReport2Btn
+' Adds the button to switch order list between open and closed orders
+' ---------------------------------------------------------------
+Private Function BuildReport2Btn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildReport2Btn()"
+
+    On Error GoTo ErrorHandler
+
+    Set BtnReport2 = New ClsUIMenuItem
+
+    With BtnReport2
+        
+        .Height = BTN_REPORT_2_HEIGHT
+        .Left = BTN_REPORT_2_LEFT
+        .Top = BTN_REPORT_2_TOP
+        .Width = BTN_REPORT_2_WIDTH
+        .Name = "BtnReport2"
+        .OnAction = "'ModUIReporting.ProcessBtnPress(14)'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Stock Report"
+    End With
+
+    MainScreen.Menu.AddItem BtnReport2
+    
+    BuildReport2Btn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildReport2Btn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
 ' ProcessBtnPress
 ' Receives all button presses and processes
 ' ---------------------------------------------------------------
@@ -112,6 +159,9 @@ Restart:
             
                 If Not BtnReport1Sel Then Err.Raise HANDLED_ERROR
                         
+            Case EnumReport2Btn
+            
+                If Not BtnReport2Sel Then Err.Raise HANDLED_ERROR
         End Select
     
 GracefulExit:
@@ -154,6 +204,7 @@ Private Function BtnReport1Sel() As Boolean
     Dim RstQuery As Recordset
     Dim ColWidths(0 To 14) As Integer
     Dim Headings(0 To 14) As String
+    Dim ColFormats(0 To 14) As String
 
     Const StrPROCEDURE As String = "BtnReport1Sel()"
 
@@ -205,8 +256,24 @@ Restart:
     Headings(13) = "Veh Station"
     Headings(14) = "Request Reason"
     
+    'formats
+    ColFormats(0) = "General"
+    ColFormats(1) = "General"
+    ColFormats(2) = "General"
+    ColFormats(3) = "General"
+    ColFormats(4) = "General"
+    ColFormats(5) = "General"
+    ColFormats(6) = "General"
+    ColFormats(7) = "General"
+    ColFormats(8) = "General"
+    ColFormats(9) = "General"
+    ColFormats(10) = "General"
+    ColFormats(11) = "General"
+    ColFormats(12) = "General"
+    ColFormats(13) = "General"
+    ColFormats(14) = "General"
     
-    If Not ModReports.CreateReport(RstQuery, ColWidths, Headings) Then Err.Raise HANDLED_ERROR
+    If Not ModReports.CreateReport(RstQuery, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
     
 GracefulExit:
 
@@ -242,4 +309,101 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' BtnReport2Sel
+' Manages system users
+' ---------------------------------------------------------------
+Private Function BtnReport2Sel() As Boolean
+    Dim RstQuery As Recordset
+    Dim ColWidths(0 To 9) As Integer
+    Dim Headings(0 To 9) As String
+    Dim ColFormats(0 To 9) As String
+
+    Const StrPROCEDURE As String = "BtnReport2Sel()"
+
+    On Error GoTo ErrorHandler
+
+Restart:
+    
+    Application.StatusBar = ""
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
+
+    Set RstQuery = ModReports.Report2Query
+    
+    If RstQuery Is Nothing Then Err.Raise HANDLED_ERROR
+    
+    'col widths
+    ColWidths(0) = 8
+    ColWidths(1) = 60
+    ColWidths(2) = 10
+    ColWidths(3) = 20
+    ColWidths(4) = 20
+    ColWidths(5) = 20
+    ColWidths(6) = 20
+    ColWidths(7) = 20
+    ColWidths(8) = 20
+    ColWidths(9) = 20
+    
+    'headings
+    Headings(0) = "Asset No"
+    Headings(1) = "Description"
+    Headings(2) = "Quantity"
+    Headings(3) = "Category 1"
+    Headings(4) = "Category 2"
+    Headings(5) = "Category 3"
+    Headings(6) = "Size 1"
+    Headings(7) = "Size 2"
+    Headings(8) = "Item Cost"
+    Headings(9) = "Cost of Stock"
+    
+    'formats
+    ColFormats(0) = "General"
+    ColFormats(1) = "General"
+    ColFormats(2) = "General"
+    ColFormats(3) = "General"
+    ColFormats(4) = "General"
+    ColFormats(5) = "General"
+    ColFormats(6) = "General"
+    ColFormats(7) = "General"
+    ColFormats(8) = "£#,###.00"
+    ColFormats(9) = "£#,###.00"
+    
+    If Not ModReports.CreateReport(RstQuery, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
+    
+GracefulExit:
+
+    BtnReport2Sel = True
+
+Exit Function
+
+ErrorExit:
+    
+    BtnReport2Sel = False
+
+'    ***CleanUpCode***
+
+Exit Function
+
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = ACCESS_DENIED Then
+            CustomErrorHandler (Err.Number)
+            Resume GracefulExit
+        Else
+            CustomErrorHandler (Err.Number)
+            Resume Restart
+        End If
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
