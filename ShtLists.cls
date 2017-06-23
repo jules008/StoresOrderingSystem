@@ -10,8 +10,9 @@ Attribute VB_Exposed = True
 '===============================================================
 ' Sheet ShtLists
 ' v0,0 - Initial Version
+' v0,1 - Added keyword search
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 23 Jun 17
 '===============================================================
 
 Option Explicit
@@ -29,7 +30,7 @@ Public Function RefreshAssetList() As Boolean
 
     Dim RstAssets As Recordset
     
-    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description FROM tblasset")
+    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset")
 
     Me.Range("A1").CopyFromRecordset RstAssets
 

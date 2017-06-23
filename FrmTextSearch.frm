@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - Bug fix - reset Asset before re-using
 ' v0,2 - Clean up if user cancels order
+' v0,3 - Added keyword search
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 23 Jun 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -346,47 +347,48 @@ End Sub
 ' Gets items from the asset list that match Txtsearch box
 ' ---------------------------------------------------------------
 Private Function GetSearchItems(StrSearch As String) As Boolean
+    Dim ListLength As Integer
+    Dim RngStart As Range
+    Dim i As Integer
+    Dim Description As String
+    Dim Keywords As String
+    
     Const StrPROCEDURE As String = "GetSearchItems()"
 
     On Error GoTo ErrorHandler
 
-    Dim ListLength As Integer
-    Dim RngResult As Range
-    Dim RngItems As Range
-    Dim RngFirstResult As Range
-    Dim i As Integer
+    
+    Set RngStart = ShtLists.Range("A1")
     
     'get length of item list
     ListLength = Application.WorksheetFunction.CountA(ShtLists.Range("A:A"))
     
-    Set RngItems = ShtLists.Range("A1:A" & ListLength)
-    Set RngResult = RngItems.Find(StrSearch)
-    Set RngFirstResult = RngResult
-    
     LstResults.Clear
     'search item list and populate results.  Stop before looping back to start
-    If Not RngResult Is Nothing Then
     
-        Do
-            Set RngResult = RngItems.FindNext(RngResult)
-            LstResults.AddItem RngResult.Value
-            
-        Loop While RngResult <> 0 And RngResult.Address <> RngFirstResult.Address
-    End If
-
+    For i = 1 To ListLength
+        
+        Description = UCase(RngStart.Offset(i, 0))
+        Keywords = UCase(RngStart.Offset(i, 1))
+        StrSearch = UCase(StrSearch)
+        
+        If InStr(Description, StrSearch) Or InStr(Keywords, StrSearch) Then
+            LstResults.AddItem Description
+        
+        End If
+    
+    Next
+    
+    
     GetSearchItems = True
     
-    Set RngItems = Nothing
-    Set RngResult = Nothing
-    Set RngFirstResult = Nothing
+    Set RngStart = Nothing
     
 Exit Function
 
 ErrorExit:
 
-    Set RngItems = Nothing
-    Set RngResult = Nothing
-    Set RngFirstResult = Nothing
+    Set RngStart = Nothing
     
     FormTerminate
     Terminate
