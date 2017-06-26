@@ -15,8 +15,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,10 - Reports1 Button
 ' v0,11 - Data Management Button
 ' v0,12 - Added Report2 button
+' v0,13 - Removed hard numbering on enumbuttons
 '---------------------------------------------------------------
-' Date - 22 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -314,19 +315,20 @@ End Enum
 
 Enum EnumBtnNo
     EnumMyStation = 1
-    EnumStores = 2
-    EnumReports = 3
-    EnumMyProfile = 4
-    EnumSupport = 5
-    EnumNewOrder = 6
-    EnumSupportMsg = 7
-    EnumUserMngt = 8
-    EnumOrderSwitch = 9
-    EnumRemoteOrder = 10
-    EnumDeliveryBtn = 11
-    EnumReport1Btn = 12
-    EnumManageDataBtn = 13
-    EnumReport2Btn = 14
+    EnumStores
+    EnumReports
+    EnumMyProfile
+    EnumSupport
+    EnumExit
+    EnumNewOrder
+    EnumSupportMsg
+    EnumUserMngt
+    EnumOrderSwitch
+    EnumRemoteOrder
+    EnumDeliveryBtn
+    EnumReport1Btn
+    EnumManageDataBtn
+    EnumReport2Btn
 End Enum
 
 ' ===============================================================

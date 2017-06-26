@@ -23,8 +23,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Clean up if user cancels form
 ' v0,6 - Bug fix - not filling in ForPerson
 ' v0,7 - Bug fix - reference lineitem parent not order
+' v0,8 - Test to see if LineItem exists before cleaning up
 '---------------------------------------------------------------
-' Date - 16 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 Option Explicit
 
@@ -100,7 +101,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    If Not Lineitem Is Nothing Then Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
 
     CancelOrder = True
 

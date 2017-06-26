@@ -10,8 +10,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,6 - Delivery Button and add icons
 ' v0,7 - Moved ResetScreen to main menu
 ' v0,8 - Data Management Button
+' v0,9 - removed hard numbering for buttons
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -35,7 +36,7 @@ Private Function BuildUserMangtBtn() As Boolean
         .Top = BTN_USER_MANGT_TOP
         .Width = BTN_USER_MANGT_WIDTH
         .Name = "BtnUserMangt"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(8)'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumUserMngt & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "User Management"
@@ -83,7 +84,7 @@ Private Function BuildManageDataBtn() As Boolean
         .Top = BTN_MANAGE_DATA_TOP
         .Width = BTN_MANAGE_DATA_WIDTH
         .Name = "BtnManageData"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(13)'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumManageDataBtn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Data Management"
@@ -132,7 +133,7 @@ Private Function BuildOrderSwitchBtn() As Boolean
         .Top = BTN_ORDER_SWITCH_TOP
         .Width = BTN_ORDER_SWITCH_WIDTH
         .Name = "BtnOrderSwitch"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(9)'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumOrderSwitch & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Show Closed Orders"
@@ -180,7 +181,7 @@ Private Function BuildRemoteOrderBtn() As Boolean
         .Top = BTN_REMOTE_ORDER_TOP
         .Width = BTN_REMOTE_ORDER_WIDTH
         .Name = "BtnRemoteOrder"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(10)'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumRemoteOrder & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "New Phone Order"
@@ -228,7 +229,7 @@ Private Function BuildDeliveryBtn() As Boolean
         .Top = BTN_DELIVERY_TOP
         .Width = BTN_DELIVERY_WIDTH
         .Name = "BtnDelivery"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(11)'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumDeliveryBtn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Add Delivery"

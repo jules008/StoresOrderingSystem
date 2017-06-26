@@ -10,8 +10,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,6 - Report1 Button
 ' v0,7 - Data Management Button
 ' v0,8 - Added Report2 Button
+' v0,9 - Added Exit Button
 '---------------------------------------------------------------
-' Date - 22 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -79,9 +80,9 @@ Public Const MENU_TOP As Integer = 180
 Public Const MENU_LEFT As Integer = 10
 Public Const MENUITEM_HEIGHT As Integer = 31
 Public Const MENUITEM_WIDTH As Integer = 150
-Public Const MENUITEM_COUNT As Integer = 5
-Public Const MENUITEM_TEXT = "My Station:Stores:Reports:My Profile:Support"
-Public Const MENUITEM_ICONS = "TEMPLATE - Icon_Station:TEMPLATE - Icon_Stores:TEMPLATE - Icon_Document:TEMPLATE - Icon_Head:TEMPLATE - Icon_Support"
+Public Const MENUITEM_COUNT As Integer = 6
+Public Const MENUITEM_TEXT = "My Station:Stores:Reports:My Profile:Support:Exit"
+Public Const MENUITEM_ICONS = "TEMPLATE - Icon_Station:TEMPLATE - Icon_Stores:TEMPLATE - Icon_Document:TEMPLATE - Icon_Head:TEMPLATE - Icon_Support:TEMPLATE - Exit"
 Public Const MENUITEM_ICON_TOP As Integer = 5
 Public Const MENUITEM_ICON_LEFT As Integer = 5
 Public Const LOGO_TOP As Integer = 15

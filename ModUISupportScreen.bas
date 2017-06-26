@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' v0,2 - Fix Error 287 by opening Outlook if closed
 ' v0,3 - 287 issue, tried new Outlook detector
 ' v0,4 - Add shane and emma to support message
+' v0,5 - Removed hard numbering for buttons
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -80,7 +81,7 @@ Public Function BuildSupportFrame1() As Boolean
         .Height = COMMENT_BTN_HEIGHT
         .Width = COMMENT_BTN_WIDTH
         .Text = "Send Message"
-        .OnAction = "'ModUISupportScreen.ProcessBtnPress(EnumSupportMsg)'"
+        .OnAction = "'ModUISupportScreen.ProcessBtnPress(" & EnumSupportMsg & ")'"
     End With
     
     SupportFrame1.ReOrder

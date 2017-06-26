@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUIMenu"
 ' v0,1 - changes to performance mode switching
 ' v0,2 - Refresh front screen orders after new order placed
 ' v0,3 - Report1 Button and moved ResetScreen procedures in
+' v0,4 - Added Exit Button
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -258,6 +259,8 @@ End Function
 ' Receives all button presses and processes
 ' ---------------------------------------------------------------
 Public Function ProcessBtnPress(ButtonNo As EnumBtnNo) As Boolean
+    Dim Response As Integer
+    
     Const StrPROCEDURE As String = "ProcessBtnPress()"
 
     On Error GoTo ErrorHandler
@@ -288,6 +291,7 @@ Restart:
                     .Menu(3).Selected = False
                     .Menu(4).Selected = False
                     .Menu(5).Selected = False
+                    .Menu(6).Selected = False
                 End With
                 
             Case EnumStores
@@ -307,6 +311,7 @@ Restart:
                     .Menu(3).Selected = False
                     .Menu(4).Selected = False
                     .Menu(5).Selected = False
+                    .Menu(6).Selected = False
                 End With
                 
             Case EnumReports
@@ -330,6 +335,7 @@ Restart:
                     .Menu(3).Selected = True
                     .Menu(4).Selected = False
                     .Menu(5).Selected = False
+                    .Menu(6).Selected = False
                 End With
 
                 ModLibrary.PerfSettingsOff
@@ -352,6 +358,7 @@ Restart:
                     .Menu(3).Selected = False
                     .Menu(4).Selected = True
                     .Menu(5).Selected = False
+                    .Menu(6).Selected = False
                 End With
             
                 ModLibrary.PerfSettingsOff
@@ -373,16 +380,33 @@ Restart:
                     .Menu(3).Selected = False
                     .Menu(4).Selected = False
                     .Menu(5).Selected = True
+                    .Menu(6).Selected = False
                 End With
             
                 ModLibrary.PerfSettingsOff
                 
             Case EnumNewOrder
             
-            If Not FrmOrder.ShowForm Then Err.Raise HANDLED_ERROR
-            If Not ModUIMainScreen.RefreshMyOrderList Then Err.Raise HANDLED_ERROR
-            If Not ModUIMainScreen.RefreshRecentOrderList Then Err.Raise HANDLED_ERROR
-        
+                If Not FrmOrder.ShowForm Then Err.Raise HANDLED_ERROR
+                If Not ModUIMainScreen.RefreshMyOrderList Then Err.Raise HANDLED_ERROR
+                If Not ModUIMainScreen.RefreshRecentOrderList Then Err.Raise HANDLED_ERROR
+            
+            Case EnumExit
+                                
+                ModLibrary.PerfSettingsOn
+                                
+                Response = MsgBox("Are you sure you want to exit?", vbExclamation + vbYesNo + vbDefaultButton2, APP_NAME)
+                
+                If Response = 6 Then
+                    With Application
+                        .DisplayAlerts = True
+                        .Quit
+                        .DisplayAlerts = False
+                    End With
+                End If
+                
+                ModLibrary.PerfSettingsOff
+                
         End Select
         
         ShtMain.Protect

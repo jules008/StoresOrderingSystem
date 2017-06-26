@@ -4,8 +4,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,0 - Initial Version
 ' v0,1 - Updated query 1
 ' v0,2 - Addded Report 2
+' v0,3 - Removed hard numbering from buttons
 '---------------------------------------------------------------
-' Date - 22 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -68,7 +69,7 @@ Private Function BuildReport1Btn() As Boolean
         .Top = BTN_REPORT_1_TOP
         .Width = BTN_REPORT_1_WIDTH
         .Name = "BtnReport1"
-        .OnAction = "'ModUIReporting.ProcessBtnPress(12)'"
+        .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport1Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "All Order Report"
@@ -113,7 +114,7 @@ Private Function BuildReport2Btn() As Boolean
         .Top = BTN_REPORT_2_TOP
         .Width = BTN_REPORT_2_WIDTH
         .Name = "BtnReport2"
-        .OnAction = "'ModUIReporting.ProcessBtnPress(14)'"
+        .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport2Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Stock Report"

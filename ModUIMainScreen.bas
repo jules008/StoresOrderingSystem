@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,4 - Turned performance settings off on error
 ' v0,5 - Refresh both order panels of order delete
 ' v0,6 - Moved ResetScreen to main Menu procedure
+' v0,7 - Removed hard numbering from buttons
 '---------------------------------------------------------------
-' Date - 02 Jun 17
+' Date - 26 Jun 17
 '===============================================================
 
 Option Explicit
@@ -416,7 +417,7 @@ Private Function BuildNewOrderBtn() As Boolean
         .Top = BTN_NEWORDER_TOP
         .Width = BTN_NEWORDER_WIDTH
         .Name = "New Order Button"
-        .OnAction = "'moduimenu.ProcessBtnPress(6)'"
+        .OnAction = "'moduimenu.ProcessBtnPress(" & EnumNewOrder & ")'"
         .UnSelectStyle = BTN_NEWORDER_STYLE
         .Selected = False
         .Text = "New Order    "
