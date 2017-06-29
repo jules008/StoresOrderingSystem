@@ -13,6 +13,7 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,9 - removed hard numbering for buttons
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
+' v0,12 - Only refresh orders not whole page when return from order
 '---------------------------------------------------------------
 ' Date - 29 Jun 17
 '===============================================================
@@ -733,8 +734,11 @@ Private Sub OpenOrder(OrderNo As Integer)
     
     ModLibrary.PerfSettingsOn
     
-    If Not ResetScreen Then Err.Raise HANDLED_ERROR
-    If Not BuildStoresScreen Then Err.Raise HANDLED_ERROR
+    If StoresFrame1.Header.Text = "Open Orders" Then
+        If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+    Else
+        If Not RefreshOrderList(True) Then Err.Raise HANDLED_ERROR
+    End If
     
     ModLibrary.PerfSettingsOff
     
