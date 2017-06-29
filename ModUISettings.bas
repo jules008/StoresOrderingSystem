@@ -12,6 +12,7 @@ Attribute VB_Name = "ModUISettings"
 ' v0,8 - Added Report2 Button
 ' v0,9 - Added Exit Button
 ' v0,10 - Added Order Age Column
+' v0,11 - Added FindOrder Button
 '---------------------------------------------------------------
 ' Date - 29 Jun 17
 '===============================================================
@@ -151,6 +152,11 @@ Public Const BTN_MANAGE_DATA_HEIGHT As Integer = 30
 Public Const BTN_MANAGE_DATA_WIDTH As Integer = 175
 Public Const BTN_MANAGE_DATA_LEFT As Integer = 850
 Public Const BTN_MANAGE_DATA_TOP As Integer = 180
+
+Public Const BTN_FIND_ORDER_HEIGHT As Integer = 30
+Public Const BTN_FIND_ORDER_WIDTH As Integer = 175
+Public Const BTN_FIND_ORDER_LEFT As Integer = 850
+Public Const BTN_FIND_ORDER_TOP As Integer = 220
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550

@@ -12,6 +12,7 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,8 - Data Management Button
 ' v0,9 - removed hard numbering for buttons
 ' v0,10 - Added Order Age Column
+' v0,11 - Added FindOrder Button
 '---------------------------------------------------------------
 ' Date - 29 Jun 17
 '===============================================================
@@ -116,6 +117,53 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' BuildFindOrderBtn
+' Adds the new order button to the main screen
+' ---------------------------------------------------------------
+Private Function BuildFindOrderBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildFindOrderBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnFindOrder
+        
+        .Height = BTN_FIND_ORDER_HEIGHT
+        .Left = BTN_FIND_ORDER_LEFT
+        .Top = BTN_FIND_ORDER_TOP
+        .Width = BTN_FIND_ORDER_WIDTH
+        .Name = "BtnFindOrder"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumFindOrderBtn & ")'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Find Order"
+        .Icon = ShtMain.Shapes("TEMPLATE - FindOrder").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Delivery_Button"
+        .Icon.Visible = msoCTrue
+    End With
+
+    MainScreen.Menu.AddItem BtnFindOrder
+    
+    BuildFindOrderBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildFindOrderBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' BuildOrderSwitchBtn
@@ -356,6 +404,7 @@ Public Function BuildStoresScreen() As Boolean
     Set BtnRemoteOrder = New ClsUIMenuItem
     Set BtnDelivery = New ClsUIMenuItem
     Set BtnManageData = New ClsUIMenuItem
+    Set BtnFindOrder = New ClsUIMenuItem
     
     ModLibrary.PerfSettingsOn
     
@@ -366,6 +415,7 @@ Public Function BuildStoresScreen() As Boolean
     If Not BuildRemoteOrderBtn Then Err.Raise HANDLED_ERROR
     If Not BuildDeliveryBtn Then Err.Raise HANDLED_ERROR
     If Not BuildManageDataBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildFindOrderBtn Then Err.Raise HANDLED_ERROR
     
     If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
     
@@ -404,6 +454,8 @@ End Function
 ' Receives all button presses and processes
 ' ---------------------------------------------------------------
 Public Function ProcessBtnPress(ButtonNo As EnumBtnNo) As Boolean
+    Dim OrderNo As String
+    
     Const StrPROCEDURE As String = "ProcessBtnPress()"
 
     On Error GoTo ErrorHandler
@@ -439,18 +491,36 @@ Restart:
                 
                 If Not FrmDataManagmt.ShowForm Then Err.Raise HANDLED_ERROR
                 
+            Case EnumFindOrderBtn
+                Dim Order As ClsOrder
+                
+                OrderNo = Application.InputBox("Please enter the Order No", "Order Search")
+                
+                If Not IsNumeric(OrderNo) Then Err.Raise NUMBERS_ONLY
+                
+                Set Order = New ClsOrder
+                Order.DBGet CInt(OrderNo)
+                
+                If Order.OrderNo = 0 Then
+                    MsgBox "No Order Found", vbExclamation, APP_NAME
+                Else
+                    If Not FrmDBOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
+                End If
+                
+                
         End Select
     
 GracefulExit:
 
     ProcessBtnPress = True
-
+    Set Order = Nothing
 Exit Function
 
 ErrorExit:
 
 
     ProcessBtnPress = False
+    Set Order = Nothing
 
 Exit Function
 
