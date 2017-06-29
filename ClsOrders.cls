@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,6 - Added MyOrders function
 ' v0,7 - Added RecentOrders function
 ' v0,8 - Filter out deleted orders
+' v0,9 - Added Order Age into querys
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 29 Jun 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -101,6 +102,7 @@ Public Function GetOpenOrders() As Recordset
     Set RstOrder = ModDatabase.SQLQuery("SELECT " _
                                         & "TblOrder.OrderNo AS Order_No, " _
                                         & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "DateDiff('d', TblOrder.OrderDate, Now()) as [Order_Age], " _
                                         & "TblPerson.Username AS ReqBy, " _
                                         & "TblStation.Name AS Station, " _
                                         & "TblPerson1.Username AS Assigned_To, " _
@@ -112,10 +114,10 @@ Public Function GetOpenOrders() As Recordset
                                         & "INNER JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                         & "LEFT JOIN TblPerson TblPerson1 ON TblPerson1.CrewNo = TblOrder.AssignedToID) " _
                                         & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
-                                        & "WHERE " _
-                                        & "TblOrder.Status < 4 " _
+                                        & "WHERE TblOrder.Status < 4 " _
                                         & "GROUP BY " _
                                         & "TblOrder.OrderNo, " _
+                                        & "TblOrder.OrderDate, " _
                                         & "TblPerson.Username, " _
                                         & "TblStation.Name, " _
                                         & "TblPerson1.Username, " _
@@ -141,6 +143,7 @@ Public Function GetClosedOrders() As Recordset
     Set RstOrder = ModDatabase.SQLQuery("SELECT " _
                                         & "TblOrder.OrderNo AS Order_No, " _
                                         & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "DateDiff('d', TblOrder.OrderDate, Now()) as [Order_Age], " _
                                         & "TblPerson.Username AS ReqBy, " _
                                         & "TblStation.Name AS Station, " _
                                         & "TblPerson1.Username AS Assigned_To, " _
@@ -157,11 +160,11 @@ Public Function GetClosedOrders() As Recordset
                                         & "AND DateDiff('d', TblOrder.OrderDate, Now()) < 14 " _
                                         & "GROUP BY " _
                                         & "TblOrder.OrderNo, " _
+                                        & "TblOrder.OrderDate, " _
                                         & "TblPerson.Username, " _
                                         & "TblStation.Name, " _
                                         & "TblPerson1.Username, " _
-                                        & "TblOrderStatus.OrderStatus " _
-                                        & "ORDER BY TblOrder.OrderNo")
+                                        & "TblOrderStatus.OrderStatus ORDER BY TblOrder.OrderNo")
     Set GetClosedOrders = RstOrder
 End Function
 

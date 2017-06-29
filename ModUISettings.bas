@@ -11,8 +11,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,7 - Data Management Button
 ' v0,8 - Added Report2 Button
 ' v0,9 - Added Exit Button
+' v0,10 - Added Order Age Column
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 29 Jun 17
 '===============================================================
 
 Option Explicit
@@ -153,12 +154,12 @@ Public Const BTN_MANAGE_DATA_TOP As Integer = 180
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550
-Public Const ORDER_LINEITEM_LEFT As Integer = 25
+Public Const ORDER_LINEITEM_LEFT As Integer = 20
 Public Const ORDER_LINEITEM_TOP As Integer = 30
-Public Const ORDER_LINEITEM_NOCOLS As Integer = 6
-Public Const ORDER_LINEITEM_COL_WIDTHS As String = "70:100:100:100:100:100"
+Public Const ORDER_LINEITEM_NOCOLS As Integer = 7
+Public Const ORDER_LINEITEM_COL_WIDTHS As String = "70:70:70:120:100:100:70"
 Public Const ORDER_LINEITEM_ROWOFFSET As Integer = 20
-Public Const ORDER_LINEITEM_TITLES As String = "Order No:No of Items:Requested By:Station:Assigned To:Order Status"
+Public Const ORDER_LINEITEM_TITLES As String = "Order No:Days Old:Items:Requested By:Station:Assigned To:Order Status"
 
 ' ---------------------------------------------------------------
 ' Report Screen

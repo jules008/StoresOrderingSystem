@@ -11,8 +11,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,7 - Moved ResetScreen to main menu
 ' v0,8 - Data Management Button
 ' v0,9 - removed hard numbering for buttons
+' v0,10 - Added Order Age Column
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 29 Jun 17
 '===============================================================
 
 Option Explicit
@@ -540,6 +541,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     Dim OrderStatus As String
     Dim Orders As ClsOrders
     Dim RstOrder As Recordset
+    Dim OrderAge As Integer
     Dim StrOnAction As String
     Dim Lineitem As ClsUILineitem
     Dim i As Integer
@@ -593,6 +595,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
         Do While Not .EOF
             With StoresFrame1.LineItems
                 If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
+                If Not IsNull(RstOrder!Order_Age) Then OrderAge = RstOrder!Order_Age Else OrderAge = 0
                 If Not IsNull(RstOrder!No_of_Items) Then NoOfItems = RstOrder!No_of_Items Else NoOfItems = ""
                 If Not IsNull(RstOrder!ReqBy) Then ReqBy = RstOrder!ReqBy Else ReqBy = ""
                 If Not IsNull(RstOrder!Station) Then Station = RstOrder!Station Else Station = ""
@@ -602,11 +605,12 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
                 StrOnAction = "'ModUIStoresScreen.OpenOrder(" & OrderNo & ")'"
                 
                 .Text i, 0, CStr(OrderNo), StrOnAction
-                .Text i, 1, NoOfItems, StrOnAction
-                .Text i, 2, ReqBy, StrOnAction
-                .Text i, 3, Station, StrOnAction
-                .Text i, 4, AssignedTo, StrOnAction
-                .Text i, 5, OrderStatus, StrOnAction
+                .Text i, 1, CStr(OrderAge), StrOnAction
+                .Text i, 2, NoOfItems, StrOnAction
+                .Text i, 3, ReqBy, StrOnAction
+                .Text i, 4, Station, StrOnAction
+                .Text i, 5, AssignedTo, StrOnAction
+                .Text i, 6, OrderStatus, StrOnAction
             End With
             .MoveNext
             i = i + 1
