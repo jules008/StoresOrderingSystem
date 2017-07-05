@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Fix Assigned To issue
 ' v0,3 - Added new property PhoneOrder
 ' v0,4 - Changed DBGet to stop updating pOrderNo
+' v0,5 - DBGet now returns deleted orders as well
 '---------------------------------------------------------------
-' Date - 29 Jun 17
+' Date - 05 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -128,7 +129,7 @@ End Property
 Public Sub DBGet(OrderNo As Integer)
     Dim RstOrder As Recordset
         
-    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & OrderNo & " AND Deleted IS NULL")
+    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & OrderNo)
     With RstOrder
         If .RecordCount > 0 Then
             If Not IsNull(!Deleted) Then pDeleted = !Deleted

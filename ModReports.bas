@@ -4,8 +4,9 @@ Attribute VB_Name = "ModReports"
 ' v0,0 - Initial Version
 ' v0,1 - Updated Query 1
 ' v0,2 - Added query for Report 2
+' v0,3 - Prevent Deleted orders being included in Order Report
 '---------------------------------------------------------------
-' Date - 22 Jun 17
+' Date - 05 Jul 17
 '===============================================================
 
 Option Explicit
@@ -132,8 +133,9 @@ Public Function Report1Query() As Recordset
                     & "LEFT JOIN TblPerson TblPerson1 ON TblOrder.RequestorID = TblPerson1.CrewNo "
                     
     StrWhere = "WHERE " _
-                    & "TblAsset.AssetNo IS NOT NULL "
-    
+                    & "TblAsset.AssetNo IS NOT NULL " _
+                    & "AND TblOrder.Deleted IS NULL "
+                    
     Set RstQuery = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere)
 
     Set Report1Query = RstQuery

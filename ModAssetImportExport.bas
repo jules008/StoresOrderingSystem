@@ -4,8 +4,9 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,0 - Initial Version
 ' v0,1 - Improved version
 ' v0,2 - Test to ensure DBAsset is not nothing before copying qty
+' v0,3 - Highlight if location changes
 '---------------------------------------------------------------
-' Date - 21 Jun 17
+' Date - 05 Jul 17
 '===============================================================
 
 Option Explicit
@@ -419,9 +420,15 @@ Public Function Stage2_PreBuild() As Boolean
         Else
                 
                 If ShtAsset.Description <> DBAsset.Description Then
-                
-                    'changed
+                 
+                    'changed description
                     AddToWarningLog Rw, "Asset will change from " & DBAsset.Description & " to " & ShtAsset.Description
+                End If
+                
+                If ShtAsset.Location <> DBAsset.Location Then
+                    
+                    'changed location
+                    AddToWarningLog Rw, "Location will change from " & DBAsset.Location & " to " & ShtAsset.Location
                 End If
             End If
         End If

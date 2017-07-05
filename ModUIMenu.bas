@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUIMenu"
 ' v0,2 - Refresh front screen orders after new order placed
 ' v0,3 - Report1 Button and moved ResetScreen procedures in
 ' v0,4 - Added Exit Button
+' v0,5 - Exit button leaves other workbooks open
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 05 Jul 17
 '===============================================================
 
 Option Explicit
@@ -398,11 +399,17 @@ Restart:
                 Response = MsgBox("Are you sure you want to exit?", vbExclamation + vbYesNo + vbDefaultButton2, APP_NAME)
                 
                 If Response = 6 Then
-                    With Application
-                        .DisplayAlerts = True
-                        .Quit
-                        .DisplayAlerts = False
-                    End With
+                                        
+                    If Workbooks.Count = 1 Then
+                        With Application
+                            .DisplayAlerts = True
+                            .Quit
+                            .DisplayAlerts = False
+                        End With
+                    Else
+                        ActiveWorkbook.Close savechanges:=False
+                    End If
+                    
                 End If
                 
                 ModLibrary.PerfSettingsOff
@@ -421,6 +428,7 @@ Exit Function
 
 ErrorExit:
 
+    Application.DisplayAlerts = True
 
     ProcessBtnPress = False
 
