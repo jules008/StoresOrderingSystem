@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 14 Jun 17
+' Date - 04 Jul 17
 '===============================================================
 
 Option Explicit
@@ -158,6 +158,7 @@ Public Function SelectDB() As Boolean
     'open files
     Set DlgOpen = Application.FileDialog(msoFileDialogOpen)
     
+    
      With DlgOpen
         .Filters.Clear
         .Filters.Add "Access Files (*.accdb)", "*.accdb"
@@ -219,23 +220,19 @@ Public Sub UpdateDBScript()
     DBConnect
     
     
-    DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
+    DB.Execute "DROP TABLE TblLineItemBAK"
     
-    DB.Execute "DELETE FROM TblLineItem WHERE OrderNo IS NULL"
-    DB.Execute "DELETE FROM TblLineItem WHERE OrderNo =0"
-    DB.Execute "UPDATE TblLineItem SET ForVehicleID = NULL WHERE ForVehicleID = 0"
-    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForPersonID NOT LIKE ''"
-    DB.Execute "UPDATE TblLineItem SET ForStationID = NULL WHERE ForVehicleID IS NOT NULL"
-        
-'    Set RstTable = SQLQuery("TblDBVersion")
-'
-'    With RstTable
-'        .Edit
-'        .Fields(0) = "v0,34"
-'        .Update
-'    End With
+    MsgBox "Copy Supplier Table from Dev"
     
-'    Set RstTable = Nothing
+    Set RstTable = SQLQuery("TblDBVersion")
+
+    With RstTable
+        .Edit
+        .Fields(0) = "v0,35"
+        .Update
+    End With
+    
+    Set RstTable = Nothing
     Set TableDef = Nothing
     Set Fld = Nothing
     
@@ -254,18 +251,14 @@ Public Sub UpdateDBScriptUndo()
     Dim Fld As DAO.Field
         
     DBConnect
-        
-    DB.Execute "DROP TABLE TblLineItem"
-    DB.Execute "SELECT * INTO TblLineItem FROM TblLineItemBAK"
-    DB.Execute "DROP TABLE TblLineItemBAK"
-            
-'    Set RstTable = SQLQuery("TblDBVersion")
-'
-'    With RstTable
-'        .Edit
-'        .Fields(0) = "v0,33"
-'        .Update
-'    End With
+                    
+    Set RstTable = SQLQuery("TblDBVersion")
+
+    With RstTable
+        .Edit
+        .Fields(0) = "v0,34"
+        .Update
+    End With
     
     Set RstTable = Nothing
     Set TableDef = Nothing

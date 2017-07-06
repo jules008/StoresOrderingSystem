@@ -18,7 +18,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,13 - Removed hard numbering on enumbuttons
 ' v0,14 - Added FindOrder Button
 '---------------------------------------------------------------
-' Date - 29 Jun 17
+' Date - 05 Jul 17
 '===============================================================
 
 Option Explicit
@@ -32,7 +32,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,34"
+Public Const DB_VER = "v0,35"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
