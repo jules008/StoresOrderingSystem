@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 ' Class ClsSupplier
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 06 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -25,6 +25,7 @@ Private pDeleted As Date
 Private pSupplierID As Integer
 Private pSupplierName As String
 Private pAgressoNo As String
+Private pPCard As Boolean
 Private pAddress1 As String
 Private pAddress2 As String
 Private pTownCity As String
@@ -72,6 +73,15 @@ End Property
 
 Public Property Let AgressoNo(ByVal vNewValue As String)
     pAgressoNo = vNewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get PCard() As Boolean
+    PCard = pPCard
+End Property
+
+Public Property Let PCard(ByVal vNewValue As Boolean)
+    pPCard = vNewValue
 End Property
 
 '---------------------------------------------------------------
