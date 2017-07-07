@@ -172,11 +172,9 @@ Private Sub BtnDeliveries_Click()
 
     On Error GoTo ErrorHandler
 
+    If Supplier Is Nothing Then Err.Raise HANDLED_ERROR, Description:="No Supplier"
 
-
-
-
-
+    If Not FrmDeliveryList.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
 
 Exit Sub
 

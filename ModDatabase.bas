@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 04 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 
 Option Explicit
@@ -223,7 +223,7 @@ Public Sub UpdateDBScript()
     DB.Execute "DROP TABLE TblLineItemBAK"
     
     MsgBox "Copy Supplier Table from Dev"
-	Msgbox "Copy Delivery Table from Dev, ensuring there are no new deliveries"
+        MsgBox "Copy Delivery Table from Dev, ensuring there are no new deliveries"
     
     Set RstTable = SQLQuery("TblDBVersion")
 

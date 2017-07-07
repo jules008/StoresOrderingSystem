@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsDelivery
 ' v0,0 - Initial Version
+' v0,1 - Change SupplierName to SupplierID
 '---------------------------------------------------------------
-' Date - 23 May 17
+' Date - 07 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -23,7 +24,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Private pDeleted As Date
 Private pDeliveryNo As Integer
-Private pSupplierName As String
+Private pSupplierID As Integer
 Private pDeliveryDate As Date
 Private pAssetNo As Integer
 Private pAssetDescr As String
@@ -48,12 +49,12 @@ Public Property Let DeliveryNo(ByVal vNewValue As Integer)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get SupplierName() As String
-    SupplierName = pSupplierName
+Public Property Get SupplierID() As Integer
+    SupplierID = pSupplierID
 End Property
 
-Public Property Let SupplierName(ByVal vNewValue As String)
-    pSupplierName = vNewValue
+Public Property Let SupplierID(ByVal vNewValue As Integer)
+    pSupplierID = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -103,9 +104,8 @@ Public Sub DBGet()
     Set RstDelivery = ModDatabase.SQLQuery("SELECT * FROM TblDelivery WHERE DeliveryNo = " & pDeliveryNo)
     With RstDelivery
         If .RecordCount > 0 Then
-            If Not IsNull(!Deleted) Then pDeleted = !Deleted
             If Not IsNull(!DeliveryNo) Then pDeliveryNo = !DeliveryNo
-            If Not IsNull(!SupplierName) Then pSupplierName = !SupplierName
+            If Not IsNull(!SupplierID) Then pSupplierID = !SupplierID
             If Not IsNull(!DeliveryDate) Then pDeliveryDate = !DeliveryDate
             If Not IsNull(!AssetNo) Then pAssetNo = !AssetNo
             If Not IsNull(!Quantity) Then pQuantity = !Quantity
@@ -141,7 +141,7 @@ Public Sub DBSave()
             .Edit
         End If
         !DeliveryNo = pDeliveryNo
-        !SupplierName = pSupplierName
+        !SupplierID = pSupplierID
         !DeliveryDate = pDeliveryDate
         !AssetNo = pAssetNo
         !Quantity = pQuantity

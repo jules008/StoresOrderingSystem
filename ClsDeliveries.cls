@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsDeliveries
 ' v0,0 - Initial Version
-' v0,1 - Allow GetCollection for single supplier
+' v0,11 - Allow GetCollection for single supplier
 '---------------------------------------------------------------
 ' Date - 07 Jul 17
 '===============================================================
@@ -83,7 +83,7 @@ Public Sub GetCollection(Optional SupplierID As Integer)
     Dim SQL As String
     Dim i As Integer
 
-    If SupplierID = "" Then
+    If SupplierID = 0 Then
         SQL = "SELECT * FROM TblDelivery"
     Else
         SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID

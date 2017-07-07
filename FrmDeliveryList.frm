@@ -82,14 +82,15 @@ Private Function PopulateForm() As Boolean
     Deliveries.GetCollection Supplier.SupplierID
     
     i = 0
+    LstDeliveries.Clear
     For Each Delivery In Deliveries
     
         With LstDeliveries
-            .Clear
             .AddItem
             .List(i, 0) = Delivery.DeliveryNo
-            .List(0, 1) = Delivery.DeliveryDate
-            .List(0, 2) = "Description"
+            .List(i, 1) = Delivery.DeliveryDate
+            .List(i, 2) = Delivery.Quantity
+            .List(i, 3) = Delivery.AssetDescr
             i = i + 1
         End With
     Next
@@ -183,7 +184,8 @@ Private Function FormInitialise() As Boolean
         .AddItem
         .List(0, 0) = "Delivery No"
         .List(0, 1) = "Date"
-        .List(0, 2) = "Description"
+        .List(0, 2) = "Quantity"
+        .List(0, 3) = "Description"
     End With
     
     FormInitialise = True
@@ -216,55 +218,6 @@ Private Function ValidateForm() As EnumFormValidation
     Const StrPROCEDURE As String = "ValidateForm()"
 
     On Error GoTo ErrorHandler
-
-    With TxtSearch
-        If .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With TxtDate
-        If .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With LstAssets
-        If .ListIndex = -1 Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With TxtSupplier
-        If .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-
-    With TxtQty
-        If .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With CmoSize1
-        If .Visible = True And .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With CmoSize2
-        If .Visible = True And .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
 
     If ValidateForm <> ValidationError Then
         ValidateForm = FormOK
