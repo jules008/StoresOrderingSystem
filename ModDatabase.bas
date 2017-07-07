@@ -223,6 +223,7 @@ Public Sub UpdateDBScript()
     DB.Execute "DROP TABLE TblLineItemBAK"
     
     MsgBox "Copy Supplier Table from Dev"
+	Msgbox "Copy Delivery Table from Dev, ensuring there are no new deliveries"
     
     Set RstTable = SQLQuery("TblDBVersion")
 
