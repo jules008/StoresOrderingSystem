@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmSupplier 
    Caption         =   "Supplier"
-   ClientHeight    =   7665
+   ClientHeight    =   7470
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   9210
+   ClientWidth     =   11280
    OleObjectBlob   =   "FrmSupplier.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 06 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 Option Explicit
 
@@ -88,8 +88,9 @@ Private Function PopulateForm() As Boolean
         TxtContactName = .ContactName
         TxtCounty = .County
         TxtEmail = .Email
-        TxtName = .ContactName
-        TxtPCard = .PCard
+        TxtItemsSupplied = .ItemsSupplied
+        TxtName = .SupplierName
+        ChkPCard = .PCard
         TxtPostcode = .Postcode
         TxtTelephone = .Telephone
         TxtTown = .TownCity
@@ -116,6 +117,18 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' BtnCancel_Click
+' Event for page close button
+' ---------------------------------------------------------------
+Private Sub BtnCancel_Click()
+
+    On Error Resume Next
+    
+    FormTerminate
+    
+End Sub
 
 ' ===============================================================
 ' FormTerminate
@@ -149,6 +162,34 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' BtnOk_Click
+' Closes and saves changes
+' ---------------------------------------------------------------
+Private Sub BtnOk_Click()
+    Const StrPROCEDURE As String = "BtnOk_Click()"
+
+    On Error GoTo ErrorHandler
+
+    Unload Me
+
+Exit Sub
+
+ErrorExit:
+
+    FormTerminate
+    Terminate
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
 
 ' ===============================================================
 ' UserForm_Initialize

@@ -14,7 +14,7 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Only refresh orders not whole page when return from order
-' v0,13 - Change Delivery Button to Supplier
+' v0,131 - Change Delivery Button to Supplier
 '---------------------------------------------------------------
 ' Date - 07 Jul 17
 '===============================================================
@@ -618,11 +618,8 @@ Restart:
     If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
     
     If CurrentUser.AccessLvl < SupervisorLvl_3 Then Err.Raise ACCESS_DENIED
-    
-    Supplier.DBGet 47
-    
-    If Not FrmSupplier.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
-    
+        
+    If Not FrmSupplierSearch.ShowForm() Then Err.Raise HANDLED_ERROR
     
 GracefulExit:
     Set Supplier = Nothing

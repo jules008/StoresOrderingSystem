@@ -13,3 +13,4 @@ Email,  dbText
 ContactName,  dbText
 Category,  dbText
 AccountNo,  dbText
+ItemsSupplied,  dbText

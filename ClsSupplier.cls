@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 ' Class ClsSupplier
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 06 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -36,6 +36,7 @@ Private pWebsite As String
 Private pEmail As String
 Private pContactName As String
 Private pCategory As String
+Private pItemsSupplied As String
 Private pAccountNo As String
 Private pParent As Long
 
@@ -184,6 +185,15 @@ Public Property Let AccountNo(ByVal vNewValue As String)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get ItemsSupplied() As String
+    ItemsSupplied = pItemsSupplied
+End Property
+
+Public Property Let ItemsSupplied(ByVal vNewValue As String)
+    pItemsSupplied = vNewValue
+End Property
+
+'---------------------------------------------------------------
 Public Property Get Parent() As ClsAsset
     If pParent <> 0 Then
         Set Parent = GetParentFromPtr(pParent)
@@ -217,6 +227,7 @@ Public Sub DBGet(SupplierID As Integer)
             If Not IsNull(!Email) Then pEmail = !Email
             If Not IsNull(!ContactName) Then pContactName = !ContactName
             If Not IsNull(!Category) Then pCategory = !Category
+            If Not IsNull(!ItemsSupplied) Then pItemsSupplied = !ItemsSupplied
             If Not IsNull(!AccountNo) Then pAccountNo = !AccountNo
 
         End If
@@ -262,6 +273,7 @@ Public Sub DBSave()
         !Email = pEmail
         !ContactName = pContactName
         !Category = pCategory
+        !ItemsSupplied = pItemsSupplied
         !AccountNo = pAccountNo
         .Update
 
