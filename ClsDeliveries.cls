@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsDeliveries
 ' v0,0 - Initial Version
+' v0,1 - Allow GetCollection for single supplier
 '---------------------------------------------------------------
-' Date - 22 May 17
+' Date - 07 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -76,12 +77,20 @@ End Function
 ' Gets all items in collection
 '---------------------------------------------------------------
 
-Public Sub GetCollection()
+Public Sub GetCollection(Optional SupplierID As Integer)
     Dim RstDelivery As Recordset
     Dim Delivery As ClsDelivery
+    Dim SQL As String
     Dim i As Integer
 
-    Set RstDelivery = ModDatabase.SQLQuery("SELECT * FROM TblDelivery")
+    If SupplierID = "" Then
+        SQL = "SELECT * FROM TblDelivery"
+    Else
+        SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
+    End If
+    
+    Set RstDelivery = ModDatabase.SQLQuery(SQL)
+    
     With RstDelivery
         .MoveLast
         .MoveFirst

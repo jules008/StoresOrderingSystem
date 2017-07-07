@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmSupplier
    ClientHeight    =   7470
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   11280
+   ClientWidth     =   13200
    OleObjectBlob   =   "FrmSupplier.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -14,7 +14,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '===============================================================
-' v0,0 - Initial version
+' v0,01 - Initial version
 '---------------------------------------------------------------
 ' Date - 07 Jul 17
 '===============================================================
@@ -163,6 +163,36 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' BtnDeliveries_Click
+' Start Deliveries form
+' ---------------------------------------------------------------
+Private Sub BtnDeliveries_Click()
+    Const StrPROCEDURE As String = "BtnDeliveries_Click()"
+
+    On Error GoTo ErrorHandler
+
+
+
+
+
+
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
 ' ===============================================================
 ' BtnOk_Click
 ' Closes and saves changes
