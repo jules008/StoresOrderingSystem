@@ -14,8 +14,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Only refresh orders not whole page when return from order
+' v0,13 - Change Delivery Button to Supplier
 '---------------------------------------------------------------
-' Date - 29 Jun 17
+' Date - 07 Jul 17
 '===============================================================
 
 Option Explicit
@@ -46,7 +47,7 @@ Private Function BuildUserMangtBtn() As Boolean
         .Icon = ShtMain.Shapes("TEMPLATE - User").Duplicate
         .Icon.Left = .Left + 10
         .Icon.Top = .Top + 9
-        .Icon.Name = "Delivery_Button"
+        .Icon.Name = "Supplier_Button"
         .Icon.Visible = msoCTrue
     End With
 
@@ -94,7 +95,7 @@ Private Function BuildManageDataBtn() As Boolean
         .Icon = ShtMain.Shapes("TEMPLATE - DataManage").Duplicate
         .Icon.Left = .Left + 10
         .Icon.Top = .Top + 9
-        .Icon.Name = "Delivery_Button"
+        .Icon.Name = "Supplier_Button"
         .Icon.Visible = msoCTrue
     End With
 
@@ -142,7 +143,7 @@ Private Function BuildFindOrderBtn() As Boolean
         .Icon = ShtMain.Shapes("TEMPLATE - FindOrder").Duplicate
         .Icon.Left = .Left + 10
         .Icon.Top = .Top + 9
-        .Icon.Name = "Delivery_Button"
+        .Icon.Name = "Supplier_Button"
         .Icon.Visible = msoCTrue
     End With
 
@@ -263,26 +264,26 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' BuildDeliveryBtn
+' BuildSupplierBtn
 ' Adds the new phone order buttomn to the screen
 ' ---------------------------------------------------------------
-Private Function BuildDeliveryBtn() As Boolean
+Private Function BuildSupplierBtn() As Boolean
 
-    Const StrPROCEDURE As String = "BuildDeliveryBtn()"
+    Const StrPROCEDURE As String = "BuildSupplierBtn()"
 
     On Error GoTo ErrorHandler
 
-    With BtnDelivery
+    With BtnSupplier
         
-        .Height = BTN_DELIVERY_HEIGHT
-        .Left = BTN_DELIVERY_LEFT
-        .Top = BTN_DELIVERY_TOP
-        .Width = BTN_DELIVERY_WIDTH
-        .Name = "BtnDelivery"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumDeliveryBtn & ")'"
+        .Height = BTN_SUPPLIER_HEIGHT
+        .Left = BTN_SUPPLIER_LEFT
+        .Top = BTN_SUPPLIER_TOP
+        .Width = BTN_SUPPLIER_WIDTH
+        .Name = "BtnSupplier"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumSupplierBtn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
-        .Text = "Add Delivery"
+        .Text = "Suppliers"
         .Icon = ShtMain.Shapes("TEMPLATE - Delivery").Duplicate
         .Icon.Left = .Left + 10
         .Icon.Top = .Top + 9
@@ -291,15 +292,15 @@ Private Function BuildDeliveryBtn() As Boolean
     
     End With
 
-    MainScreen.Menu.AddItem BtnDelivery
+    MainScreen.Menu.AddItem BtnSupplier
     
-    BuildDeliveryBtn = True
+    BuildSupplierBtn = True
 
 Exit Function
 
 ErrorExit:
 
-    BuildDeliveryBtn = False
+    BuildSupplierBtn = False
 
 Exit Function
 
@@ -403,7 +404,7 @@ Public Function BuildStoresScreen() As Boolean
     Set BtnUserMangt = New ClsUIMenuItem
     Set BtnOrderSwitch = New ClsUIMenuItem
     Set BtnRemoteOrder = New ClsUIMenuItem
-    Set BtnDelivery = New ClsUIMenuItem
+    Set BtnSupplier = New ClsUIMenuItem
     Set BtnManageData = New ClsUIMenuItem
     Set BtnFindOrder = New ClsUIMenuItem
     
@@ -414,7 +415,7 @@ Public Function BuildStoresScreen() As Boolean
     If Not BuildUserMangtBtn Then Err.Raise HANDLED_ERROR
     If Not BuildOrderSwitchBtn Then Err.Raise HANDLED_ERROR
     If Not BuildRemoteOrderBtn Then Err.Raise HANDLED_ERROR
-    If Not BuildDeliveryBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildSupplierBtn Then Err.Raise HANDLED_ERROR
     If Not BuildManageDataBtn Then Err.Raise HANDLED_ERROR
     If Not BuildFindOrderBtn Then Err.Raise HANDLED_ERROR
     
@@ -433,7 +434,7 @@ ErrorExit:
     Set BtnUserMangt = Nothing
     Set BtnOrderSwitch = Nothing
     Set BtnRemoteOrder = Nothing
-    Set BtnDelivery = Nothing
+    Set BtnSupplier = Nothing
     Set BtnManageData = Nothing
     
     Terminate
@@ -482,12 +483,10 @@ Restart:
                 
                 If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
             
-            Case EnumDeliveryBtn
+            Case EnumSupplierBtn
                 
-                If Not FrmDelivery.ShowForm Then Err.Raise HANDLED_ERROR
-                
-                If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
-                
+                If Not BtnSupplierSel Then Err.Raise HANDLED_ERROR
+                                
             Case EnumManageDataBtn
                 
                 If Not FrmDataManagmt.ShowForm Then Err.Raise HANDLED_ERROR
@@ -574,6 +573,67 @@ Exit Function
 ErrorExit:
     
     BtnUserManagementSel = False
+
+'    ***CleanUpCode***
+
+Exit Function
+
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = ACCESS_DENIED Then
+            CustomErrorHandler (Err.Number)
+            Resume GracefulExit
+        Else
+            CustomErrorHandler (Err.Number)
+            Resume Restart
+        End If
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' BtnSupplierSel
+' Manages system users
+' ---------------------------------------------------------------
+Private Function BtnSupplierSel() As Boolean
+    Dim Supplier As ClsSupplier
+    
+    Const StrPROCEDURE As String = "BtnSupplierSel()"
+
+    On Error GoTo ErrorHandler
+    
+    Set Supplier = New ClsSupplier
+    
+Restart:
+    
+    Application.StatusBar = ""
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    If CurrentUser.AccessLvl < SupervisorLvl_3 Then Err.Raise ACCESS_DENIED
+    
+    Supplier.DBGet 47
+    
+    If Not FrmSupplier.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
+    
+    
+GracefulExit:
+    Set Supplier = Nothing
+    BtnSupplierSel = True
+
+Exit Function
+
+ErrorExit:
+    
+    Set Supplier = Nothing
+    BtnSupplierSel = False
 
 '    ***CleanUpCode***
 

@@ -198,13 +198,12 @@ End Function
 ' Method DBGet
 ' Gets class from Database
 '---------------------------------------------------------------
-Public Sub DBGet()
+Public Sub DBGet(SupplierID As Integer)
     Dim RstSupplier As Recordset
 
-    Set RstSupplier = ModDatabase.SQLQuery("SELECT * FROM TblSupplier WHERE SupplierID = " & pSupplierID & " AND Deleted IS NULL")
+    Set RstSupplier = ModDatabase.SQLQuery("SELECT * FROM TblSupplier WHERE SupplierID = " & SupplierID)
     With RstSupplier
         If .RecordCount > 0 Then
-            If Not IsNull(!Deleted) Then pDeleted = !Deleted
             If Not IsNull(!SupplierID) Then pSupplierID = !SupplierID
             If Not IsNull(!SupplierName) Then pSupplierName = !SupplierName
             If Not IsNull(!AgressoNo) Then pAgressoNo = !AgressoNo

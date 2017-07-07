@@ -17,8 +17,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,12 - Added Report2 button
 ' v0,13 - Removed hard numbering on enumbuttons
 ' v0,14 - Added FindOrder Button
+' v0,15 - Change Delivery button to Supplier
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 
 Option Explicit
@@ -114,7 +115,7 @@ Public StoresFrame1 As ClsUIFrame
 Public BtnUserMangt As ClsUIMenuItem
 Public BtnOrderSwitch As ClsUIMenuItem
 Public BtnRemoteOrder As ClsUIMenuItem
-Public BtnDelivery As ClsUIMenuItem
+Public BtnSupplier As ClsUIMenuItem
 Public BtnManageData As ClsUIMenuItem
 Public BtnFindOrder As ClsUIMenuItem
 
@@ -327,7 +328,7 @@ Enum EnumBtnNo
     EnumUserMngt
     EnumOrderSwitch
     EnumRemoteOrder
-    EnumDeliveryBtn
+    EnumSupplierBtn
     EnumReport1Btn
     EnumManageDataBtn
     EnumReport2Btn

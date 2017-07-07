@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 06 Jul 17
 '===============================================================
 Option Explicit
 
@@ -90,7 +90,7 @@ Private Function PopulateForm() As Boolean
         TxtEmail = .Email
         TxtName = .ContactName
         TxtPCard = .PCard
-        TxtPostcode .Postcode
+        TxtPostcode = .Postcode
         TxtTelephone = .Telephone
         TxtTown = .TownCity
         TxtWebsite = .Website

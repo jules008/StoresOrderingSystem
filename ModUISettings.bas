@@ -13,8 +13,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,9 - Added Exit Button
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
+' v0,12 - Change Delivery button to Supplier
 '---------------------------------------------------------------
-' Date - 29 Jun 17
+' Date - 07 Jul 17
 '===============================================================
 
 Option Explicit
@@ -143,10 +144,10 @@ Public Const BTN_REMOTE_ORDER_WIDTH As Integer = 175
 Public Const BTN_REMOTE_ORDER_LEFT As Integer = 850
 Public Const BTN_REMOTE_ORDER_TOP As Integer = 100
 
-Public Const BTN_DELIVERY_HEIGHT As Integer = 30
-Public Const BTN_DELIVERY_WIDTH As Integer = 175
-Public Const BTN_DELIVERY_LEFT As Integer = 850
-Public Const BTN_DELIVERY_TOP As Integer = 140
+Public Const BTN_SUPPLIER_HEIGHT As Integer = 30
+Public Const BTN_SUPPLIER_WIDTH As Integer = 175
+Public Const BTN_SUPPLIER_LEFT As Integer = 850
+Public Const BTN_SUPPLIER_TOP As Integer = 140
 
 Public Const BTN_MANAGE_DATA_HEIGHT As Integer = 30
 Public Const BTN_MANAGE_DATA_WIDTH As Integer = 175
