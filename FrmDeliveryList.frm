@@ -1,9 +1,9 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDeliveryList 
-   ClientHeight    =   7365
+   ClientHeight    =   8520
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   9525
+   ClientWidth     =   14520
    OleObjectBlob   =   "FrmDeliveryList.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -12,10 +12,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 10 Jul 17
 '===============================================================
 Option Explicit
 
@@ -89,8 +90,10 @@ Private Function PopulateForm() As Boolean
             .AddItem
             .List(i, 0) = Delivery.DeliveryNo
             .List(i, 1) = Delivery.DeliveryDate
-            .List(i, 2) = Delivery.Quantity
-            .List(i, 3) = Delivery.AssetDescr
+            .List(i, 2) = Delivery.Asset.Description
+            .List(i, 3) = Delivery.Quantity
+            .List(i, 4) = Delivery.Asset.Size1
+            .List(i, 5) = Delivery.Asset.Size2
             i = i + 1
         End With
     Next
@@ -146,6 +149,36 @@ Private Sub BtnClose_Click()
 End Sub
 
 ' ===============================================================
+' BtnViewDelivery_Click
+' View selected Delivery
+' ---------------------------------------------------------------
+Private Sub BtnViewDelivery_Click()
+    Const StrPROCEDURE As String = "BtnViewDelivery_Click()"
+
+    On Error GoTo ErrorHandler
+
+    
+
+
+
+
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise
 ' ---------------------------------------------------------------
@@ -184,8 +217,10 @@ Private Function FormInitialise() As Boolean
         .AddItem
         .List(0, 0) = "Delivery No"
         .List(0, 1) = "Date"
-        .List(0, 2) = "Quantity"
-        .List(0, 3) = "Description"
+        .List(0, 2) = "Description"
+        .List(0, 3) = "Quantity"
+        .List(0, 4) = "Size 1"
+        .List(0, 5) = "Size 2"
     End With
     
     FormInitialise = True

@@ -14,8 +14,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
+' V0,1 - New Delivery Class
 '---------------------------------------------------------------
-' Date - 23 May 17
+' Date - 10 Jun 17
 '===============================================================
 Option Explicit
 
@@ -102,7 +103,7 @@ Private Sub BtnApply_Click()
     
     For Each Delivery In Deliveries
         With Asset
-        .DBGet Delivery.AssetNo
+        .DBGet Delivery.Asset.AssetNo
         .QtyInStock = .QtyInStock + Delivery.Quantity
         .DBSave
         End With
@@ -203,7 +204,7 @@ Private Function PopulateForm() As Boolean
     
     For Each Delivery In Deliveries
     
-        Asset.DBGet Delivery.AssetNo
+        Asset.DBGet Delivery.Asset.AssetNo
         
         If Asset Is Nothing Then Err.Raise HANDLED_ERROR
         

@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsSupplier
 ' v0,0 - Initial Version
+' v0,1 - DBGet from ID or Name
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 10 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -208,10 +209,18 @@ End Function
 ' Method DBGet
 ' Gets class from Database
 '---------------------------------------------------------------
-Public Sub DBGet(SupplierID As Integer)
+Public Sub DBGet(IDorName As Variant)
     Dim RstSupplier As Recordset
-
-    Set RstSupplier = ModDatabase.SQLQuery("SELECT * FROM TblSupplier WHERE SupplierID = " & SupplierID)
+    Dim SQL As String
+    
+    If IsNumeric(IDorName) Then
+        SQL = "SELECT * FROM TblSupplier WHERE SupplierID = " & IDorName
+    Else
+        SQL = "SELECT * FROM TblSupplier WHERE SupplierName = " & SupplierName
+    End If
+    
+    Set RstSupplier = ModDatabase.SQLQuery(SQL)
+    
     With RstSupplier
         If .RecordCount > 0 Then
             If Not IsNull(!SupplierID) Then pSupplierID = !SupplierID

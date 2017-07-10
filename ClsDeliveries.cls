@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsDeliveries
 ' v0,0 - Initial Version
 ' v0,11 - Allow GetCollection for single supplier
+' v0,2 - Check RecordCount before GetCollection
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 10 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -90,17 +91,19 @@ Public Sub GetCollection(Optional SupplierID As Integer)
     End If
     
     Set RstDelivery = ModDatabase.SQLQuery(SQL)
-    
+        
     With RstDelivery
-        .MoveLast
-        .MoveFirst
-        For i = 1 To .recordcount
-            Set Delivery = New ClsDelivery
-            Delivery.DeliveryNo = !DeliveryNo
-            Delivery.DBGet
-            Me.AddItem Delivery
-            .Movenext
-        Next
+        If .RecordCount > 0 Then
+            .MoveLast
+            .MoveFirst
+            For i = 1 To .RecordCount
+                Set Delivery = New ClsDelivery
+                Delivery.DeliveryNo = !DeliveryNo
+                Delivery.DBGet
+                Me.AddItem Delivery
+                .MoveNext
+            Next
+        End If
     End With
 End Sub
 
