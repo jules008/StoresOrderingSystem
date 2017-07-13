@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,11 - Allow GetCollection for single supplier
 ' v0,2 - Check RecordCount before GetCollection
+' v0,3 - Add filter to Get Collection
 '---------------------------------------------------------------
-' Date - 10 Jul 17
+' Date - 13 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -78,16 +79,21 @@ End Function
 ' Gets all items in collection
 '---------------------------------------------------------------
 
-Public Sub GetCollection(Optional SupplierID As Integer)
+Public Sub GetCollection(Optional SupplierID As Integer, Optional DeliveryDate)
     Dim RstDelivery As Recordset
     Dim Delivery As ClsDelivery
     Dim SQL As String
     Dim i As Integer
 
-    If SupplierID = 0 Then
+    If IsMissing(SupplierID) Then
         SQL = "SELECT * FROM TblDelivery"
     Else
-        SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
+        If IsMissing(DeliveryDate) Then
+            SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
+        Else
+            SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID _
+                                           & " AND DeliveryDate = " & DeliveryDate
+        End If
     End If
     
     Set RstDelivery = ModDatabase.SQLQuery(SQL)

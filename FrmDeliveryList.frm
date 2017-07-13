@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 10 Jul 17
+' Date - 13 Jul 17
 '===============================================================
 Option Explicit
 
@@ -89,7 +89,7 @@ Private Function PopulateForm() As Boolean
         With LstDeliveries
             .AddItem
             .List(i, 0) = Delivery.DeliveryNo
-            .List(i, 1) = Delivery.DeliveryDate
+            .List(i, 1) = Format(Delivery.DeliveryDate, "dd/m/yy")
             .List(i, 2) = Delivery.Asset.Description
             .List(i, 3) = Delivery.Quantity
             .List(i, 4) = Delivery.Asset.Size1
@@ -153,20 +153,31 @@ End Sub
 ' View selected Delivery
 ' ---------------------------------------------------------------
 Private Sub BtnViewDelivery_Click()
+    Dim LocDeliveries As ClsDeliveries
+    Dim DeliveryDate As Date
+
     Const StrPROCEDURE As String = "BtnViewDelivery_Click()"
 
     On Error GoTo ErrorHandler
 
+    With LstDeliveries
+        DeliveryDate = .List(.ListIndex, 1)
+    End With
+    
+    Set LocDeliveries = New ClsDeliveries
+    
+    LocDeliveries.GetCollection Supplier.SupplierID, DeliveryDate
+    
+    If Not FrmDelivery.ShowForm(LocDeliveries) Then Err.Raise HANDLED_ERROR
     
 
 
-
-
+    Set LocDeliveries = Nothing
 
 Exit Sub
 
 ErrorExit:
-
+    Set LocDeliveries = Nothing
 '    ***CleanUpCode***
 
 Exit Sub
