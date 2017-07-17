@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - Bug fix - Changing size1 does not update size 2 choices
 ' v0,2 - Re-write for Supplier functionality
+' v0,3 - Adapted for Supplier Functionality
 '---------------------------------------------------------------
-' Date - 10 Jun 17
+' Date - 17 Jun 17
 '===============================================================
 Option Explicit
 
@@ -132,11 +133,10 @@ Private Function FormInitialise() As Boolean
     With LstHeading
         .AddItem
         .List(0, 0) = "Delivery No"
-        .List(0, 1) = "Date"
-        .List(0, 2) = "Description"
-        .List(0, 3) = "Quantity"
-        .List(0, 4) = "Size 1"
-        .List(0, 5) = "Size 2"
+        .List(0, 1) = "Description"
+        .List(0, 2) = "Quantity"
+        .List(0, 3) = "Size 1"
+        .List(0, 4) = "Size 2"
     End With
     
     FormInitialise = True
@@ -182,15 +182,16 @@ Private Function PopulateForm() As Boolean
         
             .AddItem
             .List(i, 0) = Delivery.DeliveryNo
-            .List(i, 1) = Delivery.DeliveryDate
-            .List(i, 2) = Delivery.Asset.Description
-            .List(i, 3) = Delivery.Quantity
-            .List(i, 4) = Delivery.Asset.Size1
-            .List(i, 5) = Delivery.Asset.Size2
+            .List(i, 1) = Delivery.Asset.Description
+            .List(i, 2) = Delivery.Quantity
+            .List(i, 3) = Delivery.Asset.Size1
+            .List(i, 4) = Delivery.Asset.Size2
             i = i + 1
+            TxtDate = Format(Delivery.DeliveryDate, "dd mmm yy")
         Next
     End With
-        
+    
+    
     Set Delivery = Nothing
     
     PopulateForm = True

@@ -1,9 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDeliveryAdd 
-   ClientHeight    =   8925
+   Caption         =   "UserForm1"
+   ClientHeight    =   9735
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   12030
+   ClientWidth     =   9915
    OleObjectBlob   =   "FrmDeliveryAdd.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -17,13 +18,15 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Bug fix - Changing size1 does not update size 2 choices
+' v0,2 - Adapted for Supplier Functionality
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 17 Jul 17
 '===============================================================
 Option Explicit
 
 Private Const StrMODULE As String = "FrmDelivery"
 
+Private Supplier As ClsSupplier
 Private Deliveries As ClsDeliveries
 Private Asset As ClsAsset
 
@@ -31,12 +34,16 @@ Private Asset As ClsAsset
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm() As Boolean
+Public Function ShowForm(LocSupplier As ClsSupplier) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
-                
+    
+    Set Supplier = LocSupplier
+    
+    If Supplier Is Nothing Then Err.Raise HANDLED_ERROR, , "No Supplier Passed"
+    
     Show
     ShowForm = True
     
@@ -73,6 +80,7 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
     
+    Set Supplier = Nothing
     Set Deliveries = Nothing
     Set Asset = Nothing
     Unload Me
@@ -87,7 +95,6 @@ Private Sub BtnAdd_Click()
     Dim Delivery As ClsDelivery
     Dim Assets As ClsAssets
     Dim Asset As ClsAsset
-    Dim Supplier As ClsSupplier
     Dim AssetNo As Integer
     Dim i As Integer
     
@@ -109,7 +116,6 @@ Private Sub BtnAdd_Click()
     Set Asset = New ClsAsset
     Set Assets = New ClsAssets
     Set Delivery = New ClsDelivery
-    Set Supplier = New ClsSupplier
     
     AssetNo = Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2)
     
@@ -118,14 +124,10 @@ Private Sub BtnAdd_Click()
     Asset.DBGet AssetNo
     
     If Asset Is Nothing Then Err.Raise NO_ASSET_FOUND
-    
-    Supplier.DBGet TxtSupplier
-    
-    If Supplier Is Nothing Then Err.Raise HANDLED_ERROR, Description:="No Supplier Found"
-    
+        
     With Delivery
-        Set .Supplier = Supplier
-        Set .Asset = Asset
+        .Supplier = Supplier
+        .Asset = Asset
         .DeliveryDate = TxtDate
         .Quantity = TxtQty
         .DBSave
@@ -151,14 +153,12 @@ GracefulExit:
     Set Delivery = Nothing
     Set Assets = Nothing
     Set Asset = Nothing
-    Set Supplier = Nothing
 Exit Sub
 
 ErrorExit:
     Set Delivery = Nothing
     Set Assets = Nothing
     Set Asset = Nothing
-    Set Supplier = Nothing
     
     FormTerminate
     Terminate
@@ -340,15 +340,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 
 ' ===============================================================
-' TxtSupplier_Change
-' Change event for supplier txt box
-' ---------------------------------------------------------------
-Private Sub TxtSupplier_Change()
-    TxtSupplier.BackColor = COLOUR_3
-
-End Sub
-
-' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise
 ' ---------------------------------------------------------------
@@ -419,6 +410,7 @@ Private Function FormInitialise() As Boolean
 
     On Error GoTo ErrorHandler
 
+    Set Supplier = New ClsSupplier
     Set Deliveries = New ClsDeliveries
 
     If Not ClearSearch Then Err.Raise HANDLED_ERROR
@@ -486,13 +478,6 @@ Private Function ValidateForm() As EnumFormValidation
         End If
     End With
     
-    With TxtSupplier
-        If .Value = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-
     With TxtQty
         If .Value = "" Then
             .BackColor = COLOUR_6
@@ -855,4 +840,5 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
 

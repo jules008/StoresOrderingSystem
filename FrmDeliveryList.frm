@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 13 Jul 17
+' Date - 17 Jul 17
 '===============================================================
 Option Explicit
 
@@ -80,6 +80,10 @@ Private Function PopulateForm() As Boolean
     
     On Error GoTo ErrorHandler
     
+    Set Deliveries = Nothing
+    
+    Set Deliveries = New ClsDeliveries
+    
     Deliveries.GetCollection Supplier.SupplierID
     
     i = 0
@@ -136,6 +140,33 @@ Private Function FormTerminate() As Boolean
 
 End Function
 
+' ===============================================================
+' BtnAddDelivery_Click
+' Add a new delivery
+' ---------------------------------------------------------------
+Private Sub BtnAddDelivery_Click()
+    Const StrPROCEDURE As String = "BtnAddDelivery_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Not FrmDeliveryAdd.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
+    
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
 ' ===============================================================
 ' BtnClose_Click
 ' Event for page close button

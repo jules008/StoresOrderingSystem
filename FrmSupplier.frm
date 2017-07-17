@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,01 - Initial version
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 17 Jul 17
 '===============================================================
 Option Explicit
 
@@ -217,6 +217,52 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     Else
         Resume ErrorExit
     End If
+End Sub
+
+' ===============================================================
+' BtnEmail_Click
+' Create email
+' ---------------------------------------------------------------
+Private Sub BtnEmail_Click()
+    Dim MailSystem As ClsMailSystem
+    
+    Const StrPROCEDURE As String = "BtnEmail_Click()"
+
+    On Error GoTo ErrorHandler
+
+    Set MailSystem = New ClsMailSystem
+    
+    If TxtEmail <> "" Then
+        With MailSystem
+            .MailItem.To = TxtEmail
+            .DisplayEmail
+        End With
+    End If
+
+    Set MailSystem = Nothing
+Exit Sub
+
+ErrorExit:
+    Set MailSystem = Nothing
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
+' BtnWWW_Click
+' open web page if it exists
+' ---------------------------------------------------------------
+Private Sub BtnWWW_Click()
+    On Error Resume Next
+    If TxtWebsite <> "" Then ActiveWorkbook.FollowHyperlink Address:=TxtWebsite
+    
 End Sub
 
 ' ===============================================================

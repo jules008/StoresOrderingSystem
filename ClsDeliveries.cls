@@ -12,9 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,11 - Allow GetCollection for single supplier
 ' v0,2 - Check RecordCount before GetCollection
-' v0,3 - Add filter to Get Collection
+' v0,31 - Add filter to Get Collection
 '---------------------------------------------------------------
-' Date - 13 Jul 17
+' Date - 17 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -92,7 +92,7 @@ Public Sub GetCollection(Optional SupplierID As Integer, Optional DeliveryDate)
             SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
         Else
             SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID _
-                                           & " AND DeliveryDate = " & DeliveryDate
+                                           & " AND DeliveryDate = #" & DeliveryDate & "#"
         End If
     End If
     
