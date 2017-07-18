@@ -13,10 +13,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+
 '===============================================================
 ' v0,01 - Initial version
 '---------------------------------------------------------------
-' Date - 17 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 Option Explicit
 
