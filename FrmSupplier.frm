@@ -17,7 +17,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,01 - Initial version
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 19 Jul 17
 '===============================================================
 Option Explicit
 
@@ -120,6 +120,34 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
+' BtnAddDelivery_Click
+' Add a new delivery
+' ---------------------------------------------------------------
+Private Sub BtnAddDelivery_Click()
+    Const StrPROCEDURE As String = "BtnAddDelivery_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Not FrmDeliveryAdd.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
+    
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
 ' BtnCancel_Click
 ' Event for page close button
 ' ---------------------------------------------------------------
@@ -193,34 +221,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 ' ===============================================================
-' BtnOk_Click
-' Closes and saves changes
-' ---------------------------------------------------------------
-Private Sub BtnOk_Click()
-    Const StrPROCEDURE As String = "BtnOk_Click()"
-
-    On Error GoTo ErrorHandler
-
-    Unload Me
-
-Exit Sub
-
-ErrorExit:
-
-    FormTerminate
-    Terminate
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
 ' BtnEmail_Click
 ' Create email
 ' ---------------------------------------------------------------
@@ -256,6 +256,105 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Resume ErrorExit
     End If
 End Sub
+
+' ===============================================================
+' BtnUpdate_Click
+' Update changes to supplier
+' ---------------------------------------------------------------
+Private Sub BtnUpdate_Click()
+    Dim Validation As EnumFormValidation
+    
+    Const StrPROCEDURE As String = "BtnUpdate_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Supplier Is Nothing Then Err.Raise HANDLED_ERROR, , "No Supplier available"
+    
+    Validation = ValidateForm
+    
+    If Validation = FunctionalError Then Err.Raise HANDLED_ERROR
+    
+    If Validation = ValidationError Then GoTo GracefulExit
+    
+    With Supplier
+        .AccountNo = TxtAccountNo
+        .Address1 = TxtAddress1
+        .Address2 = TxtAddress2
+        .AgressoNo = TxtAggressNo
+        .Category = TxtCategory
+        .ContactName = TxtContactName
+        .County = TxtCounty
+        .Email = TxtEmail
+        .ItemsSupplied = TxtItemsSupplied
+        .PCard = ChkPCard
+        .Postcode = TxtPostcode
+        .SupplierName = TxtName
+        .Telephone = TxtTelephone
+        .TownCity = TxtTown
+        .Website = TxtWebsite
+        
+    
+        .DBSave
+    End With
+
+    MsgBox "Supplier details updated successfully", vbInformation, APP_NAME
+GracefulExit:
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' ValidateForm
+' Ensures the form is filled out correctly before moving on
+' ---------------------------------------------------------------
+Private Function ValidateForm() As EnumFormValidation
+    Const StrPROCEDURE As String = "ValidateForm()"
+
+    On Error GoTo ErrorHandler
+
+    ValidateForm = FormOK
+
+    With TxtWebsite
+        If Left(.Value, 11) <> "http://www." Then
+            .BackColor = COLOUR_6
+            MsgBox "Please ensure web address starts with 'http://www.'"
+            ValidateForm = ValidationError
+        End If
+    End With
+        
+Exit Function
+
+ErrorExit:
+
+    ValidateForm = FunctionalError
+    FormTerminate
+    Terminate
+
+Exit Function
+
+ErrorHandler:
+    
+If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 ' ===============================================================
 ' BtnWWW_Click
 ' open web page if it exists
@@ -264,6 +363,15 @@ Private Sub BtnWWW_Click()
     On Error Resume Next
     If TxtWebsite <> "" Then ActiveWorkbook.FollowHyperlink Address:=TxtWebsite
     
+End Sub
+
+' ===============================================================
+' TxtWebsite_Change
+' Returns colour to white if it is changed
+' ---------------------------------------------------------------
+Private Sub TxtWebsite_Change()
+    TxtWebsite.BackColor = COLOUR_3
+
 End Sub
 
 ' ===============================================================
@@ -314,6 +422,7 @@ Private Function FormInitialise() As Boolean
     
     On Error GoTo ErrorHandler
     
+    If CurrentUser.AccessLvl < SupervisorLvl_3 Then BtnUpdate.Enabled = False
 
 Exit Function
 

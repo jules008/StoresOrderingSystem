@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 17 Jul 17
+' Date - 19 Jul 17
 '===============================================================
 Option Explicit
 
@@ -141,33 +141,6 @@ Private Function FormTerminate() As Boolean
 End Function
 
 ' ===============================================================
-' BtnAddDelivery_Click
-' Add a new delivery
-' ---------------------------------------------------------------
-Private Sub BtnAddDelivery_Click()
-    Const StrPROCEDURE As String = "BtnAddDelivery_Click()"
-
-    On Error GoTo ErrorHandler
-
-    If Not FrmDeliveryAdd.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
-    
-    If Not PopulateForm Then Err.Raise HANDLED_ERROR
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-' ===============================================================
 ' BtnClose_Click
 ' Event for page close button
 ' ---------------------------------------------------------------
@@ -192,6 +165,9 @@ Private Sub BtnViewDelivery_Click()
     On Error GoTo ErrorHandler
 
     With LstDeliveries
+        If .ListCount = 0 Then Exit Sub
+        If .ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
+        
         DeliveryDate = .List(.ListIndex, 1)
     End With
     
@@ -202,6 +178,7 @@ Private Sub BtnViewDelivery_Click()
     If Not FrmDelivery.ShowForm(LocDeliveries) Then Err.Raise HANDLED_ERROR
     
 
+GracefulExit:
 
     Set LocDeliveries = Nothing
 
@@ -213,7 +190,15 @@ ErrorExit:
 
 Exit Sub
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit:
+    End If
+
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else

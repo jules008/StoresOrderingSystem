@@ -15,8 +15,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Only refresh orders not whole page when return from order
 ' v0,131 - Change Delivery Button to Supplier
+' v0,14 - Allow Stores level into Supplier Area
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 19 Jul 17
 '===============================================================
 
 Option Explicit
@@ -617,7 +618,7 @@ Restart:
 
     If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
     
-    If CurrentUser.AccessLvl < SupervisorLvl_3 Then Err.Raise ACCESS_DENIED
+    If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
         
     If Not FrmSupplierSearch.ShowForm() Then Err.Raise HANDLED_ERROR
     

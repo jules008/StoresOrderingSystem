@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsSupplier
 ' v0,0 - Initial Version
 ' v0,1 - DBGet from ID or Name
+' v0,2 - check for "" before writing to DB
 '---------------------------------------------------------------
-' Date - 10 Jul 17
+' Date - 19 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -238,7 +239,7 @@ Public Sub DBGet(IDorName As Variant)
             If Not IsNull(!Category) Then pCategory = !Category
             If Not IsNull(!ItemsSupplied) Then pItemsSupplied = !ItemsSupplied
             If Not IsNull(!AccountNo) Then pAccountNo = !AccountNo
-
+            pPCard = !PCard
         End If
     End With
 Set RstSupplier = Nothing
@@ -253,7 +254,7 @@ Public Sub DBSave()
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstSupplier = ModDatabase.SQLQuery("SELECT * FROM TblSupplier WHERE SupplierID = " & pSupplierID & " AND Deleted IS NULL")
+    Set RstSupplier = ModDatabase.SQLQuery("SELECT * FROM TblSupplier WHERE SupplierID = " & pSupplierID)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(SupplierID) FROM TblSupplier ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
@@ -270,20 +271,22 @@ Public Sub DBSave()
             .Edit
         End If
         !SupplierID = pSupplierID
-        !SupplierName = pSupplierName
-        !AgressoNo = pAgressoNo
-        !Address1 = pAddress1
-        !Address2 = pAddress2
-        !TownCity = pTownCity
-        !County = pCounty
-        !Postcode = pPostcode
-        !Telephone = pTelephone
-        !Website = pWebsite
-        !Email = pEmail
-        !ContactName = pContactName
-        !Category = pCategory
-        !ItemsSupplied = pItemsSupplied
-        !AccountNo = pAccountNo
+        If pAccountNo <> "" Then !AccountNo = pAccountNo
+        If pAddress1 <> "" Then !Address1 = pAddress1
+        If pAddress2 <> "" Then !Address2 = pAddress2
+        If pAgressoNo <> "" Then !AgressoNo = pAgressoNo
+        If pCategory <> "" Then !Category = pCategory
+        If pContactName <> "" Then !ContactName = pContactName
+        If pCounty <> "" Then !County = pCounty
+        If pEmail <> "" Then !Email = pEmail
+        If pItemsSupplied <> "" Then !ItemsSupplied = pItemsSupplied
+        !PCard = pPCard
+        If pPostcode <> "" Then !Postcode = pPostcode
+        If pSupplierName <> "" Then !SupplierName = pSupplierName
+        If pTelephone <> "" Then !Telephone = pTelephone
+        If pTownCity <> "" Then !TownCity = pTownCity
+        If pWebsite <> "" Then !Website = pWebsite
+
         .Update
 
     End With
