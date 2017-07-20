@@ -13,8 +13,9 @@ Attribute VB_Exposed = False
 ' v0,11 - Allow GetCollection for single supplier
 ' v0,2 - Check RecordCount before GetCollection
 ' v0,31 - Add filter to Get Collection
+' v0.32 - Bug fix, Force American Date Format for DB
 '---------------------------------------------------------------
-' Date - 17 Jul 17
+' Date - 20 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -92,7 +93,7 @@ Public Sub GetCollection(Optional SupplierID As Integer, Optional DeliveryDate)
             SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
         Else
             SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID _
-                                           & " AND DeliveryDate = #" & DeliveryDate & "#"
+                                           & " AND DeliveryDate = #" & Format(DeliveryDate, "mm/dd/yy") & "#"
         End If
     End If
     
