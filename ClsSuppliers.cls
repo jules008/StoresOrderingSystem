@@ -2,20 +2,16 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "ClsDeliveries"
+Attribute VB_Name = "ClsSuppliers"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '===============================================================
-' Class ClsDeliveries
+' Class ClsSuppliers
 ' v0,0 - Initial Version
-' v0,11 - Allow GetCollection for single supplier
-' v0,2 - Check RecordCount before GetCollection
-' v0,31 - Add filter to Get Collection
-' v0.32 - Bug fix, Force American Date Format for DB
 '---------------------------------------------------------------
-' Date - 20 Jul 17
+' Date - 07 Jul 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -28,13 +24,13 @@ Attribute VB_Exposed = False
 '===============================================================
 
 Option Explicit
-Private pDeliveries As Collection
+Private pSuppliers As Collection
 
 '---------------------------------------------------------------
 
 Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pDeliveries.[_newenum]
+    Set NewEnum = pSuppliers.[_newenum]
 End Function
 
 ' ===============================================================
@@ -42,10 +38,10 @@ End Function
 ' Finds Item from index
 '---------------------------------------------------------------
 
-Public Function FindItem(DeliveryNo As Variant) As ClsDelivery
+Public Function FindItem(SupplierID As Variant) As ClsSupplier
 Attribute FindItem.VB_UserMemId = 0
     On Error Resume Next
-    Set FindItem = pDeliveries.Item(DeliveryNo)
+    Set FindItem = pSuppliers.Item(SupplierID)
 End Function
 
 ' ===============================================================
@@ -53,8 +49,9 @@ End Function
 ' Add item to Collection
 '---------------------------------------------------------------
 
-Public Sub AddItem(Delivery As ClsDelivery)
-    pDeliveries.Add Delivery, Key:=CStr(Delivery.DeliveryNo)
+Public Sub AddItem(Supplier As ClsSupplier)
+    Supplier.SetParent ObjPtr(Me)
+    pSuppliers.Add Supplier, Key:=CStr(Supplier.SupplierID)
 End Sub
 
 ' ===============================================================
@@ -62,8 +59,8 @@ End Sub
 ' Deletes item from collection
 '---------------------------------------------------------------
 
-Public Sub RemoveItem(DeliveryNo As Variant)
-    pDeliveries.Remove DeliveryNo
+Public Sub RemoveItem(SupplierID As Variant)
+    pSuppliers.Remove SupplierID
 End Sub
 
 ' ===============================================================
@@ -72,7 +69,7 @@ End Sub
 '---------------------------------------------------------------
 
 Public Function Count() As Integer
-    Count = pDeliveries.Count
+    Count = pSuppliers.Count
 End Function
 
 ' ===============================================================
@@ -80,37 +77,21 @@ End Function
 ' Gets all items in collection
 '---------------------------------------------------------------
 
-Public Sub GetCollection(Optional SupplierID As Integer, Optional DeliveryDate)
-    Dim RstDelivery As Recordset
-    Dim Delivery As ClsDelivery
-    Dim SQL As String
+Public Sub GetCollection()
+    Dim RstSupplier As Recordset
+    Dim Supplier As ClsSupplier
     Dim i As Integer
 
-    If IsMissing(SupplierID) Then
-        SQL = "SELECT * FROM TblDelivery"
-    Else
-        If IsMissing(DeliveryDate) Then
-            SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID
-        Else
-            SQL = "SELECT * FROM TblDelivery WHERE SupplierID = " & SupplierID _
-                                           & " AND DeliveryDate = #" & Format(DeliveryDate, "mm/dd/yy") & "#"
-        End If
-    End If
-    
-    Set RstDelivery = ModDatabase.SQLQuery(SQL)
-        
-    With RstDelivery
-        If .RecordCount > 0 Then
-            .MoveLast
-            .MoveFirst
-            For i = 1 To .RecordCount
-                Set Delivery = New ClsDelivery
-                Delivery.DeliveryNo = !DeliveryNo
-                Delivery.DBGet
-                Me.AddItem Delivery
-                .MoveNext
-            Next
-        End If
+    Set RstSupplier = ModDatabase.SQLQuery("TblSupplier")
+    With RstSupplier
+        .MoveLast
+        .MoveFirst
+        For i = 1 To .recordcount
+            Set Supplier = New ClsSupplier
+            Supplier.DBGet !SupplierID
+            Me.AddItem Supplier
+            .Movenext
+        Next
     End With
 End Sub
 
@@ -120,23 +101,23 @@ End Sub
 '---------------------------------------------------------------
 
 Public Sub DeleteCollection()
-    Dim Delivery As ClsDelivery
-    For Each Delivery In pDeliveries
-        pDeliveries.Remove CStr(Delivery.DeliveryNo)
-        Delivery.DBDelete
+    Dim Supplier As ClsSupplier
+    For Each Supplier In pSuppliers
+        pSuppliers.Remove CStr(Supplier.SupplierID)
+        Supplier.DBDelete
     Next
 End Sub
 
 
 ' ===============================================================
 Private Sub Class_Initialize()
-    Set pDeliveries = New Collection
+    Set pSuppliers = New Collection
 
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    Set pDeliveries = Nothing
+    Set pSuppliers = Nothing
 
 End Sub
 

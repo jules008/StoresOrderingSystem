@@ -436,14 +436,3 @@ Public Function ReturnAssetStatus() As String
 End Function
 
 
-' ===============================================================
-Private Sub Class_Initialize()
-
-End Sub
-
-'---------------------------------------------------------------
-Private Sub Class_Terminate()
-
-End Sub
-
-'---------------------------------------------------------------

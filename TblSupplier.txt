@@ -1,0 +1,16 @@
+SupplierID,  dbInteger
+SupplierName,  dbText
+Pcard,  dbBoolean
+AgressoNo,  dbText
+Address1,  dbText
+Address2,  dbText
+TownCity,  dbText
+County,  dbText
+Postcode,  dbText
+Telephone,  dbText
+Website,  dbText
+Email,  dbText
+ContactName,  dbText
+Category,  dbText
+AccountNo,  dbText
+ItemsSupplied,  dbText

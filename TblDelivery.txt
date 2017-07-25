@@ -1,5 +1,5 @@
 DeliveryNo,  dbLong
-SupplierName,  dbText
+SupplierID,  dbLong
 DeliveryDate,  dbDate
 AssetNo,  dbLong
 Quantity,  dbLong
