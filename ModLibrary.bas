@@ -7,8 +7,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,3 - Added IsProcessRunning Procedure
 ' v0,4 - Tried new Outlook detector
 ' v0,5 - Added GetTextLineNo
+' v0,6 - Added Print Document Shell command
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 25 Jul 17
 '===============================================================
 
 Option Explicit
@@ -279,4 +280,14 @@ Public Function GetTextLineNo(FileName As String) As Integer
     End If
     
     Set wb = Nothing
+End Function
+
+' ===============================================================
+' PrintThisDoc
+' Prints any document
+' ---------------------------------------------------------------
+Public Function PrintThisDoc(FileName As String)
+On Error Resume Next
+Dim X As Long
+X = ShellExecute(0, "Print", FileName, 0&, 0&, 3)
 End Function

@@ -8,8 +8,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,4 - Print two copies of Order Form
 ' v0,5 - Call clearform function correctly
 ' v0,6 - Add location to receipt
+' v0,7 - Print via PDF instead of direct
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 25 Jul 17
 '===============================================================
 
 Option Explicit
@@ -166,6 +167,7 @@ End Function
 ' ---------------------------------------------------------------
 Public Function PrintOrderList(Order As ClsOrder) As Boolean
     Dim RngOrderNo As Range
+    Dim FilePath As String
     Dim RngReqBy As Range
     Dim RngStation As Range
     Dim RngItemsRefPnt As Range
@@ -228,7 +230,15 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
     
     If ENABLE_PRINT Then
         ShtOrderList.Visible = xlSheetVisible
-        ShtOrderList.PrintOut copies:=2
+        
+        FilePath = TMP_FILE_PATH & "\Tmp"
+        ModLibrary.PrintPDF ShtOrderList, FilePath
+        
+        ModLibrary.PrintThisDoc FilePath
+        
+        Kill FilePath
+'        ShtOrderList.PrintOut copies:=2
+        
         ShtOrderList.Visible = xlSheetHidden
     End If
     

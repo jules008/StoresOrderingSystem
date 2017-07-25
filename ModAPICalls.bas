@@ -3,13 +3,26 @@ Attribute VB_Name = "ModAPICalls"
 ' Module ModAPICalls
 ' v0,0 - Initial Version
 ' v0,1 - Added Sleep function
+' v0,2 - Added Shell Commands 
 '---------------------------------------------------------------
-' Date - 09 Jun 17
+' Date - 25 Jul 17
 '===============================================================
 
 Option Explicit
 
 Private Const StrMODULE As String = "ModAPICalls"
+
+' ===============================================================
+' ShellExecute
+' Executes shell commands
+' ---------------------------------------------------------------
+Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" ( _
+ByVal hwnd As Long, _
+ByVal lpOperation As String, _
+ByVal lpFile As String, _
+ByVal lpParameters As String, _
+ByVal lpDirectory As String, _
+ByVal nShowCmd As Long) As Long
 
 ' ===============================================================
 ' CopyMemory
@@ -63,5 +76,7 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+
+ 
 
 
