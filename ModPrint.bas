@@ -229,16 +229,21 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     End With
     
     If ENABLE_PRINT Then
+        
         ShtOrderList.Visible = xlSheetVisible
         
         FilePath = TMP_FILE_PATH & "\Tmp"
         
+        On Error Resume Next
+        
         If Not ModLibrary.IsFileOpen(FilePath & ".pdf") Then
             Kill FilePath & ".pdf"
         Else
+            On Error GoTo ErrorHandler
             MsgBox "The PDF file cannot be created as there is still one open. Please close the File and try again", vbExclamation, APP_NAME
             Err.Raise GENERIC_ERROR, , "PDF File Open"
         End If
+        On Error GoTo ErrorHandler
         
         ModLibrary.PrintPDF ShtOrderList, FilePath
         
