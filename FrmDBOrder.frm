@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Add Delete Order functionality
 ' v0,3 - Fix Order Form double click issue
 ' v0,4 - Restrict view for level 1
+' v0,5 - Add option to print order to PDF
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 26 Jul 17
 '===============================================================
 Option Explicit
 
@@ -459,7 +460,36 @@ Private Sub BtnPrint_Click()
     
     Order.DBSave
     
-    If Not ModPrint.PrintOrderList(Order) Then Err.Raise HANDLED_ERROR
+    If Not ModPrint.PrintOrderList(Order, True) Then Err.Raise HANDLED_ERROR
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' BtnPDF_Click
+' Create order PDF
+' ---------------------------------------------------------------
+Private Sub BtnPDF_Click()
+    Const StrPROCEDURE As String = "BtnPDF_Click()"
+
+    On Error GoTo ErrorHandler
+    
+    Order.DBSave
+    
+    If Not ModPrint.PrintOrderList(Order, False) Then Err.Raise HANDLED_ERROR
 
 Exit Sub
 

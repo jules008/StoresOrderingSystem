@@ -18,8 +18,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,13 - Removed hard numbering on enumbuttons
 ' v0,14 - Added FindOrder Button
 ' v0,15 - Change Delivery button to Supplier
+' v0,16 - Added Generic Error code
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 26 Jul 17
 '===============================================================
 
 Option Explicit
@@ -60,6 +61,7 @@ Public Const NO_STOCK_AVAIL As Long = 1017
 Public Const DB_WRONG_VER As Long = 1018
 Public Const NO_FILE_SELECTED As Long = 1018
 Public Const IMPORT_ERROR As Long = 1019
+Public Const GENERIC_ERROR As Long = 1020
 
 Public Const NO_ASSET_ON_ORDER As Long = 1501
 Public Const NO_LINE_ITEM As Long = 1502

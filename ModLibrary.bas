@@ -8,8 +8,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,4 - Tried new Outlook detector
 ' v0,5 - Added GetTextLineNo
 ' v0,6 - Added Print Document Shell command
+' v0,7 - Added PrintDoc, OpenDoc and IsFileOpen
 '---------------------------------------------------------------
-' Date - 25 Jul 17
+' Date - 26 Jul 17
 '===============================================================
 
 Option Explicit
@@ -283,11 +284,48 @@ Public Function GetTextLineNo(FileName As String) As Integer
 End Function
 
 ' ===============================================================
-' PrintThisDoc
+' PrintDoc
 ' Prints any document
 ' ---------------------------------------------------------------
-Public Function PrintThisDoc(FileName As String)
-On Error Resume Next
-Dim X As Long
-X = ShellExecute(0, "Print", FileName, 0&, 0&, 3)
+Public Function PrintDoc(FileName As String)
+    Dim x As Long
+    
+    On Error Resume Next
+    
+    x = ShellExecute(0, "Print", FileName, 0&, 0&, 3)
+
+End Function
+
+' ===============================================================
+' OpenDoc
+' Opens any document
+' ---------------------------------------------------------------
+Public Function OpenDoc(FileName As String)
+    Dim x As Long
+    
+'    On Error Resume Next
+    
+    x = ShellExecute(0, "Open", FileName, "", "", vbNormalNoFocus)
+
+End Function
+
+' ===============================================================
+' IsFileOpen
+' checks if file is open
+' ---------------------------------------------------------------
+Function IsFileOpen(FileName As String)
+    Dim ff As Long, ErrNo As Long
+
+    On Error Resume Next
+    ff = FreeFile()
+    Open FileName For Input Lock Read As #ff
+    Close ff
+    ErrNo = Err
+    On Error GoTo 0
+
+    Select Case ErrNo
+    Case 0:    IsFileOpen = False
+    Case 70:   IsFileOpen = True
+    Case Else: Error ErrNo
+    End Select
 End Function

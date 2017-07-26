@@ -8,9 +8,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,4 - Print two copies of Order Form
 ' v0,5 - Call clearform function correctly
 ' v0,6 - Add location to receipt
-' v0,7 - Print via PDF instead of direct
+' v0,7 - Print via PDF of direct
 '---------------------------------------------------------------
-' Date - 25 Jul 17
+' Date - 26 Jul 17
 '===============================================================
 
 Option Explicit
@@ -165,7 +165,7 @@ End Function
 ' PrintOrderList
 ' Populates form with order items
 ' ---------------------------------------------------------------
-Public Function PrintOrderList(Order As ClsOrder) As Boolean
+Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Boolean
     Dim RngOrderNo As Range
     Dim FilePath As String
     Dim RngReqBy As Range
@@ -232,16 +232,27 @@ Public Function PrintOrderList(Order As ClsOrder) As Boolean
         ShtOrderList.Visible = xlSheetVisible
         
         FilePath = TMP_FILE_PATH & "\Tmp"
+        
+        If Not ModLibrary.IsFileOpen(FilePath & ".pdf") Then
+            Kill FilePath & ".pdf"
+        Else
+            MsgBox "The PDF file cannot be created as there is still one open. Please close the File and try again", vbExclamation, APP_NAME
+            Err.Raise GENERIC_ERROR, , "PDF File Open"
+        End If
+        
         ModLibrary.PrintPDF ShtOrderList, FilePath
         
-        ModLibrary.PrintThisDoc FilePath
-        
-        Kill FilePath
-'        ShtOrderList.PrintOut copies:=2
-        
+        If PrintOrder Then
+            ModLibrary.PrintDoc FilePath & ".pdf"
+            ModLibrary.PrintDoc FilePath & ".pdf"
+        Else
+            ModLibrary.OpenDoc FilePath & ".pdf"
+        End If
+                
         ShtOrderList.Visible = xlSheetHidden
     End If
     
+GracefulExit:
     PrintOrderList = True
     
     Set RngOrderNo = Nothing
@@ -264,7 +275,14 @@ ErrorExit:
 
 Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit:
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
