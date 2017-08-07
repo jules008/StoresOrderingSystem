@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Trimmed values from Database
 ' v0,3 - Temporary Supplier strings instead of classes
 ' v0,4 - Removed deleted property and changes for Asset Import
+' v0,5 - Temporary disable Asset DBsave 
 '---------------------------------------------------------------
-' Date - 18 May 17
+' Date - 07 Aug 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -389,7 +390,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
         !Location = pLocation
         !AdditInfo = pAdditInfo
         !NoOrderMessage = pNoOrderMessage
-        .Update
+'        .Update
 
     End With
     Set RstAsset = Nothing

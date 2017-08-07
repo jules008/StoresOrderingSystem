@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Bug fix - reset Asset before re-using
 ' v0,2 - Clean up if user cancels order
 ' v0,3 - Added keyword search
+' v0,4 - Stop duplicates in search results and stop CAPS
 '---------------------------------------------------------------
-' Date - 23 Jun 17
+' Date - 07 Aug 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -349,15 +350,19 @@ End Sub
 Private Function GetSearchItems(StrSearch As String) As Boolean
     Dim ListLength As Integer
     Dim RngStart As Range
+    Dim PrevDescs() As String
     Dim i As Integer
+    Dim x As Integer
+    Dim PrevDescFlag As Boolean
     Dim Description As String
+    Dim UCDescription As String
+    Dim UCKeywords As String
     Dim Keywords As String
     
     Const StrPROCEDURE As String = "GetSearchItems()"
 
     On Error GoTo ErrorHandler
 
-    
     Set RngStart = ShtLists.Range("A1")
     
     'get length of item list
@@ -366,19 +371,36 @@ Private Function GetSearchItems(StrSearch As String) As Boolean
     LstResults.Clear
     'search item list and populate results.  Stop before looping back to start
     
+    ReDim PrevDescs(0 To 0)
+    
     For i = 1 To ListLength
         
-        Description = UCase(RngStart.Offset(i, 0))
-        Keywords = UCase(RngStart.Offset(i, 1))
+        Description = RngStart.Offset(i, 0)
+        UCDescription = UCase(Description)
+        Keywords = RngStart.Offset(i, 1)
+        UCKeywords = UCase(Keywords)
         StrSearch = UCase(StrSearch)
         
-        If InStr(Description, StrSearch) Or InStr(Keywords, StrSearch) Then
-            LstResults.AddItem Description
-        
+        If InStr(UCDescription, StrSearch) Or InStr(UCKeywords, StrSearch) Then
+            
+            'check whether description already added to list
+            PrevDescFlag = False
+            
+            For x = LBound(PrevDescs) To UBound(PrevDescs)
+                If PrevDescs(x) = Description Then PrevDescFlag = True
+            Next
+            
+            If Not PrevDescFlag Then
+                LstResults.AddItem Description
+                
+                ReDim Preserve PrevDescs(0 To x)
+                PrevDescs(x) = Description
+            End If
         End If
     
     Next
     
+GracefulExit:
     
     GetSearchItems = True
     
@@ -397,7 +419,14 @@ ErrorExit:
 
 Exit Function
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+ErrorHandler:
+    
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit
+    End If
+    
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else

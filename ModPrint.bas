@@ -9,8 +9,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,5 - Call clearform function correctly
 ' v0,6 - Add location to receipt
 ' v0,7 - Print via PDF of direct
+' v0,8 - Sort Order list by location
 '---------------------------------------------------------------
-' Date - 26 Jul 17
+' Date - 07 Aug 17
 '===============================================================
 
 Option Explicit
@@ -171,6 +172,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Dim RngReqBy As Range
     Dim RngStation As Range
     Dim RngItemsRefPnt As Range
+    Dim RngOrders As Range
     Dim VehReg As String
     Dim StationName As String
     Dim StationID As String
@@ -188,6 +190,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Set RngReqBy = ShtOrderList.Range("F3")
     Set RngStation = ShtOrderList.Range("H3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
+    Set RngOrders = ShtOrderList.Range("B6:H39")
 
     With Order
         RngOrderNo = .OrderNo
@@ -217,8 +220,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
                 
             End Select
                 
-                
-
+            
             RngItemsRefPnt.Offset(i, 0) = .LineItems(i + 1).Asset.Description
             RngItemsRefPnt.Offset(i, 2) = .LineItems(i + 1).Quantity
             RngItemsRefPnt.Offset(i, 3) = .LineItems(i + 1).Asset.Size1
@@ -227,6 +229,9 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
             RngItemsRefPnt.Offset(i, 6) = DeliveryTo
         Next
     End With
+    
+    'sort order list by location
+    RngOrders.Sort key1:=RngOrders.Cells(1, 6)
     
     If ENABLE_PRINT Then
         
@@ -263,6 +268,7 @@ GracefulExit:
     Set RngOrderNo = Nothing
     Set RngReqBy = Nothing
     Set RngStation = Nothing
+    Set RngOrders = Nothing
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
 
@@ -272,6 +278,7 @@ ErrorExit:
     Set RngOrderNo = Nothing
     Set RngReqBy = Nothing
     Set RngStation = Nothing
+    Set RngOrders = Nothing
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
 
