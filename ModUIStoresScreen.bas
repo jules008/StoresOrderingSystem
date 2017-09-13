@@ -16,8 +16,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,12 - Only refresh orders not whole page when return from order
 ' v0,131 - Change Delivery Button to Supplier
 ' v0,14 - Allow Stores level into Supplier Area
+' v0,15 - Add missing PerformSettingsOff
 '---------------------------------------------------------------
-' Date - 19 Jul 17
+' Date - 13 Sep 17
 '===============================================================
 
 Option Explicit
@@ -762,6 +763,7 @@ ErrorExit:
     
     Terminate
     RefreshOrderList = False
+    ModLibrary.PerfSettingsOff
 
 Exit Function
 

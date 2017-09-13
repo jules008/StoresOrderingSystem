@@ -10,8 +10,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,6 - Add location to receipt
 ' v0,7 - Print via PDF of direct
 ' v0,8 - Sort Order list by location
+' v0,9 - Printer issue fix
 '---------------------------------------------------------------
-' Date - 07 Aug 17
+' Date - 13 Sep 17
 '===============================================================
 
 Option Explicit
@@ -182,6 +183,8 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     
     Const StrPROCEDURE As String = "PrintOrderList()"
 
+    ModLibrary.PerfSettingsOn
+
     On Error GoTo ErrorHandler
 
     If Not ShtOrderList.ClearForm Then Err.Raise HANDLED_ERROR
@@ -263,6 +266,8 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     End If
     
 GracefulExit:
+    
+    ModLibrary.PerfSettingsOff
     PrintOrderList = True
     
     Set RngOrderNo = Nothing
@@ -281,6 +286,7 @@ ErrorExit:
     Set RngOrders = Nothing
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
+    ModLibrary.PerfSettingsOff
 
 '    ***CleanUpCode***
     PrintOrderList = False
