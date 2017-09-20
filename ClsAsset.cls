@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 ' v0,2 - Trimmed values from Database
 ' v0,3 - Temporary Supplier strings instead of classes
 ' v0,4 - Removed deleted property and changes for Asset Import
-' v0,5 - Temporary disable Asset DBsave 
+' v0,5 - Temporary disable Asset DBsave
 '---------------------------------------------------------------
 ' Date - 07 Aug 17
 '===============================================================

@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Check RecordCount before GetCollection
 ' v0,31 - Add filter to Get Collection
 ' v0.32 - Bug fix, Force American Date Format for DB
+' v0.33 - Bug fix, Index by string not integer
 '---------------------------------------------------------------
-' Date - 20 Jul 17
+' Date - 20 Sep 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -63,7 +64,7 @@ End Sub
 '---------------------------------------------------------------
 
 Public Sub RemoveItem(DeliveryNo As Variant)
-    pDeliveries.Remove DeliveryNo
+    pDeliveries.Remove CStr(DeliveryNo)
 End Sub
 
 ' ===============================================================

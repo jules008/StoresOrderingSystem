@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Add Delete delivery button
 '---------------------------------------------------------------
-' Date - 19 Jul 17
+' Date - 20 Sep 17
 '===============================================================
 Option Explicit
 
@@ -150,6 +151,62 @@ Private Sub BtnClose_Click()
     
     FormTerminate
     
+End Sub
+
+' ===============================================================
+' BtnDelete_Click
+' Deletes delivery
+' ---------------------------------------------------------------
+Private Sub BtnDelete_Click()
+    Dim Delivery As ClsDelivery
+    
+    Const StrPROCEDURE As String = "BtnDelete_Click()"
+
+    On Error GoTo ErrorHandler
+    
+    Set Delivery = New ClsDelivery
+    
+    With LstDeliveries
+        If .ListCount = 0 Then Exit Sub
+        If .ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
+        
+        Delivery.DeliveryNo = .List(.ListIndex, 0)
+        Delivery.DBGet
+        
+        If Delivery Is Nothing Then Err.Raise GENERIC_ERROR, , "No Delivery found"
+        
+        Deliveries.RemoveItem Delivery.DeliveryNo
+        Delivery.DBDelete True
+        
+        If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        
+    End With
+GracefulExit:
+    Set Delivery = Nothing
+
+Exit Sub
+
+ErrorExit:
+
+    Set Delivery = Nothing
+
+Exit Sub
+
+ErrorHandler:
+    
+        
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        CustomErrorHandler Err.Number
+        Resume GracefulExit:
+    End If
+
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
 End Sub
 
 ' ===============================================================
