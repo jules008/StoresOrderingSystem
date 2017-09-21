@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,01 - Initial version
+' v0,02 - Add HTTP to website field
 '---------------------------------------------------------------
-' Date - 19 Jul 17
+' Date - 21 Sep 17
 '===============================================================
 Option Explicit
 
@@ -95,7 +96,7 @@ Private Function PopulateForm() As Boolean
         TxtPostcode = .Postcode
         TxtTelephone = .Telephone
         TxtTown = .TownCity
-        TxtWebsite = .Website
+        If .Website <> "" Then TxtWebsite = .Website
         
     End With
     
@@ -335,6 +336,13 @@ Private Function ValidateForm() As EnumFormValidation
         End If
     End With
         
+    With TxtName
+        If .Value = "" Then
+            .BackColor = COLOUR_6
+            MsgBox "Supplier Name cannot be blank"
+            ValidateForm = ValidationError
+        End If
+    End With
 Exit Function
 
 ErrorExit:
