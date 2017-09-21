@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmSupplierSearch
    ClientHeight    =   7410
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   7665
+   ClientWidth     =   8670
    OleObjectBlob   =   "FrmSupplierSearch.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Add new supplier button
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 21 Sep 17
 '===============================================================
 
 Option Explicit
@@ -94,6 +95,41 @@ Private Sub BtnClose_Click()
 End Sub
 
 ' ===============================================================
+' BtnNew_Click
+' Creates a new supplier
+' ---------------------------------------------------------------
+Private Sub BtnNew_Click()
+    Const StrPROCEDURE As String = "BtnNew_Click()"
+
+    On Error GoTo ErrorHandler
+
+    Set Supplier = New ClsSupplier
+    
+    Supplier.DBSave
+
+    If Not FrmSupplier.ShowForm(Supplier) Then Err.Raise HANDLED_ERROR
+
+    Set Suppliers = New ClsSuppliers
+    
+    Suppliers.GetCollection
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
 ' BtnNext_Click
 ' saves order and moves onto next form
 ' ---------------------------------------------------------------
@@ -148,6 +184,10 @@ ErrorHandler:
     Else
         Resume ErrorExit
     End If
+End Sub
+
+Private Sub CommandButton1_Click()
+
 End Sub
 
 ' ===============================================================
@@ -332,11 +372,11 @@ End Function
 ' ---------------------------------------------------------------
 Private Sub LstResults_Click()
 
-    On Error Resume Next
-
-    With LstResults
-        Me.TxtSearch.Value = .List(.ListIndex)
-    End With
+'    On Error Resume Next
+'
+'    With LstResults
+'        Me.TxtSearch.Value = .List(.ListIndex, 1)
+'    End With
 End Sub
 
 ' ===============================================================

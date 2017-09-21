@@ -424,6 +424,7 @@ Private Function FormInitialise() As Boolean
     
     If CurrentUser.AccessLvl < SupervisorLvl_3 Then BtnUpdate.Enabled = False
 
+    TxtWebsite = "http://www."
 Exit Function
 
 ErrorExit:
