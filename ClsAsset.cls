@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Temporary Supplier strings instead of classes
 ' v0,4 - Removed deleted property and changes for Asset Import
 ' v0,5 - Temporary disable Asset DBsave
+' v0,6 - Re-enabled Asset DBSave
 '---------------------------------------------------------------
-' Date - 07 Aug 17
+' Date - 22 Sep 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -360,7 +361,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
             If OWAssetNo <> 0 Then
                 pAssetNo = OWAssetNo
             Else
-            pAssetNo = LastNo + 1
+                pAssetNo = LastNo + 1
             End If
             
             !AssetNo = pAssetNo
@@ -390,7 +391,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
         !Location = pLocation
         !AdditInfo = pAdditInfo
         !NoOrderMessage = pNoOrderMessage
-'        .Update
+        .Update
 
     End With
     Set RstAsset = Nothing
