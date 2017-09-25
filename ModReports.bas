@@ -5,8 +5,9 @@ Attribute VB_Name = "ModReports"
 ' v0,1 - Updated Query 1
 ' v0,2 - Added query for Report 2
 ' v0,3 - Prevent Deleted orders being included in Order Report
+' v0,4 - Prevent deleted line items being included in Order Report
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 25 Sep 17
 '===============================================================
 
 Option Explicit
@@ -99,6 +100,7 @@ Public Function Report1Query() As Recordset
     Dim StrSelect As String
     Dim StrFrom As String
     Dim StrWhere As String
+    Dim StrOrderBy As String
     
     Const StrPROCEDURE As String = "Report1Query()"
 
@@ -134,9 +136,13 @@ Public Function Report1Query() As Recordset
                     
     StrWhere = "WHERE " _
                     & "TblAsset.AssetNo IS NOT NULL " _
-                    & "AND TblOrder.Deleted IS NULL "
+                    & "AND TblOrder.Deleted IS NULL " _
+                    & "AND TblLineItem.Deleted IS NULL "
                     
-    Set RstQuery = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere)
+    StrOrderBy = "ORDER BY " _
+                    & "Tblorder.OrderNo"
+                    
+    Set RstQuery = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
 
     Set Report1Query = RstQuery
 
