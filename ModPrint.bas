@@ -11,8 +11,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,7 - Print via PDF of direct
 ' v0,8 - Sort Order list by location
 ' v0,9 - Printer issue fix
+' v0,10 - Added Order Date to Order Form
 '---------------------------------------------------------------
-' Date - 13 Sep 17
+' Date - 27 Sep 17
 '===============================================================
 
 Option Explicit
@@ -174,6 +175,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Dim RngStation As Range
     Dim RngItemsRefPnt As Range
     Dim RngOrders As Range
+    Dim RngDate As Range
     Dim VehReg As String
     Dim StationName As String
     Dim StationID As String
@@ -190,13 +192,15 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     If Not ShtOrderList.ClearForm Then Err.Raise HANDLED_ERROR
     
     Set RngOrderNo = ShtOrderList.Range("C3")
-    Set RngReqBy = ShtOrderList.Range("F3")
-    Set RngStation = ShtOrderList.Range("H3")
+    Set RngReqBy = ShtOrderList.Range("H3")
+    Set RngStation = ShtOrderList.Range("J3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
     Set RngOrders = ShtOrderList.Range("B6:H39")
-
+    Set RngDate = ShtOrderList.Range("E3")
+    
     With Order
         RngOrderNo = .OrderNo
+        RngDate = .OrderDate
         RngReqBy = .Requestor.UserName
         RngStation = .Requestor.Station.Name
         
@@ -225,11 +229,11 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
                 
             
             RngItemsRefPnt.Offset(i, 0) = .LineItems(i + 1).Asset.Description
-            RngItemsRefPnt.Offset(i, 2) = .LineItems(i + 1).Quantity
-            RngItemsRefPnt.Offset(i, 3) = .LineItems(i + 1).Asset.Size1
-            RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Asset.Size2
-            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Location
-            RngItemsRefPnt.Offset(i, 6) = DeliveryTo
+            RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Quantity
+            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Size1
+            RngItemsRefPnt.Offset(i, 6) = .LineItems(i + 1).Asset.Size2
+            RngItemsRefPnt.Offset(i, 7) = .LineItems(i + 1).Asset.Location
+            RngItemsRefPnt.Offset(i, 8) = DeliveryTo
         Next
     End With
     
@@ -276,7 +280,8 @@ GracefulExit:
     Set RngOrders = Nothing
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
-
+    Set RngDate = Nothing
+    
 Exit Function
 
 ErrorExit:
@@ -286,6 +291,8 @@ ErrorExit:
     Set RngOrders = Nothing
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
+    Set RngDate = Nothing
+    
     ModLibrary.PerfSettingsOff
 
 '    ***CleanUpCode***

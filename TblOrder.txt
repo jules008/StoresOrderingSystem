@@ -5,3 +5,5 @@ Status,  dbLong
 RequestorID,  dbText
 AssignedToID,  dbText
 AuthorisedByID,  dbText
+PrintedDate,  dbDate
+OrderNote,  dbText

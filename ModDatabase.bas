@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 27 Sep 17
 '===============================================================
 
 Option Explicit
@@ -220,16 +220,14 @@ Public Sub UpdateDBScript()
     DBConnect
     
     
-    DB.Execute "DROP TABLE TblLineItemBAK"
-    
-    MsgBox "Copy Supplier Table from Dev"
-        MsgBox "Copy Delivery Table from Dev, ensuring there are no new deliveries"
-    
+    DB.Execute "ALTER TABLE TblOrder ADD COLUMN PrintedDate Date"
+    DB.Execute "ALTER TABLE TblOrder ADD COLUMN OrderNote Char(100)"
+        
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,35"
+        .Fields(0) = "v0,36"
         .Update
     End With
     
@@ -253,11 +251,13 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
+    DB.Execute "ALTER TABLE TblOrder DROP COLUMN PrintedDate"
+'    DB.Execute "ALTER TABLE TblOrder DROP COLUMN OrderNote"
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,34"
+        .Fields(0) = "v0,35"
         .Update
     End With
     

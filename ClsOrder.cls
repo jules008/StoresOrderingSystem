@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Added new property PhoneOrder
 ' v0,4 - Changed DBGet to stop updating pOrderNo
 ' v0,5 - DBGet now returns deleted orders as well
+' v0,6 - Added Order Note and Printed Date
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 27 Sep 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -38,6 +39,8 @@ Private pAuthorisedBy As ClsPerson
 Private pOrderDate As Date
 Private pStatus As EnumOrderStatus
 Private pPhoneOrder As Boolean
+Private pPrintedDate As Date
+Private pOrderNote As String
 
 '---------------------------------------------------------------
 Public Property Get Deleted() As Date
@@ -122,6 +125,24 @@ Public Property Let PhoneOrder(ByVal VnewValue As Boolean)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get PrintedDate() As Date
+    PrintedDate = pPrintedDate
+End Property
+
+Public Property Let PrintedDate(ByVal vNewValue As Date)
+    pPrintedDate = vNewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get OrderNote() As String
+    OrderNote = pOrderNote
+End Property
+
+Public Property Let OrderNote(ByVal vNewValue As String)
+    pOrderNote = vNewValue
+End Property
+
+'---------------------------------------------------------------
 ' ===============================================================
 ' Method DBGet
 ' Gets class from Database
@@ -136,7 +157,8 @@ Public Sub DBGet(OrderNo As Integer)
             If Not IsNull(!OrderNo) Then pOrderNo = !OrderNo
             If Not IsNull(!OrderDate) Then pOrderDate = !OrderDate
             If Not IsNull(!Status) Then pStatus = !Status
-            
+            If Not IsNull(!PrintedDate) Then pPrintedDate = !PrintedDate
+            If Not IsNull(!OrderNote) Then pOrderNote = !OrderNote
             If Not IsNull(!RequestorID) Then pRequestor.DBGet !RequestorID
             If Not IsNull(!AssignedToID) Then pAssignedTo.DBGet !AssignedToID
             If Not IsNull(!AuthorisedByID) Then pAuthorisedBy.DBGet !AuthorisedByID
@@ -179,6 +201,8 @@ Public Sub DBSave()
         If pAuthorisedBy.UserName <> "" Then !AuthorisedByID = pAuthorisedBy.UserName
         If pOrderDate <> 0 Then !OrderDate = pOrderDate
         If pDeleted <> 0 Then !Deleted = pDeleted
+        If pPrintedDate <> 0 Then !PrintedDate = pPrintedDate
+        If pOrderNote <> "" Then !OrderNote = pOrderNote
         !Status = pStatus
         .Update
         
@@ -218,14 +242,6 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
 End Sub
 
 ' ===============================================================
-' Method Submit
-' Submits order for processing
-'---------------------------------------------------------------
-Public Sub Submit()
-
-End Sub
-
-' ===============================================================
 ' ReturnOrderStatus
 ' Returns string value from enumOrderStatus
 ' ---------------------------------------------------------------
@@ -262,23 +278,6 @@ Public Function ReturnOrderStatusList() As Recordset
     Set RstOrderStatus = Nothing
 
 End Function
-
-' ===============================================================
-' Method ChangeStatus
-' Manually changes status of order
-'---------------------------------------------------------------
-Public Sub ChangeStatus()
-
-End Sub
-
-' ===============================================================
-' Method UpdateStatus
-' Automatically updates the status of the order
-'---------------------------------------------------------------
-Public Sub UpdateStatus()
-
-End Sub
-
 
 ' ===============================================================
 Private Sub Class_Initialize()

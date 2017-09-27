@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDBOrder 
    Caption         =   "F402"
-   ClientHeight    =   10785
+   ClientHeight    =   12225
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   16380
@@ -22,8 +22,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Fix Order Form double click issue
 ' v0,4 - Restrict view for level 1
 ' v0,5 - Add option to print order to PDF
+' v0,6 - Add Print Date and removed PDF button
 '---------------------------------------------------------------
-' Date - 26 Jul 17
+' Date - 27 Sep 17
 '===============================================================
 Option Explicit
 
@@ -143,6 +144,10 @@ Private Function PopulateForm() As Boolean
         TxtOrderDate = Format(.OrderDate, "dd/mm/yy")
         CmoStatus.ListIndex = .Status
         TxtAssignedTo = .AssignedTo.UserName
+        TxtOrderNote = .OrderNote
+        
+        If Not .PrintedDate = 0 Then TxtPrinted = "Printed on " & .PrintedDate Else TxtPrinted = ""
+    
     End With
     
     Set Lineitem = Nothing
@@ -458,39 +463,12 @@ Private Sub BtnPrint_Click()
 
     On Error GoTo ErrorHandler
     
+    Order.PrintedDate = Now
     Order.DBSave
     
     If Not ModPrint.PrintOrderList(Order, True) Then Err.Raise HANDLED_ERROR
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
-' BtnPDF_Click
-' Create order PDF
-' ---------------------------------------------------------------
-Private Sub BtnPDF_Click()
-    Const StrPROCEDURE As String = "BtnPDF_Click()"
-
-    On Error GoTo ErrorHandler
     
-    Order.DBSave
-    
-    If Not ModPrint.PrintOrderList(Order, False) Then Err.Raise HANDLED_ERROR
-
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
 Exit Sub
 
 ErrorExit:
@@ -534,6 +512,38 @@ ErrorExit:
 
     FormTerminate
     Terminate
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+Private Sub Label18_Click()
+
+End Sub
+
+' ===============================================================
+' TxtOrderNote_Change
+' Saves notes to Order Class when updated
+' ---------------------------------------------------------------
+Private Sub TxtOrderNote_Change()
+    Const StrPROCEDURE As String = "TxtOrderNote_Change()"
+
+    On Error GoTo ErrorHandler
+
+    Order.OrderNote = TxtOrderNote
+    Order.DBSave
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
 
 Exit Sub
 

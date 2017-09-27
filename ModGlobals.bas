@@ -20,7 +20,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,15 - Change Delivery button to Supplier
 ' v0,16 - Added Generic Error code
 '---------------------------------------------------------------
-' Date - 26 Jul 17
+' Date - 27 Sep 17
 '===============================================================
 
 Option Explicit
@@ -34,7 +34,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,35"
+Public Const DB_VER = "v0,36"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
