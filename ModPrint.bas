@@ -11,7 +11,7 @@ Attribute VB_Name = "ModPrint"
 ' v0,7 - Print via PDF of direct
 ' v0,8 - Sort Order list by location
 ' v0,9 - Printer issue fix
-' v0,10 - Added Order Date to Order Form
+' v0,10 - Added Order Date to Order Form.  Removed PDF Print
 '---------------------------------------------------------------
 ' Date - 27 Sep 17
 '===============================================================
@@ -246,26 +246,11 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
         
         FilePath = TMP_FILE_PATH & "\Tmp"
         
-        On Error Resume Next
+        ModLibrary.PrintThisDoc FilePath
         
-        If Not ModLibrary.IsFileOpen(FilePath & ".pdf") Then
-            Kill FilePath & ".pdf"
-        Else
-            On Error GoTo ErrorHandler
-            MsgBox "The PDF file cannot be created as there is still one open. Please close the File and try again", vbExclamation, APP_NAME
-            Err.Raise GENERIC_ERROR, , "PDF File Open"
-        End If
-        On Error GoTo ErrorHandler
+        Kill FilePath
+'        ShtOrderList.PrintOut copies:=2
         
-        ModLibrary.PrintPDF ShtOrderList, FilePath
-        
-        If PrintOrder Then
-            ModLibrary.PrintDoc FilePath & ".pdf"
-            ModLibrary.PrintDoc FilePath & ".pdf"
-        Else
-            ModLibrary.OpenDoc FilePath & ".pdf"
-        End If
-                
         ShtOrderList.Visible = xlSheetHidden
     End If
     
