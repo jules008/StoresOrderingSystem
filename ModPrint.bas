@@ -195,7 +195,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Set RngReqBy = ShtOrderList.Range("H3")
     Set RngStation = ShtOrderList.Range("J3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
-    Set RngOrders = ShtOrderList.Range("B6:H39")
+    Set RngOrders = ShtOrderList.Range("B6:J39")
     Set RngDate = ShtOrderList.Range("E3")
     
     With Order
@@ -238,18 +238,13 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     End With
     
     'sort order list by location
-    RngOrders.Sort key1:=RngOrders.Cells(1, 6)
+    RngOrders.Sort key1:=RngOrders.Cells(1, 8)
     
     If ENABLE_PRINT Then
         
         ShtOrderList.Visible = xlSheetVisible
         
-        FilePath = TMP_FILE_PATH & "\Tmp"
-        
-        ModLibrary.PrintThisDoc FilePath
-        
-        Kill FilePath
-'        ShtOrderList.PrintOut copies:=2
+        ShtOrderList.PrintOut copies:=2
         
         ShtOrderList.Visible = xlSheetHidden
     End If
