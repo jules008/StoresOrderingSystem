@@ -2,8 +2,9 @@ Attribute VB_Name = "ModCloseDown"
 '===============================================================
 ' Module ModCloseDown
 ' v0,0 - Initial Version
+' v0,1 - Delete menu item no on close down
 '---------------------------------------------------------------
-' Date - 17 Jan 17
+' Date - 02 Oct 17
 '===============================================================
 
 Option Explicit
@@ -40,12 +41,15 @@ Public Sub Terminate()
             Set MenuItem = Nothing
         Next
         
+        [MenuItemNo] = ""
+        
         Frame.Header.Icon.Delete
         Frame.Header.ShpHeader.Delete
         Set Frame.Header = Nothing
         
         Frame.ShpFrame.Delete
         Set Frame = Nothing
+        
     Next
     
     Set MainScreen = Nothing
