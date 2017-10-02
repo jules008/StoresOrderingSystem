@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsLineItems
 ' v0,0 - Initial Version
+' v0,1 - Clean up unfinished lineitems when closing class
 '---------------------------------------------------------------
-' Date - 20 Feb 17
+' Date - 02 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -123,6 +124,26 @@ Public Sub DeleteCollection()
 End Sub
 
 ' ===============================================================
+' Method Cleanup
+' Cleans up incomplete LineItems
+'---------------------------------------------------------------
+Public Sub CleanUp()
+    Dim RstLineItems As Recordset
+
+    Set RstLineItems = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE OrderNo = 0 OR OrderNo IS NULL")
+    
+    With RstLineItems
+        If .RecordCount > 0 Then
+            Do While Not .EOF
+                Debug.Print !LineItemNo
+                .Delete
+                .MoveNext
+            Loop
+        End If
+    End With
+End Sub
+
+' ===============================================================
 ' Method GetParentFromPtr
 ' Private routine to copy memory address of parent class
 ' ---------------------------------------------------------------
@@ -142,6 +163,7 @@ End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
+    CleanUp
     Set pLineItems = Nothing
 
 End Sub

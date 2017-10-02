@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Changed DBGet to stop updating pOrderNo
 ' v0,5 - DBGet now returns deleted orders as well
 ' v0,6 - Added Order Note and Printed Date
+' v0,7 - Cascade delete to lineitems and remove delete from DBsave filter
 '---------------------------------------------------------------
-' Date - 27 Sep 17
+' Date - 02 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -179,7 +180,7 @@ Public Sub DBSave()
     Dim LastNo As Integer
     Dim Lineitem As ClsLineItem
 
-    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & pOrderNo & " AND Deleted IS NULL")
+    Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & pOrderNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(OrderNo) FROM TblOrder ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
@@ -222,6 +223,8 @@ End Sub
 '---------------------------------------------------------------
 Public Sub DBDelete(Optional FullDelete As Boolean)
     Dim RstOrder As Recordset
+    Dim LineItem As ClsLineItem
+    
     Dim i As Integer
 
     Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & pOrderNo & " AND Deleted IS NULL")
@@ -230,10 +233,17 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
             If FullDelete Then
                 .Delete
                 .MoveNext
+                For Each LineItem In pLineItems
+                    LineItem.DBDelete True
+                Next
             Else
                 .Edit
                 !Deleted = Now
                 .Update
+                For Each LineItem In pLineItems
+                    LineItem.DBDelete
+                Next
+
             End If
         Next
     End With

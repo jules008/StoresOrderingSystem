@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Save Asset with Line item
 ' v0,2 - Force Null if allocation type is not station
+' v0,3 - Removed Deleted filter from DBSave and cascaded delete to LossReports
 '---------------------------------------------------------------
-' Date - 07 Jun 17
+' Date - 02 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -227,7 +228,7 @@ Public Sub DBSave()
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo & " AND Deleted IS NULL")
+    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(LineItemNo) FROM TblLineItem ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
@@ -281,6 +282,7 @@ End Sub
 '---------------------------------------------------------------
 Public Sub DBDelete(Optional FullDelete As Boolean)
     Dim RstLineItem As Recordset
+    
     Dim i As Integer
 
     Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo & " AND Deleted IS NULL")
@@ -289,10 +291,12 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
             If FullDelete Then
                 .Delete
                 .MoveNext
+                LossReport.DBDelete True
             Else
                 .Edit
                 !Deleted = Now
                 .Update
+                LossReport.DBDelete
             End If
         Next
     End With

@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 27 Sep 17
+' Date - 02 Oct 17
 '===============================================================
 
 Option Explicit
@@ -219,17 +219,38 @@ Public Sub UpdateDBScript()
     
     DBConnect
     
+    DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
     
-    DB.Execute "ALTER TABLE TblOrder ADD COLUMN PrintedDate Date"
-    DB.Execute "ALTER TABLE TblOrder ADD COLUMN OrderNote Char(100)"
-        
-    Set RstTable = SQLQuery("TblDBVersion")
-
+    MsgBox "Delete stray lineitems"
+    
+    Set RstTable = SQLQuery("SELECT " _
+                    & "TblOrder.OrderNo, " _
+                    & "TblOrder.Deleted AS [Order_Deleted], " _
+                    & "TblLineItem.LineItemNo, " _
+                    & "TblLineItem.Deleted AS [LineItem_Deleted] " _
+                & "FROM " _
+                    & "TblOrder " _
+                    & "RIGHT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
+                & "WHERE " _
+                    & "TblOrder.Deleted IS NOT NULL ")
     With RstTable
-        .Edit
-        .Fields(0) = "v0,36"
-        .Update
+        Do While Not .EOF
+            !Deleted = ![order_deleted]
+            .MoveNext
+        Loop
     End With
+    
+    MsgBox "Check lineitems are deleted correctly"
+    
+    
+        
+'    Set RstTable = SQLQuery("TblDBVersion")
+
+'    With RstTable
+'        .Edit
+'        .Fields(0) = "v0,36"
+'        .Update
+'    End With
     
     Set RstTable = Nothing
     Set TableDef = Nothing

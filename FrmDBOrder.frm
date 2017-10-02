@@ -23,8 +23,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Restrict view for level 1
 ' v0,5 - Add option to print order to PDF
 ' v0,6 - Add Print Date and removed PDF button
+' v0,7 - Change delete to use .DBDelete
 '---------------------------------------------------------------
-' Date - 27 Sep 17
+' Date - 02 Oct 17
 '===============================================================
 Option Explicit
 
@@ -319,8 +320,9 @@ Private Sub BtnDelete_Click()
 
     If Response = 6 Then
         With Order
-            .Deleted = Now
+            .Status = OrderDeleted
             .DBSave
+            .DBDelete
             If Not ProcessStatus Then Err.Raise HANDLED_ERROR
             If Not PopulateForm Then Err.Raise HANDLED_ERROR
         End With
@@ -521,10 +523,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     Else
         Resume ErrorExit
     End If
-End Sub
-
-Private Sub Label18_Click()
-
 End Sub
 
 ' ===============================================================
