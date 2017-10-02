@@ -218,7 +218,6 @@ Public Sub UpdateDBScript()
     Dim Fld As DAO.Field
     
     DBConnect
-    
     DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
     
     MsgBox "Delete stray lineitems"
@@ -232,10 +231,17 @@ Public Sub UpdateDBScript()
                     & "TblOrder " _
                     & "RIGHT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
                 & "WHERE " _
-                    & "TblOrder.Deleted IS NOT NULL ")
+                    & "TblOrder.Deleted IS NOT NULL AND " _
+                    & "TblLineItem.Deleted IS NULL " _
+                & "ORDER BY " _
+                    & "TblLineItem.LineItemNo")
+                    
     With RstTable
         Do While Not .EOF
-            !Deleted = ![order_deleted]
+            .Edit
+            Debug.Print !LineItemNo
+            !LineItem_Deleted = !Order_Deleted
+            .Update
             .MoveNext
         Loop
     End With
