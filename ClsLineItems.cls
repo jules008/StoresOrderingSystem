@@ -11,8 +11,9 @@ Attribute VB_Exposed = False
 ' Class ClsLineItems
 ' v0,0 - Initial Version
 ' v0,1 - Clean up unfinished lineitems when closing class
+' v0,2 - Em Fix - disable clean up
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 03 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -163,7 +164,7 @@ End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    CleanUp
+    'CleanUp
     Set pLineItems = Nothing
 
 End Sub
