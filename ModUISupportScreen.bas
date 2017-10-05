@@ -259,7 +259,7 @@ Private Function BtnFeedbackSend() As Boolean
     With MailSystem.MailItem
         .To = "Julian Turner; Emma Morton; Shane Redhead"
         .CC = "Julia Whitfield"
-        .Subject = "Stores IT Project - Feedback received from " & Application.UserName
+        .Subject = "Stores IT Project - Query received from " & Application.UserName
         .Body = SupportFrame1.DashObs("CommentBox").Text
         If SEND_EMAILS Then .Send
     End With

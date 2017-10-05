@@ -24,8 +24,9 @@ Attribute VB_Exposed = False
 ' v0,6 - Bug fix - not filling in ForPerson
 ' v0,7 - Bug fix - reference lineitem parent not order
 ' v0,8 - Test to see if LineItem exists before cleaning up
+' v0,9 - Set LineItem on start up
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 05 Oct 17
 '===============================================================
 Option Explicit
 
@@ -49,6 +50,7 @@ Public Function ShowForm(LocRemoteOrder As Boolean, Optional LocLineItem As ClsL
     
     If RemoteOrder Then
         Set Order = New ClsOrder
+        Set Lineitem = New ClsLineItem
         
         BtnPrev.Enabled = False
         LblAllocation = "Who are you raising the Order on behalf of?"
@@ -216,7 +218,7 @@ Private Sub BtnNext_Click()
         
         Case Is = FormOK
         
-            If OptMe Then Lineitem.ForPerson = Lineitem.Parent.Requestor
+            If OptMe Then Lineitem.ForPerson = CurrentUser
             
             If RemoteOrder Then
                 Order.PhoneOrder = True
