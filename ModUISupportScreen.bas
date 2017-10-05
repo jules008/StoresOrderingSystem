@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' v0,3 - 287 issue, tried new Outlook detector
 ' v0,4 - Add shane and emma to support message
 ' v0,5 - Removed hard numbering for buttons
+' v0,6 - Add Julia Whitfield as cc to support query email
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 05 Oct 17
 '===============================================================
 
 Option Explicit
@@ -203,7 +204,7 @@ Restart:
             
                 If Not BtnFeedbackSend Then Err.Raise HANDLED_ERROR
                 
-                MsgBox "Thank you for your feedback", vbOKOnly + vbInformation, APP_NAME
+                MsgBox "Thank you for your message", vbOKOnly + vbInformation, APP_NAME
                         
         End Select
     
@@ -257,6 +258,7 @@ Private Function BtnFeedbackSend() As Boolean
     
     With MailSystem.MailItem
         .To = "Julian Turner; Emma Morton; Shane Redhead"
+        .CC = "Julia Whitfield"
         .Subject = "Stores IT Project - Feedback received from " & Application.UserName
         .Body = SupportFrame1.DashObs("CommentBox").Text
         If SEND_EMAILS Then .Send

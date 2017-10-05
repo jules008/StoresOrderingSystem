@@ -6,8 +6,9 @@ Attribute VB_Name = "ModReports"
 ' v0,2 - Added query for Report 2
 ' v0,3 - Prevent Deleted orders being included in Order Report
 ' v0,4 - Prevent deleted line items being included in Order Report
+' v0,5 - Exclude Orders with Null or 0 Order No in Report 1
 '---------------------------------------------------------------
-' Date - 25 Sep 17
+' Date - 05 Oct 17
 '===============================================================
 
 Option Explicit
@@ -137,7 +138,9 @@ Public Function Report1Query() As Recordset
     StrWhere = "WHERE " _
                     & "TblAsset.AssetNo IS NOT NULL " _
                     & "AND TblOrder.Deleted IS NULL " _
-                    & "AND TblLineItem.Deleted IS NULL "
+                    & "AND TblLineItem.Deleted IS NULL " _
+                    & "AND TblOrder.OrderNo IS NOT NULL " _
+                    & "AND TblOrder.OrderNo <> 0 "
                     
     StrOrderBy = "ORDER BY " _
                     & "Tblorder.OrderNo"
