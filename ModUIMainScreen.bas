@@ -9,8 +9,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,5 - Refresh both order panels of order delete
 ' v0,6 - Moved ResetScreen to main Menu procedure
 ' v0,7 - Removed hard numbering from buttons
+' v0,8 - Added generic label style
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 10 Oct 17
 '===============================================================
 
 Option Explicit
@@ -135,6 +136,20 @@ Public Function BuildStylesMainScreen() As Boolean
         .FontXJust = GENERIC_LINEITEM_HEADER_FONT_X_JUST
         .FontYJust = GENERIC_LINEITEM_HEADER_FONT_Y_JUST
     End With
+    
+    With GENERIC_LABEL
+        .BorderWidth = GENERIC_LABEL_BORDER_WIDTH
+        .Fill1 = GENERIC_LABEL_FILL_1
+        .Fill2 = GENERIC_LABEL_FILL_2
+        .Shadow = GENERIC_LABEL_SHADOW
+        .FontStyle = GENERIC_LABEL_FONT_STYLE
+        .FontSize = GENERIC_LABEL_FONT_SIZE
+        .FontBold = GENERIC_LABEL_FONT_BOLD
+        .FontColour = GENERIC_LABEL_FONT_COLOUR
+        .FontXJust = GENERIC_LABEL_FONT_X_JUST
+        .FontYJust = GENERIC_LABEL_FONT_Y_JUST
+    End With
+    
     
     BuildStylesMainScreen = True
 

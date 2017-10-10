@@ -14,8 +14,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Change Delivery button to Supplier
+' v0,13 - Added My Profile screen
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 10 Oct 17
 '===============================================================
 
 Option Explicit
@@ -120,6 +121,81 @@ Public Const COMMENT_BTN_WIDTH As Integer = 145
 Public Const COMMENT_BTN_LEFT As Integer = 25
 Public Const COMMENT_BTN_TOP As Integer = 150
 
+' ---------------------------------------------------------------
+' My Profile Screen
+' ---------------------------------------------------------------
+Public Const MY_PROFILE_1_HEIGHT As Integer = 400
+Public Const MY_PROFILE_1_WIDTH As Integer = 600
+Public Const MY_PROFILE_1_LEFT As Integer = 175
+Public Const MY_PROFILE_1_TOP As Integer = 10
+
+Public Const MY_PROFILE_TEXTBOX_HEIGHT As Integer = 20
+Public Const MY_PROFILE_TEXTBOX_WIDTH As Integer = 120
+
+Public Const MY_PROFILE_LABEL_HEIGHT As Integer = 20
+Public Const MY_PROFILE_LABEL_WIDTH As Integer = 75
+
+Public Const MY_PROFILE_BUTTON_HEIGHT As Integer = 25
+Public Const MY_PROFILE_BUTTON_WIDTH As Integer = 100
+
+Public Const MY_PROFILE_LBLCREWNO_LEFT As Integer = 10
+Public Const MY_PROFILE_LBLCREWNO_TOP As Integer = 40
+
+Public Const MY_PROFILE_TXTCREWNO_LEFT As Integer = 85
+Public Const MY_PROFILE_TXTCREWNO_TOP As Integer = 40
+
+Public Const MY_PROFILE_LBLUSERNAME_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLUSERNAME_TOP As Integer = 40
+
+Public Const MY_PROFILE_TXTUSERNAME_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTUSERNAME_TOP As Integer = 40
+
+Public Const MY_PROFILE_LBLFORENAME_LEFT As Integer = 10
+Public Const MY_PROFILE_LBLFORENAME_TOP As Integer = 80
+
+Public Const MY_PROFILE_TXTFORENAME_LEFT As Integer = 85
+Public Const MY_PROFILE_TXTFORENAME_TOP As Integer = 80
+
+Public Const MY_PROFILE_LBLSURNAME_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLSURNAME_TOP As Integer = 80
+
+Public Const MY_PROFILE_TXTSURNAME_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTSURNAME_TOP As Integer = 80
+
+Public Const MY_PROFILE_LBLROLE_LEFT As Integer = 10
+Public Const MY_PROFILE_LBLROLE_TOP As Integer = 120
+
+Public Const MY_PROFILE_TXTROLE_LEFT As Integer = 85
+Public Const MY_PROFILE_TXTROLE_TOP As Integer = 120
+
+Public Const MY_PROFILE_LBLRANKGRADE_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLRANKGRADE_TOP As Integer = 120
+
+Public Const MY_PROFILE_TXTRANKGRADE_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTRANKGRADE_TOP As Integer = 120
+
+Public Const MY_PROFILE_LBLLOCATION_LEFT As Integer = 10
+Public Const MY_PROFILE_LBLLOCATION_TOP As Integer = 160
+
+Public Const MY_PROFILE_TXTLOCATION_LEFT As Integer = 85
+Public Const MY_PROFILE_TXTLOCATION_TOP As Integer = 160
+
+Public Const MY_PROFILE_LBLWATCH_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLWATCH_TOP As Integer = 160
+
+Public Const MY_PROFILE_TXTWATCH_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTWATCH_TOP As Integer = 160
+
+Public Const MY_PROFILE_LBLACCESSLVL_LEFT As Integer = 10
+Public Const MY_PROFILE_LBLACCESSLVL_TOP As Integer = 200
+
+Public Const MY_PROFILE_TXTACCESSLVL_LEFT As Integer = 85
+Public Const MY_PROFILE_TXTACCESSLVL_TOP As Integer = 200
+
+
+Public Const MY_PROFILE_BTNUPDATE_LEFT As Integer = 320
+Public Const MY_PROFILE_BTNUPDATE_TOP As Integer = 240
+
 
 ' ---------------------------------------------------------------
 ' Stores Screen
@@ -196,6 +272,7 @@ Public BTN_NEWORDER_STYLE As TypeStyle
 Public GENERIC_BUTTON As TypeStyle
 Public GENERIC_LINEITEM As TypeStyle
 Public GENERIC_LINEITEM_HEADER As TypeStyle
+Public GENERIC_LABEL As TypeStyle
 
 ' ---------------------------------------------------------------
 ' New Order Workflow
@@ -239,6 +316,17 @@ Public Const GENERIC_LINEITEM_HEADER_FONT_COLOUR As Long = COLOUR_2
 Public Const GENERIC_LINEITEM_HEADER_FONT_BOLD As Boolean = True
 Public Const GENERIC_LINEITEM_HEADER_FONT_X_JUST As Integer = xlHAlignCenter
 Public Const GENERIC_LINEITEM_HEADER_FONT_Y_JUST As Integer = xlVAlignCenter
+
+Public Const GENERIC_LABEL_BORDER_WIDTH As Long = 0
+Public Const GENERIC_LABEL_FILL_1 As Long = COLOUR_3
+Public Const GENERIC_LABEL_FILL_2 As Long = COLOUR_3
+Public Const GENERIC_LABEL_SHADOW As Long = 0
+Public Const GENERIC_LABEL_FONT_STYLE As String = "Eras Medium ITC"
+Public Const GENERIC_LABEL_FONT_SIZE As Integer = 10
+Public Const GENERIC_LABEL_FONT_COLOUR As Long = COLOUR_1
+Public Const GENERIC_LABEL_FONT_BOLD As Boolean = False
+Public Const GENERIC_LABEL_FONT_X_JUST As Integer = xlHAlignLeft
+Public Const GENERIC_LABEL_FONT_Y_JUST As Integer = xlVAlignCenter
 
 ' ---------------------------------------------------------------
 ' Main Screen

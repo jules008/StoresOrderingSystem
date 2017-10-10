@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUIMenu"
 ' v0,3 - Report1 Button and moved ResetScreen procedures in
 ' v0,4 - Added Exit Button
 ' v0,5 - Exit button leaves other workbooks open
+' v0,6 - Enable My Profile Menu Item
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 10 Oct 17
 '===============================================================
 
 Option Explicit
@@ -350,6 +351,7 @@ Restart:
                 ModLibrary.PerfSettingsOn
                 
                 If Not ResetScreen Then Err.Raise HANDLED_ERROR
+                If Not ModUIMyProfile.BuildProfileScreen Then Err.Raise HANDLED_ERROR
                 
                 ShtMain.ClearOrderList
                 
