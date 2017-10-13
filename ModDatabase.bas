@@ -7,7 +7,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 13 Oct 17
 '===============================================================
 
 Option Explicit
@@ -218,35 +218,12 @@ Public Sub UpdateDBScript()
     Dim Fld As DAO.Field
     
     DBConnect
-    DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
+    DB.Execute "DROP TABLE TblLineItemBAK "
     
-    MsgBox "Delete stray lineitems"
+    DB.Execute "INSERT INTO TblStation VALUES ('49','' , 'Ops Support', 'Deepdale Lane, Nettleham, Lincoln, LN2 2TL', '3')"
     
-    Set RstTable = SQLQuery("SELECT " _
-                    & "TblOrder.OrderNo, " _
-                    & "TblOrder.Deleted AS [Order_Deleted], " _
-                    & "TblLineItem.LineItemNo, " _
-                    & "TblLineItem.Deleted AS [LineItem_Deleted] " _
-                & "FROM " _
-                    & "TblOrder " _
-                    & "RIGHT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
-                & "WHERE " _
-                    & "TblOrder.Deleted IS NOT NULL AND " _
-                    & "TblLineItem.Deleted IS NULL " _
-                & "ORDER BY " _
-                    & "TblLineItem.LineItemNo")
-                    
-    With RstTable
-        Do While Not .EOF
-            .Edit
-            Debug.Print !LineItemNo
-            !LineItem_Deleted = !Order_Deleted
-            .Update
-            .MoveNext
-        Loop
-    End With
-    
-    MsgBox "Check lineitems are deleted correctly"
+    DB.Execute "UPDATE TblStation SET Address = 'Deepdale Lane, Nettleham, Lincoln, LN2 2TL' WHERE StationID = 46 "
+        
     
     
         

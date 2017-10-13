@@ -19,8 +19,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,14 - Added FindOrder Button
 ' v0,15 - Change Delivery button to Supplier
 ' v0,16 - Added Generic Error code
+' v0,17 - Add new station Ops Support
 '---------------------------------------------------------------
-' Date - 27 Sep 17
+' Date - 13 Oct 17
 '===============================================================
 
 Option Explicit
@@ -237,6 +238,7 @@ Enum EnumStationID
     HQ = 46
     WTF = 47
     Control = 48
+    OpsSupport = 49
 End Enum
 
 Enum EnumStnType
