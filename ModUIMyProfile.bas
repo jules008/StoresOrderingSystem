@@ -3,37 +3,36 @@ Attribute VB_Name = "ModUIMyProfile"
 ' Module ModUIMyProfile
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 17 Oct 17
 '===============================================================
 
 Option Explicit
 
 Private Const StrMODULE As String = "ModUIMyProfile"
 
+Public TxtCrewNo As ClsUIDashObj
+Public TxtForeName As ClsUIDashObj
+Public TxtSurname As ClsUIDashObj
+Public TxtRole As ClsUIDashObj
+Public TxtRankGrade As ClsUIDashObj
+Public TxtLocation As ClsUIDashObj
+Public TxtWatch As ClsUIDashObj
+Public TxtAccessLvl As ClsUIDashObj
+Public LblCrewNo As ClsUIDashObj
+Public LblForeName As ClsUIDashObj
+Public LblSurname As ClsUIDashObj
+Public LblRole As ClsUIDashObj
+Public LblRankGrade As ClsUIDashObj
+Public LblLocation As ClsUIDashObj
+Public LblWatch As ClsUIDashObj
+Public LblAccessLvl As ClsUIDashObj
+Public BtnUpdate As ClsUIMenuItem
+
 ' ===============================================================
 ' BuildMyProfileFrame1
 ' Builds first frame on My Profile page at top of screen
 ' ---------------------------------------------------------------
 Public Function BuildMyProfileFrame1() As Boolean
-    Dim TxtCrewNo As ClsUIDashObj
-    Dim TxtForeName As ClsUIDashObj
-    Dim TxtSurname As ClsUIDashObj
-    Dim TxtUsername As ClsUIDashObj
-    Dim TxtRole As ClsUIDashObj
-    Dim TxtRankGrade As ClsUIDashObj
-    Dim TxtLocation As ClsUIDashObj
-    Dim TxtWatch As ClsUIDashObj
-    Dim TxtAccessLvl As ClsUIDashObj
-    Dim LblCrewNo As ClsUIDashObj
-    Dim LblForeName As ClsUIDashObj
-    Dim LblSurname As ClsUIDashObj
-    Dim LblUsername As ClsUIDashObj
-    Dim LblRole As ClsUIDashObj
-    Dim LblRankGrade As ClsUIDashObj
-    Dim LblLocation As ClsUIDashObj
-    Dim LblWatch As ClsUIDashObj
-    Dim LblAccessLvl As ClsUIDashObj
-    Dim BtnUpdate As ClsUIMenuItem
     
     Const StrPROCEDURE As String = "BuildMyProfileFrame1()"
 
@@ -42,7 +41,6 @@ Public Function BuildMyProfileFrame1() As Boolean
     Set TxtCrewNo = New ClsUIDashObj
     Set TxtForeName = New ClsUIDashObj
     Set TxtSurname = New ClsUIDashObj
-    Set TxtUsername = New ClsUIDashObj
     Set TxtRole = New ClsUIDashObj
     Set TxtRankGrade = New ClsUIDashObj
     Set TxtLocation = New ClsUIDashObj
@@ -51,7 +49,6 @@ Public Function BuildMyProfileFrame1() As Boolean
     Set LblCrewNo = New ClsUIDashObj
     Set LblForeName = New ClsUIDashObj
     Set LblSurname = New ClsUIDashObj
-    Set LblUsername = New ClsUIDashObj
     Set LblRole = New ClsUIDashObj
     Set LblRankGrade = New ClsUIDashObj
     Set LblLocation = New ClsUIDashObj
@@ -117,36 +114,7 @@ Public Function BuildMyProfileFrame1() As Boolean
         .Height = MY_PROFILE_TEXTBOX_HEIGHT
         .Locked = False
     End With
-    
-    '--------------------------------------------------------------------------------
-    'Username
-    '--------------------------------------------------------------------------------
-    With LblUsername
-        .Name = "LblUsername"
-        .ShpDashObj.Delete
-        .ShpDashObj = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 10, 10, 10, 10)
-        MyProfileFrame1.DashObs.AddItem LblUsername
-        .Top = MY_PROFILE_LBLUSERNAME_TOP
-        .Left = MY_PROFILE_LBLUSERNAME_LEFT
-        .Width = MY_PROFILE_LABEL_WIDTH
-        .Height = MY_PROFILE_LABEL_HEIGHT
-        .Style = GENERIC_LABEL
-        .Text = "Username"
-        .Locked = True
-    End With
-    
-    With TxtUsername
-        .Name = "TxtUsername"
-        .ShpDashObj.Delete
-        .ShpDashObj = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 10, 10, 10, 10)
-        MyProfileFrame1.DashObs.AddItem TxtUsername
-        .Top = MY_PROFILE_TXTUSERNAME_TOP
-        .Left = MY_PROFILE_TXTUSERNAME_LEFT
-        .Width = MY_PROFILE_TEXTBOX_WIDTH
-        .Height = MY_PROFILE_TEXTBOX_HEIGHT
-        .Locked = False
-    End With
-    
+       
     '--------------------------------------------------------------------------------
     'Forename
     '--------------------------------------------------------------------------------
@@ -378,7 +346,6 @@ ErrorExit:
     Set TxtCrewNo = Nothing
     Set TxtForeName = Nothing
     Set TxtSurname = Nothing
-    Set TxtUsername = Nothing
     Set TxtRole = Nothing
     Set TxtRankGrade = Nothing
     Set TxtLocation = Nothing
@@ -387,7 +354,6 @@ ErrorExit:
     Set LblCrewNo = Nothing
     Set LblForeName = Nothing
     Set LblSurname = Nothing
-    Set LblUsername = Nothing
     Set LblRole = Nothing
     Set LblRankGrade = Nothing
     Set LblLocation = Nothing
@@ -420,6 +386,7 @@ Public Function BuildProfileScreen() As Boolean
     Set MyProfileFrame1 = New ClsUIFrame
     
     If Not BuildMyProfileFrame1 Then Err.Raise HANDLED_ERROR
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
     
     BuildProfileScreen = True
        
@@ -429,6 +396,49 @@ ErrorExit:
 
     BuildProfileScreen = False
     
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' PopulateForm
+' Populates user profile data
+' ---------------------------------------------------------------
+Public Function PopulateForm() As Boolean
+    Const StrPROCEDURE As String = "PopulateForm()"
+
+    On Error GoTo ErrorHandler
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    With CurrentUser
+        TxtAccessLvl.Text = .AccessLvl
+        TxtCrewNo.Text = .CrewNo
+        TxtForeName.Text = .Forename
+        TxtLocation.Text = .Station.Name
+        TxtRankGrade.Text = .RankGrade
+        TxtRole.Text = .Role
+        TxtSurname.Text = .Surname
+        TxtWatch.Text = .Watch
+        
+    End With
+
+
+    PopulateForm = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    PopulateForm = False
+
 Exit Function
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then

@@ -16,7 +16,7 @@ Attribute VB_Name = "ModUISettings"
 ' v0,12 - Change Delivery button to Supplier
 ' v0,13 - Added My Profile screen
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 17 Oct 17
 '===============================================================
 
 Option Explicit
@@ -124,8 +124,8 @@ Public Const COMMENT_BTN_TOP As Integer = 150
 ' ---------------------------------------------------------------
 ' My Profile Screen
 ' ---------------------------------------------------------------
-Public Const MY_PROFILE_1_HEIGHT As Integer = 400
-Public Const MY_PROFILE_1_WIDTH As Integer = 600
+Public Const MY_PROFILE_1_HEIGHT As Integer = 245
+Public Const MY_PROFILE_1_WIDTH As Integer = 440
 Public Const MY_PROFILE_1_LEFT As Integer = 175
 Public Const MY_PROFILE_1_TOP As Integer = 10
 
@@ -144,11 +144,11 @@ Public Const MY_PROFILE_LBLCREWNO_TOP As Integer = 40
 Public Const MY_PROFILE_TXTCREWNO_LEFT As Integer = 85
 Public Const MY_PROFILE_TXTCREWNO_TOP As Integer = 40
 
-Public Const MY_PROFILE_LBLUSERNAME_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLUSERNAME_TOP As Integer = 40
+Public Const MY_PROFILE_LBLRANKGRADE_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLRANKGRADE_TOP As Integer = 40
 
-Public Const MY_PROFILE_TXTUSERNAME_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTUSERNAME_TOP As Integer = 40
+Public Const MY_PROFILE_TXTRANKGRADE_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTRANKGRADE_TOP As Integer = 40
 
 Public Const MY_PROFILE_LBLFORENAME_LEFT As Integer = 10
 Public Const MY_PROFILE_LBLFORENAME_TOP As Integer = 80
@@ -168,11 +168,11 @@ Public Const MY_PROFILE_LBLROLE_TOP As Integer = 120
 Public Const MY_PROFILE_TXTROLE_LEFT As Integer = 85
 Public Const MY_PROFILE_TXTROLE_TOP As Integer = 120
 
-Public Const MY_PROFILE_LBLRANKGRADE_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLRANKGRADE_TOP As Integer = 120
+Public Const MY_PROFILE_LBLACCESSLVL_LEFT As Integer = 225
+Public Const MY_PROFILE_LBLACCESSLVL_TOP As Integer = 120
 
-Public Const MY_PROFILE_TXTRANKGRADE_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTRANKGRADE_TOP As Integer = 120
+Public Const MY_PROFILE_TXTACCESSLVL_LEFT As Integer = 300
+Public Const MY_PROFILE_TXTACCESSLVL_TOP As Integer = 120
 
 Public Const MY_PROFILE_LBLLOCATION_LEFT As Integer = 10
 Public Const MY_PROFILE_LBLLOCATION_TOP As Integer = 160
@@ -186,15 +186,8 @@ Public Const MY_PROFILE_LBLWATCH_TOP As Integer = 160
 Public Const MY_PROFILE_TXTWATCH_LEFT As Integer = 300
 Public Const MY_PROFILE_TXTWATCH_TOP As Integer = 160
 
-Public Const MY_PROFILE_LBLACCESSLVL_LEFT As Integer = 10
-Public Const MY_PROFILE_LBLACCESSLVL_TOP As Integer = 200
-
-Public Const MY_PROFILE_TXTACCESSLVL_LEFT As Integer = 85
-Public Const MY_PROFILE_TXTACCESSLVL_TOP As Integer = 200
-
-
 Public Const MY_PROFILE_BTNUPDATE_LEFT As Integer = 320
-Public Const MY_PROFILE_BTNUPDATE_TOP As Integer = 240
+Public Const MY_PROFILE_BTNUPDATE_TOP As Integer = 200
 
 
 ' ---------------------------------------------------------------
