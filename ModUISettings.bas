@@ -16,7 +16,7 @@ Attribute VB_Name = "ModUISettings"
 ' v0,12 - Change Delivery button to Supplier
 ' v0,13 - Added My Profile screen
 '---------------------------------------------------------------
-' Date - 17 Oct 17
+' Date - 18 Oct 17
 '===============================================================
 
 Option Explicit
@@ -177,8 +177,8 @@ Public Const MY_PROFILE_TXTACCESSLVL_TOP As Integer = 120
 Public Const MY_PROFILE_LBLLOCATION_LEFT As Integer = 10
 Public Const MY_PROFILE_LBLLOCATION_TOP As Integer = 160
 
-Public Const MY_PROFILE_TXTLOCATION_LEFT As Integer = 85
-Public Const MY_PROFILE_TXTLOCATION_TOP As Integer = 160
+Public Const MY_PROFILE_CMOLOCATION_LEFT As Integer = 85
+Public Const MY_PROFILE_CMOLOCATION_TOP As Integer = 160
 
 Public Const MY_PROFILE_LBLWATCH_LEFT As Integer = 225
 Public Const MY_PROFILE_LBLWATCH_TOP As Integer = 160

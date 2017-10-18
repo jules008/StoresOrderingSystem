@@ -3,7 +3,7 @@ Attribute VB_Name = "ModUIMyProfile"
 ' Module ModUIMyProfile
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 17 Oct 17
+' Date - 18 Oct 17
 '===============================================================
 
 Option Explicit
@@ -15,7 +15,7 @@ Public TxtForeName As ClsUIDashObj
 Public TxtSurname As ClsUIDashObj
 Public TxtRole As ClsUIDashObj
 Public TxtRankGrade As ClsUIDashObj
-Public TxtLocation As ClsUIDashObj
+Public CmoLocation As ClsUIDropDown
 Public TxtWatch As ClsUIDashObj
 Public TxtAccessLvl As ClsUIDashObj
 Public LblCrewNo As ClsUIDashObj
@@ -43,7 +43,7 @@ Public Function BuildMyProfileFrame1() As Boolean
     Set TxtSurname = New ClsUIDashObj
     Set TxtRole = New ClsUIDashObj
     Set TxtRankGrade = New ClsUIDashObj
-    Set TxtLocation = New ClsUIDashObj
+    Set CmoLocation = New ClsUIDropDown
     Set TxtWatch = New ClsUIDashObj
     Set TxtAccessLvl = New ClsUIDashObj
     Set LblCrewNo = New ClsUIDashObj
@@ -248,16 +248,20 @@ Public Function BuildMyProfileFrame1() As Boolean
         .Locked = True
     End With
     
-    With TxtLocation
-        .Name = "TxtLocation"
-        .ShpDashObj.Delete
-        .ShpDashObj = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 10, 10, 10, 10)
-        MyProfileFrame1.DashObs.AddItem TxtLocation
-        .Top = MY_PROFILE_TXTLOCATION_TOP
-        .Left = MY_PROFILE_TXTLOCATION_LEFT
+    With CmoLocation
+        .Name = "CmoLocation"
+        .ShpTextBox.Delete
+        .ShpTextBox = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 10, 10, 10, 10)
+        MyProfileFrame1.DropDowns.AddItem CmoLocation
+        .Top = MY_PROFILE_CMOLOCATION_TOP
+        .Left = MY_PROFILE_CMOLOCATION_LEFT
         .Width = MY_PROFILE_TEXTBOX_WIDTH
         .Height = MY_PROFILE_TEXTBOX_HEIGHT
-        .Locked = False
+        .Icon = ShtMain.Shapes("TEMPLATE - DropDown").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "DropDown"
+        .Icon.Visible = msoCTrue
     End With
         
     '--------------------------------------------------------------------------------
@@ -348,7 +352,7 @@ ErrorExit:
     Set TxtSurname = Nothing
     Set TxtRole = Nothing
     Set TxtRankGrade = Nothing
-    Set TxtLocation = Nothing
+    Set CmoLocation = Nothing
     Set TxtWatch = Nothing
     Set TxtAccessLvl = Nothing
     Set LblCrewNo = Nothing
@@ -421,7 +425,7 @@ Public Function PopulateForm() As Boolean
         TxtAccessLvl.Text = .AccessLvl
         TxtCrewNo.Text = .CrewNo
         TxtForeName.Text = .Forename
-        TxtLocation.Text = .Station.Name
+        CmoLocation.Text = .Station.Name
         TxtRankGrade.Text = .RankGrade
         TxtRole.Text = .Role
         TxtSurname.Text = .Surname

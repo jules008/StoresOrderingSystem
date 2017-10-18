@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsUIFrame
 ' v0,0 - Initial Version
+' v0,1 - Add Dropdowns to frame
 '---------------------------------------------------------------
-' Date - 09 Feb 17
+' Date - 18 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,6 +27,7 @@ Private pWidth As Integer
 Private pName As String
 Private pStyle As TypeStyle
 Private pDashObjs As ClsUIDashObjs
+Private pDropDowns As ClsUIDropDowns
 Private pMenu As ClsUIMenu
 Private pEnableHeader As Boolean
 Private pHeader As ClsUIHeader
@@ -92,6 +94,15 @@ End Property
 
 Public Property Let DashObs(ByVal VnewValue As ClsUIDashObjs)
     Set pDashObjs = VnewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get DropDowns() As ClsUIDropDowns
+    Set DropDowns = pDropDowns
+End Property
+
+Public Property Let DropDowns(ByVal vNewValue As ClsUIDropDowns)
+    Set pDropDowns = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -217,6 +228,7 @@ End Property
 '---------------------------------------------------------------
 Public Sub ReOrder()
     Dim DashObj As ClsUIDashObj
+    Dim DropDown As ClsUIDropDown
     Dim UILineItem As ClsUILineitem
     
     pShpFrame.ZOrder msoBringToFront
@@ -224,6 +236,10 @@ Public Sub ReOrder()
     
     For Each DashObj In pDashObjs
         DashObj.ShpDashObj.ZOrder msoBringToFront
+    Next
+    
+    For Each DropDown In pDropDowns
+        DropDown.ReOrder
     Next
     
     For Each UILineItem In pLineItems
@@ -249,7 +265,7 @@ Private Sub Class_Initialize()
     Set pMenu = New ClsUIMenu
     Set pHeader = New ClsUIHeader
     Set pDashObjs = New ClsUIDashObjs
-    
+    Set pDropDowns = New ClsUIDropDowns
     Set pLineItems = New ClsUILineitems
 
     Set pShpFrame = ActiveSheet.Shapes.AddShape(msoShapeRectangle, 0, 0, 10, 10)
@@ -257,17 +273,20 @@ Private Sub Class_Initialize()
     pMenu.SetParent ObjPtr(Me)
     pHeader.SetParent ObjPtr(Me)
     pDashObjs.SetParent ObjPtr(Me)
+    pDropDowns.SetParent ObjPtr(Me)
     pLineItems.SetParent ObjPtr(Me)
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
     pDashObjs.SetParent 0
+    pDropDowns.SetParent 0
     pMenu.SetParent 0
     pHeader.SetParent 0
     pLineItems.SetParent 0
     
     Set pDashObjs = Nothing
+    Set pDropDowns = Nothing
     Set pMenu = Nothing
     Set pHeader = Nothing
     Set pLineItems = Nothing

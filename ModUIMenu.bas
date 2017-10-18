@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUIMenu"
 ' v0,4 - Added Exit Button
 ' v0,5 - Exit button leaves other workbooks open
 ' v0,6 - Enable My Profile Menu Item
+' v0,7 - Add DropDowns
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 18 Oct 17
 '===============================================================
 
 Option Explicit
@@ -463,6 +464,7 @@ Public Function ResetScreen() As Boolean
     Dim Frame As ClsUIFrame
     Dim UILineItem As ClsUILineitem
     Dim DashObj As ClsUIDashObj
+    Dim DropDown As ClsUIDropDown
     Dim MenuItem As ClsUIMenuItem
     
     Const StrPROCEDURE As String = "ResetScreen()"
@@ -474,14 +476,19 @@ Public Function ResetScreen() As Boolean
     For Each Frame In MainScreen.Frames
         If Frame.Name <> "MenuBar" Then
             For Each DashObj In Frame.DashObs
-'                Debug.Print DashObj.Name
                 Frame.DashObs.RemoveItem DashObj.Name
                 DashObj.ShpDashObj.Delete
                 Set DashObj = Nothing
             Next
             
+            For Each DropDown In Frame.DropDowns
+                Frame.DropDowns.RemoveItem DropDown.Name
+                DropDown.ShpTextBox.Delete
+                DropDown.Icon.Delete
+                Set DropDown = Nothing
+            Next
+            
             For Each UILineItem In Frame.LineItems
-'                Debug.Print UILineItem.Name
                 Frame.LineItems.RemoveItem UILineItem.Name
                 UILineItem.ShpLineItem.Delete
                 Set UILineItem = Nothing
