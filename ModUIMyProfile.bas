@@ -3,7 +3,7 @@ Attribute VB_Name = "ModUIMyProfile"
 ' Module ModUIMyProfile
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 18 Oct 17
+' Date - 20 Oct 17
 '===============================================================
 
 Option Explicit
@@ -257,10 +257,6 @@ Public Function BuildMyProfileFrame1() As Boolean
         .Left = MY_PROFILE_CMOLOCATION_LEFT
         .Width = MY_PROFILE_TEXTBOX_WIDTH
         .Height = MY_PROFILE_TEXTBOX_HEIGHT
-        .Icon = ShtMain.Shapes("TEMPLATE - DropDown").Duplicate
-        .Icon.Left = .Left + 10
-        .Icon.Top = .Top + 9
-        .Icon.Name = "DropDown"
         .Icon.Visible = msoCTrue
     End With
         

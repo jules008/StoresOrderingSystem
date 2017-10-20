@@ -11,7 +11,7 @@ Attribute VB_Exposed = False
 ' Class ClsUIDropDown
 ' v0,0 - Initial Version
 '---------------------------------------------------------------
-' Date - 18 Oct 17
+' Date - 20 Oct 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -44,6 +44,9 @@ Public Property Let Top(ByVal vNewValue As Integer)
     If Not Parent Is Nothing Then ParentOffset = Parent.Top
     
     pShpTextBox.Top = pTop + ParentOffset
+    
+    pIcon.Top = pShpTextBox.Top + 1
+
 End Property
 
 '---------------------------------------------------------------
@@ -59,6 +62,9 @@ Public Property Let Left(ByVal vNewValue As Integer)
     If Not Parent Is Nothing Then ParentOffset = Parent.Left
     
     pShpTextBox.Left = pLeft + ParentOffset
+
+    pIcon.Left = pLeft + pShpTextBox.Width - pIcon.Width
+
 End Property
 
 '---------------------------------------------------------------
@@ -69,6 +75,8 @@ End Property
 Public Property Let Height(ByVal vNewValue As Integer)
     pHeight = vNewValue
     pShpTextBox.Height = pHeight
+    pIcon.Height = pHeight - 1
+
 End Property
 
 '---------------------------------------------------------------
@@ -79,6 +87,8 @@ End Property
 Public Property Let Width(ByVal vNewValue As Integer)
     pWidth = vNewValue
     pShpTextBox.Width = pWidth
+    pIcon.Left = pShpTextBox.Left + pWidth - pIcon.Width
+
 End Property
 
 '---------------------------------------------------------------
@@ -126,6 +136,7 @@ End Property
 
 Public Property Let Icon(ByVal vNewValue As Shape)
     Set pIcon = vNewValue
+        pIcon.Name = "DropDown"
 End Property
 
 '---------------------------------------------------------------
@@ -139,6 +150,14 @@ Public Property Let Visible(ByVal vNewValue As Boolean)
     pIcon.Visible = vNewValue
     
 End Property
+
+' ===============================================================
+' Method ShowList
+' Shows the dropdown list when the icon is pressed
+'---------------------------------------------------------------
+Public Sub ShowList()
+    MsgBox "Show list"
+End Sub
 
 ' ===============================================================
 ' Method ReOrder
@@ -175,7 +194,12 @@ End Function
 ' ===============================================================
 Private Sub Class_Initialize()
     Set pShpTextBox = ActiveSheet.Shapes.AddShape(msoShapeRectangle, 0, 0, 10, 10)
-    Set pIcon = ActiveSheet.Shapes.AddShape(msoShapeRectangle, 0, 0, 10, 10)
+    Set pIcon = ShtMain.Shapes("TEMPLATE - DropDown").Duplicate
+    
+    With pIcon
+        .Name = "Dropdown"
+        .OnAction = "'cmolocation.ShowList'"
+    End With
 End Sub
 
 '---------------------------------------------------------------
