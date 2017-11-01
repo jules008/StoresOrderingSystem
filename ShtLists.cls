@@ -11,8 +11,9 @@ Attribute VB_Exposed = True
 ' Sheet ShtLists
 ' v0,0 - Initial Version
 ' v0,1 - Added keyword search
+' v0,2 - Don't display hidden assets
 '---------------------------------------------------------------
-' Date - 23 Jun 17
+' Date - 01 Nov 17
 '===============================================================
 
 Option Explicit
@@ -30,7 +31,8 @@ Public Function RefreshAssetList() As Boolean
 
     Dim RstAssets As Recordset
     
-    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset")
+    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset " _
+                                        & "WHERE NOT HideFromView")
 
     Me.Range("A1").CopyFromRecordset RstAssets
 

@@ -218,22 +218,19 @@ Public Sub UpdateDBScript()
     Dim Fld As DAO.Field
     
     DBConnect
-    DB.Execute "DROP TABLE TblLineItemBAK "
     
-    DB.Execute "INSERT INTO TblStation VALUES ('49','' , 'Ops Support', 'Deepdale Lane, Nettleham, Lincoln, LN2 2TL', '3')"
+    DB.Execute "ALTER TABLE TblAsset ADD COLUMN HideFromView YesNo"
     
-    DB.Execute "UPDATE TblStation SET Address = 'Deepdale Lane, Nettleham, Lincoln, LN2 2TL' WHERE StationID = 46 "
-        
     
     
         
-'    Set RstTable = SQLQuery("TblDBVersion")
+    Set RstTable = SQLQuery("TblDBVersion")
 
-'    With RstTable
-'        .Edit
-'        .Fields(0) = "v0,36"
-'        .Update
-'    End With
+    With RstTable
+        .Edit
+        .Fields(0) = "v0,37"
+        .Update
+    End With
     
     Set RstTable = Nothing
     Set TableDef = Nothing
@@ -255,13 +252,12 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblOrder DROP COLUMN PrintedDate"
-'    DB.Execute "ALTER TABLE TblOrder DROP COLUMN OrderNote"
+    DB.Execute "ALTER TABLE TblAsset DROP COLUMN HideFromView"
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,35"
+        .Fields(0) = "v0,36"
         .Update
     End With
     
