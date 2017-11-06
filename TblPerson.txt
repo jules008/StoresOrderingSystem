@@ -11,3 +11,4 @@ StationID,  dbDouble
 VehicleID,  dbDouble
 Watch,  dbText
 MailAlert,  dbBoolean
+MessageRead,  dbBoolean

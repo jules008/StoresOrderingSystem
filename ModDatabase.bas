@@ -6,8 +6,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,2 - Added GetDBVer function
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
+' v0,5 - Added System Message
 '---------------------------------------------------------------
-' Date - 13 Oct 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -213,27 +214,55 @@ Public Sub UpdateDBScript()
     Dim TableDef As DAO.TableDef
     Dim Ind As DAO.Index
     Dim RstTable As Recordset
+    Dim RstMessage As Recordset
     Dim i As Integer
     
     Dim Fld As DAO.Field
     
     DBConnect
-    
-    DB.Execute "ALTER TABLE TblAsset ADD COLUMN HideFromView YesNo"
-    
-    
-    
         
     Set RstTable = SQLQuery("TblDBVersion")
-
+    
+    'check preceding DB Version
+    If RstTable.Fields(0) <> "v0,37" Then
+        MsgBox "Database needs to be upgraded to v0,37 to continue", vbOKOnly + vbCritical
+        Exit Sub
+    End If
+    
+    'Table changes
+    DB.Execute "ALTER TABLE TblPerson ADD COLUMN MessageRead YesNo"
+    DB.Execute "CREATE TABLE TblMessage"
+    DB.Execute "ALTER TABLE TblMessage ADD COLUMN SystemMessage Text"
+    
+    'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v0,37"
+        .Fields(0) = "v0,38"
         .Update
     End With
     
+    Set RstMessage = SQLQuery("TblMessage")
+    
+    'update System Message?
+    With RstMessage
+        If .RecordCount = 0 Then
+            .AddNew
+        Else
+            .Edit
+        End If
+        
+        .Fields(0) = "Version 1.15 - What's New" _
+                    & Chr(13) & " Old Assets can now be hidden " _
+                    & Chr(13) & " Nice new message box! "
+        .Update
+    End With
+    
+    'reset read flags
+    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
+    
     Set RstTable = Nothing
     Set TableDef = Nothing
+    Set RstMessage = Nothing
     Set Fld = Nothing
     
 End Sub
@@ -252,12 +281,14 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblAsset DROP COLUMN HideFromView"
+    DB.Execute "ALTER TABLE TblPerson DROP COLUMN MessageRead"
+    DB.Execute "DROP TABLE TblMessage"
+ 
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,36"
+        .Fields(0) = "v0,37"
         .Update
     End With
     

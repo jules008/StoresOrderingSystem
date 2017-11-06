@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Changes to Username functionality
 ' v0,2 - Make Username read/write
+' v0,3 - Added Message Read Flag
 '---------------------------------------------------------------
-' Date - 26 Apr 17
+' Date - 06 Nov 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -37,6 +38,7 @@ Private pRole As String
 Private pAccessLvl As EnumAccessLvl
 Private pStation As ClsStation
 Private pVehicle As ClsVehicle
+Private pMessageRead As Boolean
 Private pParent As Long
 
 '---------------------------------------------------------------
@@ -148,6 +150,15 @@ Public Property Let Vehicle(ByVal VnewValue As ClsVehicle)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get MessageRead() As Boolean
+   MessageRead = pMessageRead
+End Property
+
+Public Property Let MessageRead(ByVal vNewValue As Boolean)
+    pMessageRead = vNewValue
+End Property
+
+'---------------------------------------------------------------
 Public Property Get Parent() As ClsOrder
     If pParent <> 0 Then
         Set Parent = GetParentFromPtr(pParent)
@@ -185,6 +196,8 @@ Public Sub DBGet(UserNameOrCrewNo As String)
             If Not IsNull(!MailAlert) Then pMailAlert = !MailAlert
             If Not IsNull(!AccessLvl) Then pAccessLvl = !AccessLvl
             If Not IsNull(!StationID) Then pStation.DBGet (!StationID)
+            If Not IsNull(!MessageRead) Then pMessageRead = !MessageRead
+            
             If Not IsNull(!VehicleID) Then
                 Set pVehicle = New ClsVehicle
                 pVehicle.DBGet (!VehicleID)
@@ -221,6 +234,7 @@ Public Sub DBSave()
         If pRole <> "" Then !Role = pRole
         If pWatch <> "" Then !Watch = pWatch
         !MailAlert = pMailAlert
+        !MessageRead = pMessageRead
         If pAccessLvl <> 0 Then !AccessLvl = pAccessLvl
         If pStation.StationID <> 0 Then !StationID = pStation.StationID
         .Update

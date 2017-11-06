@@ -21,7 +21,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,16 - Added Generic Error code
 ' v0,17 - Add new station Ops Support
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -35,7 +35,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,37"
+Public Const DB_VER = "v0,38"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
