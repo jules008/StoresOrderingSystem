@@ -33,7 +33,9 @@ Public Function RefreshAssetList() As Boolean
     
     Range("A1:B10000").ClearContents
     
-    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset WHERE Description IS NOT NULL")
+    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset " _
+                                        & "WHERE Description IS NOT NULL " _
+                                        & "AND Description <> '' ")
 
     Me.Range("A1").CopyFromRecordset RstAssets
 
