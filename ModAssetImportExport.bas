@@ -5,8 +5,9 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,1 - Improved version
 ' v0,2 - Test to ensure DBAsset is not nothing before copying qty
 ' v0,3 - Highlight if location changes
+' v0,4 - Added Hide From View Flag
 '---------------------------------------------------------------
-' Date - 05 Jul 17
+' Date - 01 Nov 17
 '===============================================================
 
 Option Explicit
@@ -156,7 +157,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     PassGenericTests = True
     
     'generic tests first
-    If UBound(AssetData) <> 23 Then
+    If UBound(AssetData) <> 24 Then
         AddToErrorLog AssetNo, "Incorrect use of commas"
         PassGenericTests = False
     End If
@@ -167,7 +168,7 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
     End If
 
     If PassGenericTests Then
-        For i = 0 To 23
+        For i = 0 To 24
     
             TestValue = AssetData(i)
             
@@ -220,10 +221,12 @@ Private Function ParseAsset(AssetData() As String, LineNo As Integer) As Boolean
         
                 Case Is = 21
                     If TestValue <> "" Then
-                    If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
-                    If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
+                        If Not IsNumeric(TestValue) Then AddToErrorLog AssetData(0), "Number error in Cost"
+                        If TestValue < 0 Then AddToErrorLog AssetData(0), "Number error in Cost"
                     End If
                 
+                Case Is = 24
+                    If TestValue <> "TRUE" And TestValue <> "FALSE" Then AddToErrorLog AssetData(0), "Error in Hide From View Flag"
             End Select
         Next
     End If
@@ -623,7 +626,7 @@ Private Sub AddToErrorLog(ByVal AssetNo As String, StrError As String)
     ErrorCount = ErrorCount + 1
     
     ErrorLog(ErrorCount) = "Asset No " & AssetNo & " - " & StrError
-'    Debug.Print "Asset No " & AssetNo & " - " & StrError
+    Debug.Print "Asset No " & AssetNo & " - " & StrError
     End If
 End Sub
 

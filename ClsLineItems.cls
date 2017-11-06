@@ -136,7 +136,7 @@ Public Sub CleanUp()
     With RstLineItems
         If .RecordCount > 0 Then
             Do While Not .EOF
-                Debug.Print !LineItemNo
+'                Debug.Print !LineItemNo
                 .Delete
                 .MoveNext
             Loop

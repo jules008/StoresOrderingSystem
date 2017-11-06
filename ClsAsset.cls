@@ -16,8 +16,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Removed deleted property and changes for Asset Import
 ' v0,5 - Temporary disable Asset DBsave
 ' v0,6 - Re-enabled Asset DBSave
+' v0,7 - Added HideFromView property
 '---------------------------------------------------------------
-' Date - 22 Sep 17
+' Date - 01 Nov 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -53,6 +54,7 @@ Private pAllocationType As EnumAllocationType
 Private pLocation As String
 Private pAdditInfo As String
 Private pNoOrderMessage As String
+Private pHideFromView As Boolean
 
 '---------------------------------------------------------------
 Public Property Get AssetNo() As Integer
@@ -292,6 +294,15 @@ Public Property Let NoOrderMessage(ByVal VnewValue As String)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get HideFromView() As Boolean
+    HideFromView = pHideFromView
+End Property
+
+Public Property Let HideFromView(ByVal vNewValue As Boolean)
+    pHideFromView = vNewValue
+End Property
+
+'---------------------------------------------------------------
 ' ===============================================================
 ' Method DBGet
 ' Gets class from Database
@@ -326,7 +337,7 @@ Public Sub DBGet(AssetNo As Integer)
             If Not IsNull(!Location) Then pLocation = Trim(!Location)
             If Not IsNull(!AdditInfo) Then pAdditInfo = Trim(!AdditInfo)
             If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = Trim(!NoOrderMessage) Else pNoOrderMessage = ""
-
+            If Not IsNull(!HideFromView) Then pHideFromView = !HideFromView
 '            pSupplier1.DBGet
 '            pSupplier2.DBGet
         End If
@@ -391,6 +402,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
         !Location = pLocation
         !AdditInfo = pAdditInfo
         !NoOrderMessage = pNoOrderMessage
+        !HideFromView = pHideFromView
         .Update
 
     End With
