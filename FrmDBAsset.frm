@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Lock down Stock reduction
 ' v0,3 - Change keyword seperator to ;
 ' v0,4 - Added HideFromView and fixed extra reason bug
+' v0,5 - Test for null before getting category list
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 06 Nov 17
 '===============================================================
 Option Explicit
 
@@ -202,7 +203,7 @@ Private Function FormInitialise() As Boolean
     With RstCategoryList
         .MoveFirst
         Do While Not .EOF
-            CmoCategory1.AddItem .Fields(0)
+            If Not IsNull(.Fields(0)) Then CmoCategory1.AddItem .Fields(0)
             .MoveNext
         Loop
     End With
