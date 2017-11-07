@@ -224,23 +224,61 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v0,37" Then
-        MsgBox "Database needs to be upgraded to v0,37 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v0,38" Then
+        MsgBox "Database needs to be upgraded to v0,38 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "ALTER TABLE TblPerson ADD COLUMN MessageRead YesNo"
-    DB.Execute "CREATE TABLE TblMessage"
-    DB.Execute "ALTER TABLE TblMessage ADD COLUMN SystemMessage Text"
+    DB.Execute "ALTER TABLE TblStation ADD COLUMN Division Text"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC01'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC02'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC03'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC04'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC05'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC06'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC07'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC08'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC09'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC10'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC11'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC12'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC13'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC14'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC15'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC16'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC17'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC18'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC19'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC20'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC21'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC22'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC23'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC24'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC25'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC26'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC27'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC28'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC29'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC30'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC31'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC32'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC33'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC34'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC35'"
+    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC36'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC37'"
+    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC38'"
+    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC39'"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v0,38"
+        .Fields(0) = "v0,39"
         .Update
     End With
     
+    UpdateSysMsg
     
     Set RstTable = Nothing
     Set TableDef = Nothing
@@ -263,14 +301,13 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblPerson DROP COLUMN MessageRead"
-    DB.Execute "DROP TABLE TblMessage"
+    DB.Execute "ALTER TABLE TblStation DROP COLUMN Division"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,37"
+        .Fields(0) = "v0,38"
         .Update
     End With
     
@@ -333,6 +370,7 @@ Public Sub UpdateSysMsg()
         
         .Fields(0) = "Version 1.151 - What's New" _
                     & Chr(13) & " - 'Return Req'd' added to Order Form " _
+                    & Chr(13) & " - 'Nil Return Report' Added to reports section "
         .Update
     End With
     

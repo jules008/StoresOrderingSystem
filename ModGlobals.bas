@@ -35,8 +35,8 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "1.51"
-Public Const DB_VER = "v0,38"
-Public Const VER_DATE = "15/01/17"
+Public Const DB_VER = "v0,39"
+Public Const VER_DATE = "07/11/17"
 
 ' ===============================================================
 ' Error Constants
