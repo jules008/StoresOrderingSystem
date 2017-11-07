@@ -6,8 +6,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,2 - Added GetDBVer function
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
+' v0,5 - Added System Message
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -213,53 +214,55 @@ Public Sub UpdateDBScript()
     Dim TableDef As DAO.TableDef
     Dim Ind As DAO.Index
     Dim RstTable As Recordset
+    Dim RstMessage As Recordset
     Dim i As Integer
     
     Dim Fld As DAO.Field
     
     DBConnect
-    DB.Execute "SELECT * INTO TblLineItemBAK FROM TblLineItem"
+        
+    Set RstTable = SQLQuery("TblDBVersion")
     
-    MsgBox "Delete stray lineitems"
+    'check preceding DB Version
+    If RstTable.Fields(0) <> "v0,37" Then
+        MsgBox "Database needs to be upgraded to v0,37 to continue", vbOKOnly + vbCritical
+        Exit Sub
+    End If
     
-    Set RstTable = SQLQuery("SELECT " _
-                    & "TblOrder.OrderNo, " _
-                    & "TblOrder.Deleted AS [Order_Deleted], " _
-                    & "TblLineItem.LineItemNo, " _
-                    & "TblLineItem.Deleted AS [LineItem_Deleted] " _
-                & "FROM " _
-                    & "TblOrder " _
-                    & "RIGHT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
-                & "WHERE " _
-                    & "TblOrder.Deleted IS NOT NULL AND " _
-                    & "TblLineItem.Deleted IS NULL " _
-                & "ORDER BY " _
-                    & "TblLineItem.LineItemNo")
-                    
+    'Table changes
+    DB.Execute "ALTER TABLE TblPerson ADD COLUMN MessageRead YesNo"
+    DB.Execute "CREATE TABLE TblMessage"
+    DB.Execute "ALTER TABLE TblMessage ADD COLUMN SystemMessage Text"
+    
+    'update DB Version
     With RstTable
-        Do While Not .EOF
-            .Edit
-            Debug.Print !LineItemNo
-            !LineItem_Deleted = !Order_Deleted
-            .Update
-            .MoveNext
-        Loop
+        .Edit
+        .Fields(0) = "v0,38"
+        .Update
     End With
     
-    MsgBox "Check lineitems are deleted correctly"
+    Set RstMessage = SQLQuery("TblMessage")
     
-    
+    'update System Message?
+    With RstMessage
+        If .RecordCount = 0 Then
+            .AddNew
+        Else
+            .Edit
+        End If
         
-'    Set RstTable = SQLQuery("TblDBVersion")
-
-'    With RstTable
-'        .Edit
-'        .Fields(0) = "v0,36"
-'        .Update
-'    End With
+        .Fields(0) = "Version 1.15 - What's New" _
+                    & Chr(13) & " Old Assets can now be hidden " _
+                    & Chr(13) & " Nice new message box! "
+        .Update
+    End With
+    
+    'reset read flags
+    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
     
     Set RstTable = Nothing
     Set TableDef = Nothing
+    Set RstMessage = Nothing
     Set Fld = Nothing
     
 End Sub
@@ -278,13 +281,14 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblOrder DROP COLUMN PrintedDate"
-'    DB.Execute "ALTER TABLE TblOrder DROP COLUMN OrderNote"
+    DB.Execute "ALTER TABLE TblPerson DROP COLUMN MessageRead"
+    DB.Execute "DROP TABLE TblMessage"
+ 
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,35"
+        .Fields(0) = "v0,37"
         .Update
     End With
     

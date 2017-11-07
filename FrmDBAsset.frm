@@ -14,13 +14,16 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' V0,1 - Add new Asset functionality
 ' v0,2 - Lock down Stock reduction
 ' v0,3 - Change keyword seperator to ;
+' v0,4 - Added HideFromView and fixed extra reason bug
+' v0,5 - Test for null before getting category list
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 06 Nov 17
 '===============================================================
 Option Explicit
 
@@ -109,6 +112,7 @@ Private Function PopulateForm() As Boolean
 '        TxtSupplier1 = .Supplier1
 '        TxtSupplier2 = .Supplier2
         CmoAllocationType.ListIndex = .AllocationType
+        ChkHideFromView = .HideFromView
     End With
 
     With TxtStatus
@@ -199,7 +203,7 @@ Private Function FormInitialise() As Boolean
     With RstCategoryList
         .MoveFirst
         Do While Not .EOF
-            CmoCategory1.AddItem .Fields(0)
+            If Not IsNull(.Fields(0)) Then CmoCategory1.AddItem .Fields(0)
             .MoveNext
         Loop
     End With
@@ -501,6 +505,7 @@ Private Sub BtnUpdate_Click()
     
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
     
+    MsgBox "Changes have been successful", vbOKOnly + vbInformation, APP_NAME
 
 Exit Sub
 
@@ -533,7 +538,7 @@ Private Function UpdateChanges() As Boolean
     On Error GoTo ErrorHandler
     
     'Allowed reasons
-    For i = 0 To 6
+    For i = 0 To 5
         
         If Me.Controls("ChkOrder" & i) = True Then LocReason = "1" Else LocReason = "0"
         
@@ -569,6 +574,7 @@ Private Function UpdateChanges() As Boolean
         .NoOrderMessage = TxtNoOrderMessage
         .OrderLevel = TxtOrderLevel
         .PurchaseUnit = TxtPurchaseUnit
+        .HideFromView = ChkHideFromView
         
         If TxtQtyInStock < .QtyInStock Then
             If CurrentUser.AccessLvl < SupervisorLvl_3 Then

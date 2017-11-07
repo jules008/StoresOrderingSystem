@@ -11,8 +11,9 @@ Attribute VB_Exposed = True
 ' Sheet ShtLists
 ' v0,0 - Initial Version
 ' v0,1 - Added keyword search
+' v0,2 - Bug Fix, clear asset list before reloading
 '---------------------------------------------------------------
-' Date - 23 Jun 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -30,7 +31,11 @@ Public Function RefreshAssetList() As Boolean
 
     Dim RstAssets As Recordset
     
-    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset")
+    Range("A1:B10000").ClearContents
+    
+    Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset " _
+                                        & "WHERE Description IS NOT NULL " _
+                                        & "AND Description <> '' ")
 
     Me.Range("A1").CopyFromRecordset RstAssets
 

@@ -5,8 +5,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,1 - Updated query 1
 ' v0,2 - Addded Report 2
 ' v0,3 - Removed hard numbering from buttons
+' v0,4 - Add cost to Order Report
 '---------------------------------------------------------------
-' Date - 26 Jun 17
+' Date - 04 Nov 17
 '===============================================================
 
 Option Explicit
@@ -203,9 +204,9 @@ End Function
 ' ---------------------------------------------------------------
 Private Function BtnReport1Sel() As Boolean
     Dim RstQuery As Recordset
-    Dim ColWidths(0 To 14) As Integer
-    Dim Headings(0 To 14) As String
-    Dim ColFormats(0 To 14) As String
+    Dim ColWidths(0 To 15) As Integer
+    Dim Headings(0 To 15) As String
+    Dim ColFormats(0 To 15) As String
 
     Const StrPROCEDURE As String = "BtnReport1Sel()"
 
@@ -239,6 +240,7 @@ Restart:
     ColWidths(12) = 25
     ColWidths(13) = 25
     ColWidths(14) = 25
+    ColWidths(15) = 20
     
     'headings
     Headings(0) = "Order No"
@@ -256,7 +258,7 @@ Restart:
     Headings(12) = "For Vehicle"
     Headings(13) = "Veh Station"
     Headings(14) = "Request Reason"
-    
+    Headings(15) = "Total Cost"
     'formats
     ColFormats(0) = "General"
     ColFormats(1) = "General"
@@ -273,6 +275,7 @@ Restart:
     ColFormats(12) = "General"
     ColFormats(13) = "General"
     ColFormats(14) = "General"
+    ColFormats(15) = "£0.00"
     
     If Not ModReports.CreateReport(RstQuery, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
     

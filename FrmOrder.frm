@@ -479,14 +479,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 
-Private Sub CommandButton2_Click()
-
-End Sub
-
-Private Sub CommandButton1_Click()
-
-End Sub
-
 ' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise

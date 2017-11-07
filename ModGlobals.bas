@@ -19,9 +19,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,14 - Added FindOrder Button
 ' v0,15 - Change Delivery button to Supplier
 ' v0,16 - Added Generic Error code
-' v0,17 - Added My Profile Frame
+' v0,17 - Add new station Ops Support
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -35,7 +35,7 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "0.0"
-Public Const DB_VER = "v0,36"
+Public Const DB_VER = "v0,38"
 Public Const VER_DATE = "15/01/17"
 
 ' ===============================================================
@@ -127,11 +127,6 @@ Public BtnFindOrder As ClsUIMenuItem
 ' ---------------------------------------------------------------
 Public BtnReport1 As ClsUIMenuItem
 Public BtnReport2 As ClsUIMenuItem
-
-' ---------------------------------------------------------------
-' My Profile Screen
-' ---------------------------------------------------------------
-Public MyProfileFrame1 As ClsUIFrame
 
 ' ---------------------------------------------------------------
 ' Others
@@ -243,6 +238,7 @@ Enum EnumStationID
     HQ = 46
     WTF = 47
     Control = 48
+    OpsSupport = 49
 End Enum
 
 Enum EnumStnType

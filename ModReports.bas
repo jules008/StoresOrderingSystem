@@ -7,8 +7,9 @@ Attribute VB_Name = "ModReports"
 ' v0,3 - Prevent Deleted orders being included in Order Report
 ' v0,4 - Prevent deleted line items being included in Order Report
 ' v0,5 - Exclude Orders with Null or 0 Order No in Report 1
+' v0,6 - Add cost to Order Report
 '---------------------------------------------------------------
-' Date - 05 Oct 17
+' Date - 04 Nov 17
 '===============================================================
 
 Option Explicit
@@ -122,7 +123,8 @@ Public Function Report1Query() As Recordset
                     & "TblStation.Name AS [For Station], " _
                     & "TblVehicle.VehReg AS [For Vehicle], " _
                     & "TblStation1.Name AS [Vehicle Station], " _
-                    & "TblReqReason.ReqReason AS [Request Reason] "
+                    & "TblReqReason.ReqReason AS [Request Reason], " _
+                    & "TblAsset.Cost * TblLineItem.Quantity AS [Total Cost] "
                     
     StrFrom = "FROM " _
                     & "(((((((TblLineItem " _

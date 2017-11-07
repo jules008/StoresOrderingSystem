@@ -10,8 +10,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,6 - Stopped the removal of '-' from the user name
 ' v0,7 - Added DB Version Check
 ' v0,8 - Update any rogue usernames
+' v0,9 - Added System Messages on start up
 '---------------------------------------------------------------
-' Date - 14 Jun 17
+' Date - 06 Nov 17
 '===============================================================
 
 Option Explicit
@@ -87,6 +88,9 @@ Public Function Initialise() As Boolean
     Else
         ModUIMenu.ProcessBtnPress ([menuitemno])
     End If
+        
+    'Show any messages
+    If Not MessageCheck Then Err.Raise HANDLED_ERROR
         
     ActiveSheet.Range("A1").Select
 
@@ -265,6 +269,54 @@ ErrorHandler:
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' MessageCheck
+' Checks to see if the user message has been read
+' ---------------------------------------------------------------
+Public Function MessageCheck() As Boolean
+    Dim StrMessage As String
+    Dim RstMessage As Recordset
+    
+    Const StrPROCEDURE As String = "MessageCheck()"
+
+    On Error GoTo ErrorHandler
+    
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+
+    If CurrentUser.AccessLvl > BasicLvl_1 Then
+        If Not CurrentUser.MessageRead Then
+            
+            Set RstMessage = SQLQuery("TblMessage")
+            
+            If RstMessage.RecordCount > 0 Then StrMessage = RstMessage.Fields(0)
+            MsgBox StrMessage, vbOKOnly + vbInformation, APP_NAME
+            CurrentUser.MessageRead = True
+            CurrentUser.DBSave
+            
+        End If
+    End If
+    
+    Set RstMessage = Nothing
+    
+    MessageCheck = True
+
+Exit Function
+
+ErrorExit:
+    Set RstMessage = Nothing
+'    ***CleanUpCode***
+    MessageCheck = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else

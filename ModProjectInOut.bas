@@ -125,6 +125,8 @@ Public Sub ExportDBTables()
     Dim TableExport As TableDef
     Dim ExportFldr As String
         
+    DBConnect
+    
     For Each TableExport In DB.TableDefs
         If Not (TableExport.Name Like "MSys*" Or TableExport.Name Like "~*") Then
             
@@ -216,12 +218,12 @@ Public Sub SetReferenceLibs()
     
     For Each Reference In ThisWorkbook.VBProject.References
         With Reference
-            Debug.Print .Name
-            Debug.Print .Description
-            Debug.Print .Minor
-            Debug.Print .Major
-            Debug.Print .GUID
-            Debug.Print
+'            Debug.Print .Name
+'            Debug.Print .Description
+'            Debug.Print .Minor
+'            Debug.Print .Major
+'            Debug.Print .GUID
+'            Debug.Print
         End With
     Next
 
@@ -289,16 +291,16 @@ Public Sub CopyShtCodeModule()
         
         With VBModule
             
-            Debug.Print VBModule.Name
+'            Debug.Print VBModule.Name
             If Left(.Name, 3) = "Sht" And .Type <> vbext_ct_Document Then
                 Set SourceMod = VBModule
-                Debug.Print "Source: " & SourceMod.Name
+'                Debug.Print "Source: " & SourceMod.Name
                 
                 For Each DestMod In ThisWorkbook.VBProject.VBComponents
-                    Debug.Print DestMod.Name
+'                    Debug.Print DestMod.Name
                     If Left(SourceMod.Name, Len(SourceMod.Name) - 1) = DestMod.Name Then
-                        Debug.Print "Source: " & SourceMod.Name
-                        Debug.Print " Dest: " & DestMod.Name
+'                        Debug.Print "Source: " & SourceMod.Name
+'                        Debug.Print " Dest: " & DestMod.Name
                         
                         DestMod.CodeModule.DeleteLines 1, DestMod.CodeModule.CountOfLines
                         
