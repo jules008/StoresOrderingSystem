@@ -7,8 +7,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 ' v0,5 - Added System Message
+' v0,6 - Seperated out Update Message procedure
 '---------------------------------------------------------------
-' Date - 06 Nov 17
+' Date - 07 Nov 17
 '===============================================================
 
 Option Explicit
@@ -214,7 +215,6 @@ Public Sub UpdateDBScript()
     Dim TableDef As DAO.TableDef
     Dim Ind As DAO.Index
     Dim RstTable As Recordset
-    Dim RstMessage As Recordset
     Dim i As Integer
     
     Dim Fld As DAO.Field
@@ -241,31 +241,13 @@ Public Sub UpdateDBScript()
         .Update
     End With
     
-    Set RstMessage = SQLQuery("TblMessage")
-    
-    'update System Message?
-    With RstMessage
-        If .RecordCount = 0 Then
-            .AddNew
-        Else
-            .Edit
-        End If
-        
-        .Fields(0) = "Version 1.15 - What's New" _
-                    & Chr(13) & " Old Assets can now be hidden " _
-                    & Chr(13) & " Nice new message box! "
-        .Update
-    End With
-    
-    'reset read flags
-    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
     
     Set RstTable = Nothing
     Set TableDef = Nothing
-    Set RstMessage = Nothing
     Set Fld = Nothing
     
 End Sub
+        
         
 ' ===============================================================
 ' UpdateDBScriptUndo
@@ -333,3 +315,30 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' UpdateSysMsg
+' Updates the system message and resets read flags
+' ---------------------------------------------------------------
+Public Sub UpdateSysMsg()
+    Dim RstMessage As Recordset
+    
+    Set RstMessage = SQLQuery("TblMessage")
+    
+    With RstMessage
+        If .RecordCount = 0 Then
+            .AddNew
+        Else
+            .Edit
+        End If
+        
+        .Fields(0) = "Version 1.151 - What's New" _
+                    & Chr(13) & " - 'Return Req'd' added to Order Form " _
+        .Update
+    End With
+    
+    'reset read flags
+    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
+    
+    Set RstMessage = Nothing
+
+End Sub
