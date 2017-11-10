@@ -20,8 +20,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,15 - Change Delivery button to Supplier
 ' v0,16 - Added Generic Error code
 ' v0,17 - Add new station Ops Support
+' v0,18 - Added Report 3 button
 '---------------------------------------------------------------
-' Date - 07 Nov 17
+' Date - 10 Nov 17
 '===============================================================
 
 Option Explicit
@@ -127,6 +128,7 @@ Public BtnFindOrder As ClsUIMenuItem
 ' ---------------------------------------------------------------
 Public BtnReport1 As ClsUIMenuItem
 Public BtnReport2 As ClsUIMenuItem
+Public BtnReport3 As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -337,6 +339,7 @@ Enum EnumBtnNo
     EnumManageDataBtn
     EnumReport2Btn
     EnumFindOrderBtn
+    EnumReport3Btn
 End Enum
 
 ' ===============================================================

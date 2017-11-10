@@ -6,8 +6,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,2 - Addded Report 2
 ' v0,3 - Removed hard numbering from buttons
 ' v0,4 - Add cost to Order Report
+' v0,5 - Added Report 3 
 '---------------------------------------------------------------
-' Date - 04 Nov 17
+' Date - 10 Nov 17
 '===============================================================
 
 Option Explicit
@@ -28,6 +29,7 @@ Public Function BuildReporting() As Boolean
     
     If Not BuildReport1Btn Then Err.Raise HANDLED_ERROR
     If Not BuildReport2Btn Then Err.Raise HANDLED_ERROR
+    If Not BuildReport3Btn Then Err.Raise HANDLED_ERROR
         
     ModLibrary.PerfSettingsOff
                     
@@ -142,6 +144,51 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
+' BuildReport3Btn
+' Button for report 3
+' ---------------------------------------------------------------
+Private Function BuildReport3Btn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildReport3Btn()"
+
+    On Error GoTo ErrorHandler
+
+    Set BtnReport3 = New ClsUIMenuItem
+
+    With BtnReport3
+        
+        .Height = BTN_REPORT_3_HEIGHT
+        .Left = BTN_REPORT_3_LEFT
+        .Top = BTN_REPORT_3_TOP
+        .Width = BTN_REPORT_3_WIDTH
+        .Name = "BtnReport3"
+        .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport3Btn & ")'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Non-Return Report"
+    End With
+
+    MainScreen.Menu.AddItem BtnReport3
+    
+    BuildReport3Btn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildReport3Btn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
 ' ProcessBtnPress
 ' Receives all button presses and processes
 ' ---------------------------------------------------------------
@@ -164,6 +211,10 @@ Restart:
             Case EnumReport2Btn
             
                 If Not BtnReport2Sel Then Err.Raise HANDLED_ERROR
+            
+            Case EnumReport3Btn
+            
+                If Not BtnReport3Sel Then Err.Raise HANDLED_ERROR
         End Select
     
 GracefulExit:
@@ -410,4 +461,97 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' BtnReport3Sel
+' Manages system users
+' ---------------------------------------------------------------
+Private Function BtnReport3Sel() As Boolean
+    Dim RstQuery As Recordset
+    Dim ColWidths(0 To 7) As Integer
+    Dim Headings(0 To 7) As String
+    Dim ColFormats(0 To 7) As String
+
+    Const StrPROCEDURE As String = "BtnReport3Sel()"
+
+    On Error GoTo ErrorHandler
+
+Restart:
+    
+    Application.StatusBar = ""
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
+
+    Set RstQuery = ModReports.Report3Query
+    
+    If RstQuery Is Nothing Then Err.Raise HANDLED_ERROR
+    
+    'col widths
+    ColWidths(0) = 8
+    ColWidths(1) = 15
+    ColWidths(2) = 60
+    ColWidths(3) = 15
+    ColWidths(4) = 20
+    ColWidths(5) = 20
+    ColWidths(6) = 20
+    ColWidths(7) = 20
+    
+    'headings
+    Headings(0) = "Order No"
+    Headings(1) = "Order Date"
+    Headings(2) = "Description"
+    Headings(3) = "Quantity"
+    Headings(4) = "Total Cost"
+    Headings(5) = "Station No"
+    Headings(6) = "Station Name"
+    Headings(7) = "Division"
+    
+    'formats
+    ColFormats(0) = "General"
+    ColFormats(1) = "General"
+    ColFormats(2) = "General"
+    ColFormats(3) = "General"
+    ColFormats(4) = "£0.00"
+    ColFormats(5) = "General"
+    ColFormats(6) = "General"
+    ColFormats(7) = "General"
+    
+    If Not ModReports.CreateReport(RstQuery, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
+    
+GracefulExit:
+
+    BtnReport3Sel = True
+
+Exit Function
+
+ErrorExit:
+    
+    BtnReport3Sel = False
+
+'    ***CleanUpCode***
+
+Exit Function
+
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = ACCESS_DENIED Then
+            CustomErrorHandler (Err.Number)
+            Resume GracefulExit
+        Else
+            CustomErrorHandler (Err.Number)
+            Resume Restart
+        End If
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 

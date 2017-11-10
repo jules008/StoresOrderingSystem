@@ -9,8 +9,9 @@ Attribute VB_Name = "ModLibrary"
 ' v0,5 - Added GetTextLineNo
 ' v0,6 - Added Print Document Shell command
 ' v0,7 - Added PrintDoc, OpenDoc and IsFileOpen
+' v0,8 - Added Join Recordsets function
 '---------------------------------------------------------------
-' Date - 26 Jul 17
+' Date - 10 Nov 17
 '===============================================================
 
 Option Explicit
@@ -329,3 +330,28 @@ Function IsFileOpen(FileName As String)
     Case Else: Error ErrNo
     End Select
 End Function
+
+' ===============================================================
+' JoinRecordsets
+' Joins two recordsets together
+' ---------------------------------------------------------------
+Function JoinRecordsets(ByVal Rst1 As Recordset, Rst2 As Recordset) As Recordset
+    Dim i As Integer
+    
+    On Error Resume Next
+    
+    With Rst2
+        .MoveFirst
+        Do While Not .EOF
+            Rst1.AddNew
+            
+            For i = 0 To .Fields.Count - 1
+                Rst1.Fields(i) = Rst2.Fields(i)
+            Next
+            Rst1.Update
+            .MoveNext
+        Loop
+    End With
+    Set JoinRecordsets = Rst1
+End Function
+

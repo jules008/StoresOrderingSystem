@@ -14,8 +14,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Change Delivery button to Supplier
+' v0,13 - Added Report 3 button
 '---------------------------------------------------------------
-' Date - 07 Jul 17
+' Date - 10 Nov 17
 '===============================================================
 
 Option Explicit
@@ -180,6 +181,11 @@ Public Const BTN_REPORT_2_HEIGHT As Integer = 30
 Public Const BTN_REPORT_2_WIDTH As Integer = 175
 Public Const BTN_REPORT_2_LEFT As Integer = 365
 Public Const BTN_REPORT_2_TOP As Integer = 30
+
+Public Const BTN_REPORT_3_HEIGHT As Integer = 30
+Public Const BTN_REPORT_3_WIDTH As Integer = 175
+Public Const BTN_REPORT_3_LEFT As Integer = 550
+Public Const BTN_REPORT_3_TOP As Integer = 30
 
 ' ===============================================================
 ' Style Declarations
