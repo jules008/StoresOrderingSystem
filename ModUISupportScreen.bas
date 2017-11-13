@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' v0,4 - Add shane and emma to support message
 ' v0,5 - Removed hard numbering for buttons
 ' v0,6 - Add Julia Whitfield as cc to support query email
+' v0,7 - Added Release notes
 '---------------------------------------------------------------
-' Date - 05 Oct 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -37,7 +38,7 @@ Public Function BuildSupportFrame1() As Boolean
         
         .Top = SUPPORT_FRAME_1_TOP
         .Left = SUPPORT_FRAME_1_LEFT
-        .Width = SUPPORT_FRAME_1_HEIGHT
+        .Width = SUPPORT_FRAME_1_WIDTH
         .Height = SUPPORT_FRAME_1_HEIGHT
         .Style = MAIN_FRAME_STYLE
         .EnableHeader = True
@@ -112,6 +113,97 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
+' BuildSupportFrame2
+' Builds first frame on support page at top of screen
+' ---------------------------------------------------------------
+Public Function BuildSupportFrame2() As Boolean
+    Dim TxtReleaseNotes As ClsUIDashObj
+    Dim CommentBtn As ClsUIMenuItem
+    Dim RstReleaseNotes As Recordset
+    Dim StrReleaseNotes As String
+    
+    Const StrPROCEDURE As String = "BuildSupportFrame2()"
+
+    On Error GoTo ErrorHandler
+
+    Set TxtReleaseNotes = New ClsUIDashObj
+    
+    Set RstReleaseNotes = SQLQuery("TblMessage")
+    
+    If RstReleaseNotes.RecordCount > 0 Then StrReleaseNotes = RstReleaseNotes.Fields(1)
+    
+    With SupportFrame2
+        .Name = "Support Frame 2"
+        MainScreen.Frames.AddItem SupportFrame2
+        
+        .Top = SUPPORT_FRAME_2_TOP
+        .Left = SUPPORT_FRAME_2_LEFT
+        .Width = SUPPORT_FRAME_2_WIDTH
+        .Height = SUPPORT_FRAME_2_HEIGHT
+        .Style = MAIN_FRAME_STYLE
+        .EnableHeader = True
+        .Visible = True
+                
+
+        With .Header
+            .Top = .Parent.Top
+            .Left = .Parent.Left
+            .Width = .Parent.Width
+            .Height = HEADER_HEIGHT
+            .Name = "Support 2 Header"
+            .Text = "Latest Release Notes"
+            .Style = HEADER_STYLE
+            .Icon = ShtMain.Shapes("TEMPLATE - Message").Duplicate
+            .Icon.Top = .Parent.Top + HEADER_ICON_TOP
+            .Icon.Left = .Parent.Left + .Parent.Width - .Icon.Width - HEADER_ICON_RIGHT
+            .Icon.Name = .Parent.Name & " Icon"
+            .Icon.Visible = msoCTrue
+        End With
+    End With
+    
+    With TxtReleaseNotes
+        .Name = "TxtReleaseNotes"
+        .ShpDashObj.Delete
+        .ShpDashObj = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 10, 10, 10, 10)
+        SupportFrame2.DashObs.AddItem TxtReleaseNotes
+        .Top = RELEASE_NOTES_TOP
+        .Left = RELEASE_NOTES_LEFT
+        .Width = RELEASE_NOTES_WIDTH
+        .Height = RELEASE_NOTES_HEIGHT
+        .Style = TRANSPARENT_TEXT_BOX
+        .Locked = True
+        .Text = StrReleaseNotes
+    End With
+        
+    SupportFrame2.ReOrder
+    
+    Set TxtReleaseNotes = Nothing
+    Set CommentBtn = Nothing
+    Set RstReleaseNotes = Nothing
+    
+    BuildSupportFrame2 = True
+
+Exit Function
+
+ErrorExit:
+
+    Set TxtReleaseNotes = Nothing
+    Set CommentBtn = Nothing
+    Set RstReleaseNotes = Nothing
+    
+    BuildSupportFrame2 = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
 ' BuildSupportScreen
 ' Builds the display using shapes
 ' ---------------------------------------------------------------
@@ -122,8 +214,10 @@ Public Function BuildSupportScreen() As Boolean
     On Error GoTo ErrorHandler
     
     Set SupportFrame1 = New ClsUIFrame
+    Set SupportFrame2 = New ClsUIFrame
     
     If Not BuildSupportFrame1 Then Err.Raise HANDLED_ERROR
+    If Not BuildSupportFrame2 Then Err.Raise HANDLED_ERROR
     
     BuildSupportScreen = True
        

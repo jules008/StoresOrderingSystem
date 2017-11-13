@@ -21,8 +21,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,16 - Added Generic Error code
 ' v0,17 - Add new station Ops Support
 ' v0,18 - Added Report 3 button
+' v0,19 - Added Release Notes frame
 '---------------------------------------------------------------
-' Date - 10 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -36,8 +37,8 @@ Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
 Public Const VERSION = "1.51"
-Public Const DB_VER = "v0,39"
-Public Const VER_DATE = "07/11/17"
+Public Const DB_VER = "v1,391"
+Public Const VER_DATE = "13/11/17"
 
 ' ===============================================================
 ' Error Constants
@@ -111,6 +112,7 @@ Public BtnNewOrder As ClsUIMenuItem
 ' Support Screen
 ' ---------------------------------------------------------------
 Public SupportFrame1 As ClsUIFrame
+Public SupportFrame2 As ClsUIFrame
 
 ' ---------------------------------------------------------------
 ' Stores Screen

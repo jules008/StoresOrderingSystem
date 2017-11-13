@@ -15,8 +15,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Change Delivery button to Supplier
 ' v0,13 - Added Report 3 button
+' v0,14 - Added Release notes frame and text box style
 '---------------------------------------------------------------
-' Date - 10 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -107,14 +108,24 @@ Public Const BTN_NEWORDER_HEIGHT As Integer = 75
 ' Support Screen
 ' ---------------------------------------------------------------
 Public Const SUPPORT_FRAME_1_HEIGHT As Integer = 200
-Public Const SUPPORT_FRAME_1_WIDTH As Integer = 370
+Public Const SUPPORT_FRAME_1_WIDTH As Integer = 200
 Public Const SUPPORT_FRAME_1_LEFT As Integer = 175
 Public Const SUPPORT_FRAME_1_TOP As Integer = 10
+
+Public Const SUPPORT_FRAME_2_HEIGHT As Integer = 200
+Public Const SUPPORT_FRAME_2_WIDTH As Integer = 400
+Public Const SUPPORT_FRAME_2_LEFT As Integer = 395
+Public Const SUPPORT_FRAME_2_TOP As Integer = 10
 
 Public Const COMMENT_BOX_HEIGHT As Integer = 100
 Public Const COMMENT_BOX_WIDTH As Integer = 175
 Public Const COMMENT_BOX_LEFT As Integer = 10
 Public Const COMMENT_BOX_TOP As Integer = 35
+
+Public Const RELEASE_NOTES_HEIGHT As Integer = 150
+Public Const RELEASE_NOTES_WIDTH As Integer = 380
+Public Const RELEASE_NOTES_LEFT As Integer = 10
+Public Const RELEASE_NOTES_TOP As Integer = 35
 
 Public Const COMMENT_BTN_HEIGHT As Integer = 30
 Public Const COMMENT_BTN_WIDTH As Integer = 145
@@ -202,6 +213,7 @@ Public BTN_NEWORDER_STYLE As TypeStyle
 Public GENERIC_BUTTON As TypeStyle
 Public GENERIC_LINEITEM As TypeStyle
 Public GENERIC_LINEITEM_HEADER As TypeStyle
+Public TRANSPARENT_TEXT_BOX As TypeStyle
 
 ' ---------------------------------------------------------------
 ' New Order Workflow
@@ -245,6 +257,17 @@ Public Const GENERIC_LINEITEM_HEADER_FONT_COLOUR As Long = COLOUR_2
 Public Const GENERIC_LINEITEM_HEADER_FONT_BOLD As Boolean = True
 Public Const GENERIC_LINEITEM_HEADER_FONT_X_JUST As Integer = xlHAlignCenter
 Public Const GENERIC_LINEITEM_HEADER_FONT_Y_JUST As Integer = xlVAlignCenter
+
+Public Const TRANSPARENT_TEXT_BOX_BORDER_WIDTH As Long = 0
+Public Const TRANSPARENT_TEXT_BOX_FILL_1 As Long = COLOUR_3
+Public Const TRANSPARENT_TEXT_BOX_FILL_2 As Long = COLOUR_3
+Public Const TRANSPARENT_TEXT_BOX_SHADOW As Long = 0
+Public Const TRANSPARENT_TEXT_BOX_FONT_STYLE As String = "Calibri"
+Public Const TRANSPARENT_TEXT_BOX_FONT_SIZE As Integer = 10
+Public Const TRANSPARENT_TEXT_BOX_FONT_COLOUR As Long = COLOUR_2
+Public Const TRANSPARENT_TEXT_BOX_FONT_BOLD As Boolean = True
+Public Const TRANSPARENT_TEXT_BOX_FONT_X_JUST As Integer = xlHAlignLeft
+Public Const TRANSPARENT_TEXT_BOX_FONT_Y_JUST As Integer = xlVAlignCenter
 
 ' ---------------------------------------------------------------
 ' Main Screen

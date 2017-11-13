@@ -11,8 +11,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,7 - Added DB Version Check
 ' v0,8 - Update any rogue usernames
 ' v0,9 - Added System Messages on start up
+' v0,10 - Added optional parameter to allow start up to page
 '---------------------------------------------------------------
-' Date - 06 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -23,7 +24,7 @@ Private Const StrMODULE As String = "ModStartUp"
 ' Initialise
 ' Creates the environment for system start up
 ' ---------------------------------------------------------------
-Public Function Initialise() As Boolean
+Public Function Initialise(Optional MenuItem As Integer) As Boolean
     Const StrPROCEDURE As String = "Initialise()"
     Dim UserName As String
     
@@ -84,7 +85,11 @@ Public Function Initialise() As Boolean
     If Not ModUIMenu.BuildMenu Then Err.Raise HANDLED_ERROR
     
     If [menuitemno] = "" Then
-        ModUIMenu.ProcessBtnPress (1)
+        If MenuItem = 0 Then
+            ModUIMenu.ProcessBtnPress (1)
+        Else
+            ModUIMenu.ProcessBtnPress (MenuItem)
+        End If
     Else
         ModUIMenu.ProcessBtnPress ([menuitemno])
     End If

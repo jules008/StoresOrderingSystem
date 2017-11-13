@@ -8,8 +8,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,4 - Removed Asset Import functionality to new Module
 ' v0,5 - Added System Message
 ' v0,6 - Seperated out Update Message procedure
+' v0,7 - Added Release Notes
 '---------------------------------------------------------------
-' Date - 07 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -224,61 +225,24 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v0,38" Then
-        MsgBox "Database needs to be upgraded to v0,38 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v0,39" Then
+        MsgBox "Database needs to be upgraded to v0,39 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "ALTER TABLE TblStation ADD COLUMN Division Text"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC01'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC02'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC03'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC04'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC05'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC06'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC07'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC08'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC09'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC10'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC11'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC12'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC13'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC14'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC15'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC16'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC17'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC18'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC19'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC20'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC21'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC22'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC23'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC24'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC25'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC26'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC27'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC28'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC29'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC30'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC31'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC32'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC33'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC34'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC35'"
-    DB.Execute "UPDATE TblStation SET Division = 'East' WHERE StationNo = 'EC36'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC37'"
-    DB.Execute "UPDATE TblStation SET Division = 'West' WHERE StationNo = 'EC38'"
-    DB.Execute "UPDATE TblStation SET Division = 'South' WHERE StationNo = 'EC39'"
+    DB.Execute "ALTER TABLE TblMessage ADD COLUMN ReleaseNotes memo"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v0,39"
+        .Fields(0) = "v1,391"
         .Update
     End With
     
     UpdateSysMsg
+    
+    MsgBox "Database successfully updated", vbOKOnly + vbInformation
     
     Set RstTable = Nothing
     Set TableDef = Nothing
@@ -301,13 +265,13 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblStation DROP COLUMN Division"
+    DB.Execute "ALTER TABLE TblMessage DROP COLUMN ReleaseNotes"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,38"
+        .Fields(0) = "v0,39"
         .Update
     End With
     
@@ -368,9 +332,27 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields(0) = "Version 1.151 - What's New" _
+        .Fields("SystemMessage") = "Version 1.151 - What's New" _
+                    & Chr(13) & "(See Release Notes on Support tab for further information)" _
+                    & Chr(13) & "" _
                     & Chr(13) & " - 'Return Req'd' added to Order Form " _
-                    & Chr(13) & " - 'Nil Return Report' Added to reports section "
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'Nil Return Report' Added to reports section " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'Release Notes added to Support Screen"
+        
+        .Fields("ReleaseNotes") = "Software Version 1.151" _
+                    & Chr(13) & "Database Version 1.391" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- 'Return Req'd' added to Order Form - New column has been added to the " _
+                    & "printed order form to indicate whether a return is required following delivery of the new item " _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- New 'Nil Return Report' added to the Reports section - This report " _
+                    & "is currently inaccurate as the 'Item Returned' flag is currently not used. Once returned items are logged " _
+                    & "on return to stores, the report will be more useable." _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- Release Notes Added - These notes will be added for each new release to add further information " _
+                    & "regarding the new release."
         .Update
     End With
     

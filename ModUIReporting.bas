@@ -6,7 +6,7 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,2 - Addded Report 2
 ' v0,3 - Removed hard numbering from buttons
 ' v0,4 - Add cost to Order Report
-' v0,5 - Added Report 3 
+' v0,5 - Added Report 3
 '---------------------------------------------------------------
 ' Date - 10 Nov 17
 '===============================================================
