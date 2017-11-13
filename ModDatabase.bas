@@ -343,13 +343,14 @@ Public Sub UpdateSysMsg()
         
         .Fields("ReleaseNotes") = "Software Version 1.151" _
                     & Chr(13) & "Database Version 1.391" _
+                    & Chr(13) & "Date 13 Nov 17" _
                     & Chr(13) & "" _
                     & Chr(13) & "- 'Return Req'd' added to Order Form - New column has been added to the " _
                     & "printed order form to indicate whether a return is required following delivery of the new item " _
                     & Chr(13) & "" _
-                    & Chr(13) & "- New 'Nil Return Report' added to the Reports section - This report " _
-                    & "is currently inaccurate as the 'Item Returned' flag is currently not used. Once returned items are logged " _
-                    & "on return to stores, the report will be more useable." _
+                    & Chr(13) & "- New 'Nil Return Report' added to the Reports section - This report will list all items that " _
+                    & "were not returned to stores following a delivery. For this report to be effective, returned items will " _
+                    & "need to be logged on return to stores" _
                     & Chr(13) & "" _
                     & Chr(13) & "- Release Notes Added - These notes will be added for each new release to add further information " _
                     & "regarding the new release."

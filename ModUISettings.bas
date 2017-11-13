@@ -113,7 +113,7 @@ Public Const SUPPORT_FRAME_1_LEFT As Integer = 175
 Public Const SUPPORT_FRAME_1_TOP As Integer = 10
 
 Public Const SUPPORT_FRAME_2_HEIGHT As Integer = 200
-Public Const SUPPORT_FRAME_2_WIDTH As Integer = 400
+Public Const SUPPORT_FRAME_2_WIDTH As Integer = 500
 Public Const SUPPORT_FRAME_2_LEFT As Integer = 395
 Public Const SUPPORT_FRAME_2_TOP As Integer = 10
 
@@ -122,10 +122,10 @@ Public Const COMMENT_BOX_WIDTH As Integer = 175
 Public Const COMMENT_BOX_LEFT As Integer = 10
 Public Const COMMENT_BOX_TOP As Integer = 35
 
-Public Const RELEASE_NOTES_HEIGHT As Integer = 150
-Public Const RELEASE_NOTES_WIDTH As Integer = 380
-Public Const RELEASE_NOTES_LEFT As Integer = 10
-Public Const RELEASE_NOTES_TOP As Integer = 35
+Public Const RELEASE_NOTES_HEIGHT As Integer = 175
+Public Const RELEASE_NOTES_WIDTH As Integer = 500
+Public Const RELEASE_NOTES_LEFT As Integer = 0
+Public Const RELEASE_NOTES_TOP As Integer = 25
 
 Public Const COMMENT_BTN_HEIGHT As Integer = 30
 Public Const COMMENT_BTN_WIDTH As Integer = 145

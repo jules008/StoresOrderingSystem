@@ -153,7 +153,7 @@ Public Function BuildSupportFrame2() As Boolean
             .Name = "Support 2 Header"
             .Text = "Latest Release Notes"
             .Style = HEADER_STYLE
-            .Icon = ShtMain.Shapes("TEMPLATE - Message").Duplicate
+            .Icon = ShtMain.Shapes("TEMPLATE - Icon_Document").Duplicate
             .Icon.Top = .Parent.Top + HEADER_ICON_TOP
             .Icon.Left = .Parent.Left + .Parent.Width - .Icon.Width - HEADER_ICON_RIGHT
             .Icon.Name = .Parent.Name & " Icon"
