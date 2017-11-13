@@ -10,7 +10,7 @@ Attribute VB_Name = "ModReports"
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
 '---------------------------------------------------------------
-' Date - 10 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -227,9 +227,9 @@ End Function
 ' SQL query for Report 3 returning results as recordset
 ' ---------------------------------------------------------------
 Public Function Report3Query() As Recordset
-    Dim RstQuery1 As Recordset
-    Dim RstQuery2 As Recordset
-    Dim RstQuery3 As Recordset
+    Dim StrSQL1 As String
+    Dim StrSQL2 As String
+    Dim StrSQL3 As String
     Dim RstQueryAll As Recordset
     Dim StrSelect As String
     Dim StrFrom As String
@@ -262,12 +262,8 @@ Public Function Report3Query() As Recordset
                     & "TblLineItem.ReturnReqd = YES AND " _
                     & "TblLineItem.itemsReturned = NO AND " _
                     & "TblAsset.AllocationType = 2 "
-    
-    StrOrderBy = "ORDER BY " _
-                    & "TblOrder.OrderDate, " _
-                    & "TblOrder.OrderNo "
-                
-    Set RstQuery1 = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
+                    
+    StrSQL1 = StrSelect & StrFrom & StrWhere & StrOrderBy
 
     'Create Query 2 for Vehicle allocation type
     '-------------------------------------------
@@ -294,12 +290,8 @@ Public Function Report3Query() As Recordset
                     & "TblAsset.AllocationType = 1 AND " _
                     & "TblOrder.OrderDate IS NOT NULL AND " _
                     & "TblStation.StationNo IS NOT NULL "
-                    
-    StrOrderBy = "ORDER BY " _
-                    & "TblOrder.OrderDate, " _
-                    & "TblOrder.OrderNo "
-                
-    Set RstQuery2 = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
+                                    
+    StrSQL2 = StrSelect & StrFrom & StrWhere & StrOrderBy
     
     'Create Query 3 for Person allocation type
     '-------------------------------------------
@@ -325,22 +317,18 @@ Public Function Report3Query() As Recordset
                     & "TblLineItem.itemsReturned = NO AND " _
                     & "TblAsset.AllocationType = 0 AND " _
                     & "TblOrder.OrderDate IS NOT NULL "
-                    
-    StrOrderBy = "ORDER BY " _
-                    & "TblOrder.OrderDate, " _
-                    & "TblOrder.OrderNo "
-                    
-    Set RstQuery3 = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
     
-    ' concatenate all three recordsets
-    '---------------------------------
-    Set RstQueryAll = ModLibrary.JoinRecordsets(RstQuery1, RstQuery2)
+    StrOrderBy = "ORDER BY " _
+                    & "[Order No]"
+                                            
+    StrSQL3 = StrSelect & StrFrom & StrWhere & StrOrderBy
+    
+    ' Run Query
+    '----------
+    Set RstQueryAll = SQLQuery(StrSQL1 & " UNION ALL " & StrSQL2 & " UNION ALL " & StrSQL3)
  
     Set Report3Query = RstQueryAll
 
-    Set RstQuery1 = Nothing
-    Set RstQuery2 = Nothing
-    Set RstQuery3 = Nothing
     Set RstQueryAll = Nothing
 Exit Function
 
@@ -348,9 +336,6 @@ ErrorExit:
 
 '    ***CleanUpCode***
     Set Report3Query = Nothing
-    Set RstQuery1 = Nothing
-    Set RstQuery2 = Nothing
-    Set RstQuery3 = Nothing
     Set RstQueryAll = Nothing
 Exit Function
 
