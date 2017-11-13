@@ -10,9 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsUIShpDashObj
 ' v0,0 - Initial Version
-' v0,1 - Add style property
+' v0,1 - Added Style property
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 13 Nov 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -27,11 +27,11 @@ Private pHeight As Integer
 Private pWidth As Integer
 Private pName As String
 Private pText As String
-Private pStyle As TypeStyle
 Private pLocked As Boolean
 Private pShpDashObj As Shape
 Private pEnumObjType As EnumObjType
 Private pVisible As Boolean
+Private pStyle As TypeStyle
 Private pParent As Long
 
 
@@ -96,39 +96,6 @@ Public Property Let Text(ByVal VnewValue As String)
     pShpDashObj.TextFrame.Characters.Text = pText
 End Property
 
-Public Property Let Style(vNewValue As TypeStyle)
-    pStyle = vNewValue
-    
-    With pShpDashObj.Fill
-        .TwoColorGradient msoGradientHorizontal, 1
-        .ForeColor.RGB = vNewValue.Fill1
-        .BackColor.RGB = vNewValue.Fill2
-    End With
-    
-    With pShpDashObj.Line
-        .ForeColor.RGB = vNewValue.BorderColour
-        .Weight = vNewValue.BorderWidth
-        If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
-    End With
-    
-    With pShpDashObj.TextFrame
-        .Characters.Font.Bold = vNewValue.FontBold
-        .Characters.Font.Name = vNewValue.FontStyle
-        .Characters.Font.Color = vNewValue.FontColour
-        .Characters.Font.Size = vNewValue.FontSize
-        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
-    End With
-    
-    With pShpDashObj.Shadow
-        If vNewValue.Shadow = 0 Then
-            .Visible = msoFalse
-        Else
-            .Type = vNewValue.Shadow
-            .Visible = msoCTrue
-        End If
-    End With
-End Property
-
 '---------------------------------------------------------------
 Public Property Get Locked() As Boolean
     pLocked = pShpDashObj.ControlFormat.LockedText = Locked
@@ -167,6 +134,44 @@ End Property
 
 Public Property Let EnumObjType(ByVal VnewValue As EnumObjType)
     pEnumObjType = VnewValue
+End Property
+
+'---------------------------------------------------------------
+Public Property Get Style() As TypeStyle
+    Style = pStyle
+End Property
+
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
+    
+    With pShpDashObj.Fill
+        .TwoColorGradient msoGradientHorizontal, 1
+        .ForeColor.RGB = vNewValue.Fill1
+        .BackColor.RGB = vNewValue.Fill2
+    End With
+    
+    With pShpDashObj.Line
+        .ForeColor.RGB = vNewValue.BorderColour
+        .Weight = vNewValue.BorderWidth
+        If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
+    End With
+    
+    With pShpDashObj.TextFrame
+        .Characters.Font.Bold = vNewValue.FontBold
+        .Characters.Font.Name = vNewValue.FontStyle
+        .Characters.Font.Color = vNewValue.FontColour
+        .Characters.Font.Size = vNewValue.FontSize
+        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
+    End With
+    
+    With pShpDashObj.Shadow
+        If vNewValue.Shadow = 0 Then
+            .Visible = msoFalse
+        Else
+            .Type = vNewValue.Shadow
+            .Visible = msoCTrue
+        End If
+    End With
 End Property
 
 '---------------------------------------------------------------

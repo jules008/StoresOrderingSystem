@@ -8,8 +8,9 @@ Attribute VB_Name = "ModReports"
 ' v0,4 - Prevent deleted line items being included in Order Report
 ' v0,5 - Exclude Orders with Null or 0 Order No in Report 1
 ' v0,6 - Add cost to Order Report
+' v0,7 - Added query for Report 3
 '---------------------------------------------------------------
-' Date - 04 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -220,5 +221,131 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' Report3Query
+' SQL query for Report 3 returning results as recordset
+' ---------------------------------------------------------------
+Public Function Report3Query() As Recordset
+    Dim StrSQL1 As String
+    Dim StrSQL2 As String
+    Dim StrSQL3 As String
+    Dim RstQueryAll As Recordset
+    Dim StrSelect As String
+    Dim StrFrom As String
+    Dim StrWhere As String
+    Dim StrOrderBy As String
+    
+    Const StrPROCEDURE As String = "Report3Query()"
+
+    On Error GoTo ErrorHandler
+
+    'Create Query 1 for Station allocation type
+    '-------------------------------------------
+    StrSelect = "SELECT " _
+                    & "TblOrder.OrderNo AS [Order No], " _
+                    & "TblOrder.OrderDate AS [Date], " _
+                    & "TblAsset.Description, " _
+                    & "TblLineItem.Quantity, " _
+                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblStation.StationNo AS [Station No], " _
+                    & "TblStation.Name AS [Station Name], " _
+                    & "TblStation.Division "
+                    
+    StrFrom = "FROM " _
+                    & "((TblLineItem " _
+                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                    & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID "
+    
+    StrWhere = "WHERE " _
+                    & "TblLineItem.ReturnReqd = YES AND " _
+                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblAsset.AllocationType = 2 "
+                    
+    StrSQL1 = StrSelect & StrFrom & StrWhere & StrOrderBy
+
+    'Create Query 2 for Vehicle allocation type
+    '-------------------------------------------
+    StrSelect = "SELECT " _
+                    & "TblOrder.OrderNo AS [Order No], " _
+                    & "TblOrder.OrderDate AS [Date], " _
+                    & "TblAsset.Description, " _
+                    & "TblLineItem.Quantity, " _
+                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblStation.StationNo AS [Station No], " _
+                    & "TblStation.Name AS [Station Name], " _
+                    & "TblStation.Division "
+                    
+    StrFrom = "FROM " _
+                    & "(((TblLineItem " _
+                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                    & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
+                    & "LEFT JOIN TblStation ON TblVehicle.StationID = TblStation.StationID "
+                     
+    StrWhere = "WHERE " _
+                    & "TblLineItem.ReturnReqd = YES AND " _
+                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblAsset.AllocationType = 1 AND " _
+                    & "TblOrder.OrderDate IS NOT NULL AND " _
+                    & "TblStation.StationNo IS NOT NULL "
+                                    
+    StrSQL2 = StrSelect & StrFrom & StrWhere & StrOrderBy
+    
+    'Create Query 3 for Person allocation type
+    '-------------------------------------------
+    StrSelect = "SELECT " _
+                    & "TblOrder.OrderNo AS [Order No], " _
+                    & "TblOrder.OrderDate AS [Date], " _
+                    & "TblAsset.Description, " _
+                    & "TblLineItem.Quantity, " _
+                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblStation.StationNo AS [Station No], " _
+                    & "TblStation.Name AS [Station Name], " _
+                    & "TblStation.Division "
+                    
+    StrFrom = "FROM " _
+                    & "(((TblLineItem " _
+                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                    & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
+                    & "LEFT JOIN TblStation ON TblPerson.StationID = TblStation.StationID "
+                    
+    StrWhere = "WHERE " _
+                    & "TblLineItem.ReturnReqd = YES AND " _
+                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblAsset.AllocationType = 0 AND " _
+                    & "TblOrder.OrderDate IS NOT NULL "
+    
+    StrOrderBy = "ORDER BY " _
+                    & "[Order No]"
+                                            
+    StrSQL3 = StrSelect & StrFrom & StrWhere & StrOrderBy
+    
+    ' Run Query
+    '----------
+    Set RstQueryAll = SQLQuery(StrSQL1 & " UNION ALL " & StrSQL2 & " UNION ALL " & StrSQL3)
+ 
+    Set Report3Query = RstQueryAll
+
+    Set RstQueryAll = Nothing
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set Report3Query = Nothing
+    Set RstQueryAll = Nothing
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
 
 

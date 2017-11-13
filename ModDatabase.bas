@@ -7,8 +7,10 @@ Attribute VB_Name = "ModDatabase"
 ' v0,33 - Asset Import functionality
 ' v0,4 - Removed Asset Import functionality to new Module
 ' v0,5 - Added System Message
+' v0,6 - Seperated out Update Message procedure
+' v0,7 - Added Release Notes
 '---------------------------------------------------------------
-' Date - 06 Nov 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -214,7 +216,6 @@ Public Sub UpdateDBScript()
     Dim TableDef As DAO.TableDef
     Dim Ind As DAO.Index
     Dim RstTable As Recordset
-    Dim RstMessage As Recordset
     Dim i As Integer
     
     Dim Fld As DAO.Field
@@ -224,48 +225,31 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v0,37" Then
-        MsgBox "Database needs to be upgraded to v0,37 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v0,39" Then
+        MsgBox "Database needs to be upgraded to v0,39 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "ALTER TABLE TblPerson ADD COLUMN MessageRead YesNo"
-    DB.Execute "CREATE TABLE TblMessage"
-    DB.Execute "ALTER TABLE TblMessage ADD COLUMN SystemMessage Text"
+    DB.Execute "ALTER TABLE TblMessage ADD COLUMN ReleaseNotes memo"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v0,38"
+        .Fields(0) = "v1,391"
         .Update
     End With
     
-    Set RstMessage = SQLQuery("TblMessage")
+    UpdateSysMsg
     
-    'update System Message?
-    With RstMessage
-        If .RecordCount = 0 Then
-            .AddNew
-        Else
-            .Edit
-        End If
-        
-        .Fields(0) = "Version 1.15 - What's New" _
-                    & Chr(13) & " Old Assets can now be hidden " _
-                    & Chr(13) & " Nice new message box! "
-        .Update
-    End With
-    
-    'reset read flags
-    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
+    MsgBox "Database successfully updated", vbOKOnly + vbInformation
     
     Set RstTable = Nothing
     Set TableDef = Nothing
-    Set RstMessage = Nothing
     Set Fld = Nothing
     
 End Sub
+        
         
 ' ===============================================================
 ' UpdateDBScriptUndo
@@ -281,14 +265,13 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblPerson DROP COLUMN MessageRead"
-    DB.Execute "DROP TABLE TblMessage"
+    DB.Execute "ALTER TABLE TblMessage DROP COLUMN ReleaseNotes"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,37"
+        .Fields(0) = "v0,39"
         .Update
     End With
     
@@ -333,3 +316,50 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' UpdateSysMsg
+' Updates the system message and resets read flags
+' ---------------------------------------------------------------
+Public Sub UpdateSysMsg()
+    Dim RstMessage As Recordset
+    
+    Set RstMessage = SQLQuery("TblMessage")
+    
+    With RstMessage
+        If .RecordCount = 0 Then
+            .AddNew
+        Else
+            .Edit
+        End If
+        
+        .Fields("SystemMessage") = "Version 1.151 - What's New" _
+                    & Chr(13) & "(See Release Notes on Support tab for further information)" _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'Return Req'd' added to Order Form " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'Nil Return Report' Added to reports section " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'Release Notes added to Support Screen"
+        
+        .Fields("ReleaseNotes") = "Software Version 1.151" _
+                    & Chr(13) & "Database Version 1.391" _
+                    & Chr(13) & "Date 13 Nov 17" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- 'Return Req'd' added to Order Form - New column has been added to the " _
+                    & "printed order form to indicate whether a return is required following delivery of the new item " _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- New 'Nil Return Report' added to the Reports section - This report will list all items that " _
+                    & "were not returned to stores following a delivery. For this report to be effective, returned items will " _
+                    & "need to be logged on return to stores" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- Release Notes Added - These notes will be added for each new release to add further information " _
+                    & "regarding the new release."
+        .Update
+    End With
+    
+    'reset read flags
+    DB.Execute "UPDATE TblPerson SET MessageRead = False WHERE MessageRead = True"
+    
+    Set RstMessage = Nothing
+
+End Sub

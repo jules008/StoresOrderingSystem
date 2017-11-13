@@ -9,9 +9,9 @@ Attribute VB_Name = "ModUIMainScreen"
 ' v0,5 - Refresh both order panels of order delete
 ' v0,6 - Moved ResetScreen to main Menu procedure
 ' v0,7 - Removed hard numbering from buttons
-' v0,8 - Added generic label style
+' v0,8 - Added Release Notes Frame
 '---------------------------------------------------------------
-' Date - 10 Oct 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -137,20 +137,20 @@ Public Function BuildStylesMainScreen() As Boolean
         .FontYJust = GENERIC_LINEITEM_HEADER_FONT_Y_JUST
     End With
     
-    With GENERIC_LABEL
-        .BorderWidth = GENERIC_LABEL_BORDER_WIDTH
-        .Fill1 = GENERIC_LABEL_FILL_1
-        .Fill2 = GENERIC_LABEL_FILL_2
-        .Shadow = GENERIC_LABEL_SHADOW
-        .FontStyle = GENERIC_LABEL_FONT_STYLE
-        .FontSize = GENERIC_LABEL_FONT_SIZE
-        .FontBold = GENERIC_LABEL_FONT_BOLD
-        .FontColour = GENERIC_LABEL_FONT_COLOUR
-        .FontXJust = GENERIC_LABEL_FONT_X_JUST
-        .FontYJust = GENERIC_LABEL_FONT_Y_JUST
+    With TRANSPARENT_TEXT_BOX
+        .BorderWidth = TRANSPARENT_TEXT_BOX_BORDER_WIDTH
+        .Fill1 = TRANSPARENT_TEXT_BOX_FILL_1
+        .Fill2 = TRANSPARENT_TEXT_BOX_FILL_2
+        .Shadow = TRANSPARENT_TEXT_BOX_SHADOW
+        .FontStyle = TRANSPARENT_TEXT_BOX_FONT_STYLE
+        .FontSize = TRANSPARENT_TEXT_BOX_FONT_SIZE
+        .FontBold = TRANSPARENT_TEXT_BOX_FONT_BOLD
+        .FontColour = TRANSPARENT_TEXT_BOX_FONT_COLOUR
+        .FontXJust = TRANSPARENT_TEXT_BOX_FONT_X_JUST
+        .FontYJust = TRANSPARENT_TEXT_BOX_FONT_Y_JUST
     End With
     
-    
+
     BuildStylesMainScreen = True
 
 Exit Function

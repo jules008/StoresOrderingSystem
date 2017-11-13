@@ -14,9 +14,10 @@ Attribute VB_Name = "ModUISettings"
 ' v0,10 - Added Order Age Column
 ' v0,11 - Added FindOrder Button
 ' v0,12 - Change Delivery button to Supplier
-' v0,13 - Added My Profile screen
+' v0,13 - Added Report 3 button
+' v0,14 - Added Release notes frame and text box style
 '---------------------------------------------------------------
-' Date - 18 Oct 17
+' Date - 13 Nov 17
 '===============================================================
 
 Option Explicit
@@ -107,87 +108,29 @@ Public Const BTN_NEWORDER_HEIGHT As Integer = 75
 ' Support Screen
 ' ---------------------------------------------------------------
 Public Const SUPPORT_FRAME_1_HEIGHT As Integer = 200
-Public Const SUPPORT_FRAME_1_WIDTH As Integer = 370
+Public Const SUPPORT_FRAME_1_WIDTH As Integer = 200
 Public Const SUPPORT_FRAME_1_LEFT As Integer = 175
 Public Const SUPPORT_FRAME_1_TOP As Integer = 10
+
+Public Const SUPPORT_FRAME_2_HEIGHT As Integer = 200
+Public Const SUPPORT_FRAME_2_WIDTH As Integer = 500
+Public Const SUPPORT_FRAME_2_LEFT As Integer = 395
+Public Const SUPPORT_FRAME_2_TOP As Integer = 10
 
 Public Const COMMENT_BOX_HEIGHT As Integer = 100
 Public Const COMMENT_BOX_WIDTH As Integer = 175
 Public Const COMMENT_BOX_LEFT As Integer = 10
 Public Const COMMENT_BOX_TOP As Integer = 35
 
+Public Const RELEASE_NOTES_HEIGHT As Integer = 175
+Public Const RELEASE_NOTES_WIDTH As Integer = 500
+Public Const RELEASE_NOTES_LEFT As Integer = 0
+Public Const RELEASE_NOTES_TOP As Integer = 25
+
 Public Const COMMENT_BTN_HEIGHT As Integer = 30
 Public Const COMMENT_BTN_WIDTH As Integer = 145
 Public Const COMMENT_BTN_LEFT As Integer = 25
 Public Const COMMENT_BTN_TOP As Integer = 150
-
-' ---------------------------------------------------------------
-' My Profile Screen
-' ---------------------------------------------------------------
-Public Const MY_PROFILE_1_HEIGHT As Integer = 245
-Public Const MY_PROFILE_1_WIDTH As Integer = 440
-Public Const MY_PROFILE_1_LEFT As Integer = 175
-Public Const MY_PROFILE_1_TOP As Integer = 10
-
-Public Const MY_PROFILE_TEXTBOX_HEIGHT As Integer = 20
-Public Const MY_PROFILE_TEXTBOX_WIDTH As Integer = 120
-
-Public Const MY_PROFILE_LABEL_HEIGHT As Integer = 20
-Public Const MY_PROFILE_LABEL_WIDTH As Integer = 75
-
-Public Const MY_PROFILE_BUTTON_HEIGHT As Integer = 25
-Public Const MY_PROFILE_BUTTON_WIDTH As Integer = 100
-
-Public Const MY_PROFILE_LBLCREWNO_LEFT As Integer = 10
-Public Const MY_PROFILE_LBLCREWNO_TOP As Integer = 40
-
-Public Const MY_PROFILE_TXTCREWNO_LEFT As Integer = 85
-Public Const MY_PROFILE_TXTCREWNO_TOP As Integer = 40
-
-Public Const MY_PROFILE_LBLRANKGRADE_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLRANKGRADE_TOP As Integer = 40
-
-Public Const MY_PROFILE_TXTRANKGRADE_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTRANKGRADE_TOP As Integer = 40
-
-Public Const MY_PROFILE_LBLFORENAME_LEFT As Integer = 10
-Public Const MY_PROFILE_LBLFORENAME_TOP As Integer = 80
-
-Public Const MY_PROFILE_TXTFORENAME_LEFT As Integer = 85
-Public Const MY_PROFILE_TXTFORENAME_TOP As Integer = 80
-
-Public Const MY_PROFILE_LBLSURNAME_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLSURNAME_TOP As Integer = 80
-
-Public Const MY_PROFILE_TXTSURNAME_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTSURNAME_TOP As Integer = 80
-
-Public Const MY_PROFILE_LBLROLE_LEFT As Integer = 10
-Public Const MY_PROFILE_LBLROLE_TOP As Integer = 120
-
-Public Const MY_PROFILE_TXTROLE_LEFT As Integer = 85
-Public Const MY_PROFILE_TXTROLE_TOP As Integer = 120
-
-Public Const MY_PROFILE_LBLACCESSLVL_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLACCESSLVL_TOP As Integer = 120
-
-Public Const MY_PROFILE_TXTACCESSLVL_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTACCESSLVL_TOP As Integer = 120
-
-Public Const MY_PROFILE_LBLLOCATION_LEFT As Integer = 10
-Public Const MY_PROFILE_LBLLOCATION_TOP As Integer = 160
-
-Public Const MY_PROFILE_CMOLOCATION_LEFT As Integer = 85
-Public Const MY_PROFILE_CMOLOCATION_TOP As Integer = 160
-
-Public Const MY_PROFILE_LBLWATCH_LEFT As Integer = 225
-Public Const MY_PROFILE_LBLWATCH_TOP As Integer = 160
-
-Public Const MY_PROFILE_TXTWATCH_LEFT As Integer = 300
-Public Const MY_PROFILE_TXTWATCH_TOP As Integer = 160
-
-Public Const MY_PROFILE_BTNUPDATE_LEFT As Integer = 320
-Public Const MY_PROFILE_BTNUPDATE_TOP As Integer = 200
 
 
 ' ---------------------------------------------------------------
@@ -250,6 +193,11 @@ Public Const BTN_REPORT_2_WIDTH As Integer = 175
 Public Const BTN_REPORT_2_LEFT As Integer = 365
 Public Const BTN_REPORT_2_TOP As Integer = 30
 
+Public Const BTN_REPORT_3_HEIGHT As Integer = 30
+Public Const BTN_REPORT_3_WIDTH As Integer = 175
+Public Const BTN_REPORT_3_LEFT As Integer = 550
+Public Const BTN_REPORT_3_TOP As Integer = 30
+
 ' ===============================================================
 ' Style Declarations
 ' ---------------------------------------------------------------
@@ -265,7 +213,7 @@ Public BTN_NEWORDER_STYLE As TypeStyle
 Public GENERIC_BUTTON As TypeStyle
 Public GENERIC_LINEITEM As TypeStyle
 Public GENERIC_LINEITEM_HEADER As TypeStyle
-Public GENERIC_LABEL As TypeStyle
+Public TRANSPARENT_TEXT_BOX As TypeStyle
 
 ' ---------------------------------------------------------------
 ' New Order Workflow
@@ -310,16 +258,16 @@ Public Const GENERIC_LINEITEM_HEADER_FONT_BOLD As Boolean = True
 Public Const GENERIC_LINEITEM_HEADER_FONT_X_JUST As Integer = xlHAlignCenter
 Public Const GENERIC_LINEITEM_HEADER_FONT_Y_JUST As Integer = xlVAlignCenter
 
-Public Const GENERIC_LABEL_BORDER_WIDTH As Long = 0
-Public Const GENERIC_LABEL_FILL_1 As Long = COLOUR_3
-Public Const GENERIC_LABEL_FILL_2 As Long = COLOUR_3
-Public Const GENERIC_LABEL_SHADOW As Long = 0
-Public Const GENERIC_LABEL_FONT_STYLE As String = "Eras Medium ITC"
-Public Const GENERIC_LABEL_FONT_SIZE As Integer = 10
-Public Const GENERIC_LABEL_FONT_COLOUR As Long = COLOUR_1
-Public Const GENERIC_LABEL_FONT_BOLD As Boolean = False
-Public Const GENERIC_LABEL_FONT_X_JUST As Integer = xlHAlignLeft
-Public Const GENERIC_LABEL_FONT_Y_JUST As Integer = xlVAlignCenter
+Public Const TRANSPARENT_TEXT_BOX_BORDER_WIDTH As Long = 0
+Public Const TRANSPARENT_TEXT_BOX_FILL_1 As Long = COLOUR_3
+Public Const TRANSPARENT_TEXT_BOX_FILL_2 As Long = COLOUR_3
+Public Const TRANSPARENT_TEXT_BOX_SHADOW As Long = 0
+Public Const TRANSPARENT_TEXT_BOX_FONT_STYLE As String = "Calibri"
+Public Const TRANSPARENT_TEXT_BOX_FONT_SIZE As Integer = 10
+Public Const TRANSPARENT_TEXT_BOX_FONT_COLOUR As Long = COLOUR_2
+Public Const TRANSPARENT_TEXT_BOX_FONT_BOLD As Boolean = True
+Public Const TRANSPARENT_TEXT_BOX_FONT_X_JUST As Integer = xlHAlignLeft
+Public Const TRANSPARENT_TEXT_BOX_FONT_Y_JUST As Integer = xlVAlignCenter
 
 ' ---------------------------------------------------------------
 ' Main Screen

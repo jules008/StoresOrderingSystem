@@ -12,8 +12,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,8 - Sort Order list by location
 ' v0,9 - Printer issue fix
 ' v0,10 - Added Order Date to Order Form.  Removed PDF Print
+' v0,11 - Added Return Required flag to Order List Printout
 '---------------------------------------------------------------
-' Date - 27 Sep 17
+' Date - 07 Nov 17
 '===============================================================
 
 Option Explicit
@@ -176,6 +177,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Dim RngItemsRefPnt As Range
     Dim RngOrders As Range
     Dim RngDate As Range
+    Dim RngReturn As Range
     Dim VehReg As String
     Dim StationName As String
     Dim StationID As String
@@ -194,6 +196,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Set RngOrderNo = ShtOrderList.Range("C3")
     Set RngReqBy = ShtOrderList.Range("H3")
     Set RngStation = ShtOrderList.Range("J3")
+    Set RngReturn = ShtOrderList.Range("K3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
     Set RngOrders = ShtOrderList.Range("B6:J39")
     Set RngDate = ShtOrderList.Range("E3")
@@ -234,6 +237,8 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
             RngItemsRefPnt.Offset(i, 6) = .LineItems(i + 1).Asset.Size2
             RngItemsRefPnt.Offset(i, 7) = .LineItems(i + 1).Asset.Location
             RngItemsRefPnt.Offset(i, 8) = DeliveryTo
+            
+            If .LineItems(i + 1).ReturnReqd Then RngItemsRefPnt.Offset(i, 9) = "Yes"
         Next
     End With
     
@@ -261,6 +266,7 @@ GracefulExit:
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
     Set RngDate = Nothing
+    Set RngReturn = Nothing
     
 Exit Function
 
@@ -272,6 +278,7 @@ ErrorExit:
     Set RngItemsRefPnt = Nothing
     Set Lineitem = Nothing
     Set RngDate = Nothing
+    Set RngReturn = Nothing
     
     ModLibrary.PerfSettingsOff
 
