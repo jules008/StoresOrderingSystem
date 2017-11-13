@@ -19,9 +19,10 @@ Attribute VB_Name = "ModGlobals"
 ' v0,14 - Added FindOrder Button
 ' v0,15 - Change Delivery button to Supplier
 ' v0,16 - Added Generic Error code
-' v0,17 - Add new station Ops Support
-' v0,18 - Added Report 3 button
-' v0,19 - Added Release Notes frame
+' v0,17 - Added My Profile Frame
+' v0,18 - Add new station Ops Support
+' v0,19 - Added Report 3 button
+' v0,20 - Added Release Notes frame
 '---------------------------------------------------------------
 ' Date - 13 Nov 17
 '===============================================================
@@ -130,7 +131,11 @@ Public BtnFindOrder As ClsUIMenuItem
 ' ---------------------------------------------------------------
 Public BtnReport1 As ClsUIMenuItem
 Public BtnReport2 As ClsUIMenuItem
-Public BtnReport3 As ClsUIMenuItem
+
+' ---------------------------------------------------------------
+' My Profile Screen
+' ---------------------------------------------------------------
+Public MyProfileFrame1 As ClsUIFrame
 
 ' ---------------------------------------------------------------
 ' Others
