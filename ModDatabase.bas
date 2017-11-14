@@ -9,6 +9,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,5 - Added System Message
 ' v0,6 - Seperated out Update Message procedure
 ' v0,7 - Added Release Notes
+' v0,8 - Show logged on users
 '---------------------------------------------------------------
 ' Date - 14 Nov 17
 '===============================================================
@@ -232,8 +233,13 @@ Public Sub UpdateDBScript()
     
     'Table changes
     DB.Execute "CREATE TABLE TblUsers"
+    DB.Execute "CREATE TABLE TblReports"
     DB.Execute "ALTER TABLE TblUsers ADD COLUMN CurrentUsers Text"
     DB.Execute "ALTER TABLE TblUsers ADD COLUMN LoggedOn date"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
+    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '14 Nov 17', 7)"
     
     'update DB Version
     With RstTable
@@ -268,6 +274,7 @@ Public Sub UpdateDBScriptUndo()
     DBConnect
                     
     DB.Execute "DROP TABLE TblUsers"
+    DB.Execute "DROP TABLE TblReports"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
@@ -339,9 +346,20 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version 1.152 - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - 'Return Req'd' added to Order Form " _
+                    & Chr(13) & " - Weekly CFS Stock email " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Some Boring System Changes " _
         
-        .Fields("ReleaseNotes") = "Software Version 1.151" _
+        .Fields("ReleaseNotes") = "Software Version 1.152" _
+                    & Chr(13) & "Database Version 1.392" _
+                    & Chr(13) & "Date 14 Nov 17" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a stock status email " _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- System now logs who is currently logged on to the system" _
+                    & Chr(13) & "_________________________________________________________________________________________________" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "Software Version 1.151" _
                     & Chr(13) & "Database Version 1.391" _
                     & Chr(13) & "Date 13 Nov 17" _
                     & Chr(13) & "" _
@@ -362,4 +380,24 @@ Public Sub UpdateSysMsg()
     
     Set RstMessage = Nothing
 
+End Sub
+
+' ===============================================================
+' ShowUsers
+' Show users logged onto system
+' ---------------------------------------------------------------
+Public Sub ShowUsers()
+    Dim RstUsers As Recordset
+    
+    Set RstUsers = SQLQuery("TblUsers")
+    
+    With RstUsers
+        Debug.Print
+        Do While Not .EOF
+            Debug.Print "User: " & .Fields(0) & " - Logged on: " & .Fields(1)
+            .MoveNext
+        Loop
+    End With
+    
+    Set RstUsers = Nothing
 End Sub

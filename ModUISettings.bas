@@ -17,7 +17,7 @@ Attribute VB_Name = "ModUISettings"
 ' v0,13 - Added Report 3 button
 ' v0,14 - Added Release notes frame and text box style
 '---------------------------------------------------------------
-' Date - 13 Nov 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
@@ -114,7 +114,7 @@ Public Const SUPPORT_FRAME_1_TOP As Integer = 10
 
 Public Const SUPPORT_FRAME_2_HEIGHT As Integer = 200
 Public Const SUPPORT_FRAME_2_WIDTH As Integer = 500
-Public Const SUPPORT_FRAME_2_LEFT As Integer = 395
+Public Const SUPPORT_FRAME_2_LEFT As Integer = 400
 Public Const SUPPORT_FRAME_2_TOP As Integer = 10
 
 Public Const COMMENT_BOX_HEIGHT As Integer = 100
@@ -122,7 +122,7 @@ Public Const COMMENT_BOX_WIDTH As Integer = 175
 Public Const COMMENT_BOX_LEFT As Integer = 10
 Public Const COMMENT_BOX_TOP As Integer = 35
 
-Public Const RELEASE_NOTES_HEIGHT As Integer = 175
+Public Const RELEASE_NOTES_HEIGHT As Integer = 375
 Public Const RELEASE_NOTES_WIDTH As Integer = 500
 Public Const RELEASE_NOTES_LEFT As Integer = 0
 Public Const RELEASE_NOTES_TOP As Integer = 25

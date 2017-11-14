@@ -13,7 +13,7 @@ Attribute VB_Exposed = False
 ' v0,1 - Changes to Username functionality
 ' v0,2 - Make Username read/write
 ' v0,3 - Added Message Read Flag
-' v0,4 - Log on and Log Off from DB
+' v0,41 - Log on and Log Off from DB
 '---------------------------------------------------------------
 ' Date - 14 Nov 17
 '===============================================================
@@ -311,10 +311,15 @@ End Sub
 ' Adds the user to the logged on table in DB
 ' ---------------------------------------------------------------
 Public Sub LogOn()
+    Dim RstUser As Recordset
     
     On Error GoTo ErrorHandler
     
-    DB.Execute "INSERT INTO TblUsers VALUES ('" & pUsername & "', '" & Now & "')"
+    Set RstUser = SQLQuery("TblUsers")
+    
+    If RstUser.RecordCount = 0 Then
+        DB.Execute "INSERT INTO TblUsers VALUES ('" & pUsername & "', '" & Now & "')"
+    End If
 Exit Sub
 
 ErrorHandler:

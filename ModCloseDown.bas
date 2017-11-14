@@ -3,7 +3,7 @@ Attribute VB_Name = "ModCloseDown"
 ' Module ModCloseDown
 ' v0,0 - Initial Version
 ' v0,1 - Delete menu item no on close down
-' v0,2 - Made Terminate a function and added Log Off 
+' v0,2 - Made Terminate a function and added Log Off
 '---------------------------------------------------------------
 ' Date - 14 Nov 17
 '===============================================================

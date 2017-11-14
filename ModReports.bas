@@ -9,8 +9,9 @@ Attribute VB_Name = "ModReports"
 ' v0,5 - Exclude Orders with Null or 0 Order No in Report 1
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
+' v0,8 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 13 Nov 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
@@ -347,5 +348,79 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 
+' ===============================================================
+' ScheduleReports
+' Schedules automatic email reports
+' ---------------------------------------------------------------
+Public Function ScheduleReports() As Boolean
+    Dim RstDueReports As Recordset
+    
+    Const StrPROCEDURE As String = "ScheduleReports()"
 
+    On Error GoTo ErrorHandler
+
+    Set RstDueReports = SQLQuery("SELECT * FROM TblReports WHERE DueDate <= NOW()")
+
+    With RstDueReports
+        If .RecordCount > 0 Then
+            Debug.Print "Run Report " & RstDueReports.Fields(0)
+        End If
+    End With
+    
+    Set RstDueReports = Nothing
+    
+    ScheduleReports = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set RstDueReports = Nothing
+    
+    ScheduleReports = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' GenerateEmailReports
+' Generates the automatic email reports
+' ---------------------------------------------------------------
+Private Function GenerateEmailReports(ReportType As String) As Boolean
+    Dim StrReport As String
+    
+    Const StrPROCEDURE As String = "GenerateEmailReports()"
+
+    On Error GoTo ErrorHandler
+
+
+
+
+
+    GenerateEmailReports = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    GenerateEmailReports = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
