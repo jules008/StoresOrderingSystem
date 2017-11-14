@@ -12,8 +12,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,8 - Update any rogue usernames
 ' v0,9 - Added System Messages on start up
 ' v0,10 - Added optional parameter to allow start up to page
+' v0,11 - Log On user in DB
 '---------------------------------------------------------------
-' Date - 13 Nov 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
@@ -74,6 +75,7 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
     Application.StatusBar = "Finding User....."
     'get username of current user
     If Not ModStartUp.GetUserName Then Err.Raise HANDLED_ERROR
+    CurrentUser.LogOn
     
     Application.StatusBar = "Buidling UI....."
     
