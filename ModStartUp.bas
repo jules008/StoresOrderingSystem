@@ -13,8 +13,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,9 - Added System Messages on start up
 ' v0,10 - Added optional parameter to allow start up to page
 ' v0,11 - Log On user in DB
+' v0,12 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 16 Nov 17
 '===============================================================
 
 Option Explicit
@@ -98,7 +99,10 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
         
     'Show any messages
     If Not MessageCheck Then Err.Raise HANDLED_ERROR
-        
+    
+    'check for email reports to send
+    If Not ScheduleReports Then Err.Raise HANDLED_ERROR
+    
     ActiveSheet.Range("A1").Select
 
     ShtMain.Protect

@@ -11,7 +11,7 @@ Attribute VB_Name = "ModReports"
 ' v0,7 - Added query for Report 3
 ' v0,8 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 16 Nov 17
 '===============================================================
 
 Option Explicit
@@ -354,6 +354,9 @@ End Function
 ' ---------------------------------------------------------------
 Public Function ScheduleReports() As Boolean
     Dim RstDueReports As Recordset
+    Dim RstReportData As Recordset
+    
+    Dim ReportType As String
     
     Const StrPROCEDURE As String = "ScheduleReports()"
 
@@ -363,11 +366,30 @@ Public Function ScheduleReports() As Boolean
 
     With RstDueReports
         If .RecordCount > 0 Then
-            Debug.Print "Run Report " & RstDueReports.Fields(0)
+            
+            ReportType = !ReportName
+            
+            Select Case ReportType
+                Case Is = "CFS Status"
+                    
+                    Debug.Print "Run Report " & ReportType
+                    
+                    ' Send CFS Report
+                    Set RstReportData = CFS_emailQuery
+                    If RstReportData Is Nothing Then Err.Raise HANDLED_ERROR
+                    If Not GenerateEmailReports("CFS Status", RstReportData) Then Err.Raise HANDLED_ERROR
+                    
+                    'Reset due date
+                    .Edit
+                    !DueDate = !DueDate + !Frequency
+                    .Update
+            End Select
+            
         End If
     End With
     
     Set RstDueReports = Nothing
+    Set RstReportData = Nothing
     
     ScheduleReports = True
 
@@ -377,8 +399,60 @@ ErrorExit:
 
 '    ***CleanUpCode***
     Set RstDueReports = Nothing
+    Set RstReportData = Nothing
     
     ScheduleReports = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' CFS_emailQuery
+' Gets data for CFS Stock List
+' ---------------------------------------------------------------
+Private Function CFS_emailQuery() As Recordset
+    Dim StrSelect As String
+    Dim StrFrom As String
+    Dim StrWhere As String
+    Dim StrOrderBy As String
+    Dim RstCFSStock As Recordset
+    
+    Const StrPROCEDURE As String = "CFS_emailQuery()"
+
+    On Error GoTo ErrorHandler
+    
+    StrSelect = "SELECT " _
+                    & "TblAsset.Size1 & ' ' & TblAsset.Description AS [CFS Item], " _
+                    & "TblAsset.QtyInStock, " _
+                    & "TblAsset.MinAmount, " _
+                    & "TblAsset.MaxAmount, " _
+                    & "TblAsset.OrderLevel "
+                                      
+    StrFrom = "FROM " _
+                    & "TblAsset "
+                    
+    StrWhere = "WHERE " _
+                    & "TblAsset.Category3 = 'CFS Consumables'"
+                    
+    Set RstCFSStock = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
+  
+    Set CFS_emailQuery = RstCFSStock
+    
+    Set RstCFSStock = Nothing
+    
+Exit Function
+
+ErrorExit:
+
+    Set RstCFSStock = Nothing
+    Set CFS_emailQuery = Nothing
 
 Exit Function
 
@@ -394,12 +468,34 @@ End Function
 ' GenerateEmailReports
 ' Generates the automatic email reports
 ' ---------------------------------------------------------------
-Private Function GenerateEmailReports(ReportType As String) As Boolean
+Private Function GenerateEmailReports(ReportType As String, RstReportData As Recordset) As Boolean
     Dim StrReport As String
     
     Const StrPROCEDURE As String = "GenerateEmailReports()"
 
     On Error GoTo ErrorHandler
+
+    If Not ModLibrary.OutlookRunning Then
+        Shell "Outlook.exe"
+    End If
+
+    With RstReportData
+        Do While Not .EOF
+            StrReport = StrReport & Chr(13) & Trim(![CFS Item])
+            .MoveNext
+        Loop
+    End With
+    
+    Set MailSystem = New ClsMailSystem
+    
+    With MailSystem.MailItem
+        .To = "Julian Turner"
+        .Subject = "CFS Stock Report"
+        .Body = StrReport
+        If SEND_EMAILS Then .Send
+    End With
+    
+    Set MailSystem = Nothing
 
 
 
