@@ -481,7 +481,9 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
 
     With RstReportData
         Do While Not .EOF
-            StrReport = StrReport & Chr(13) & Trim(![CFS Item])
+            StrReport = "<table>" _
+                            & "<tr>" _
+                                & "<td> StrReport & Chr(13) & Trim(![CFS Item])"
             .MoveNext
         Loop
     End With
