@@ -11,7 +11,7 @@ Attribute VB_Name = "ModReports"
 ' v0,7 - Added query for Report 3
 ' v0,8 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 16 Nov 17
+' Date - 17 Nov 17
 '===============================================================
 
 Option Explicit
@@ -480,12 +480,23 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
     End If
 
     With RstReportData
+        StrReport = "<table style='width:100%' border='1'>" _
+                        & "<tr>" _
+                            & "<th>CFS Item</th>" _
+                            & "<th>Quantity</th>" _
+                        & "</tr>"
+        
         Do While Not .EOF
-            StrReport = "<table>" _
-                            & "<tr>" _
-                                & "<td> StrReport & Chr(13) & Trim(![CFS Item])"
+            StrReport = StrReport _
+                & "<tr>" _
+                    & "<td>" & Trim(![CFS Item]) & "</td>" _
+                    & "<td align:'Center'>" & Trim(!QtyInStock) & "</td>" _
+                & "</tr>"
             .MoveNext
-        Loop
+            Loop
+        StrReport = StrReport _
+        & "</table>"
+        Debug.Print StrReport
     End With
     
     Set MailSystem = New ClsMailSystem
@@ -493,7 +504,7 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
     With MailSystem.MailItem
         .To = "Julian Turner"
         .Subject = "CFS Stock Report"
-        .Body = StrReport
+        .HTMLBody = StrReport
         If SEND_EMAILS Then .Send
     End With
     
