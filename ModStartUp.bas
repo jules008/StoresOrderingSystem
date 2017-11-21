@@ -13,9 +13,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,9 - Added System Messages on start up
 ' v0,10 - Added optional parameter to allow start up to page
 ' v0,11 - Log On user in DB
-' v0,121 - Schedule email reports
+' v0,122 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 17 Nov 17
+' Date - 21 Nov 17
 '===============================================================
 
 Option Explicit
@@ -101,7 +101,7 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
     If Not MessageCheck Then Err.Raise HANDLED_ERROR
     
     'check for email reports to send
-    If CurrentUser.AccessLvl > BasicLvl_1 Then
+    If CurrentUser.AccessLvl = AdminLvl_5 Then
         If Not ScheduleReports Then Err.Raise HANDLED_ERROR
     End If
     

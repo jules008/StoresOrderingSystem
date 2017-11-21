@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 21 Nov 17
 '===============================================================
 
 Option Explicit
@@ -226,29 +226,26 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,391" Then
-        MsgBox "Database needs to be upgraded to v1,391 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,392" Then
+        MsgBox "Database needs to be upgraded to v1,392 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "CREATE TABLE TblUsers"
     DB.Execute "CREATE TABLE TblReports"
-    DB.Execute "ALTER TABLE TblUsers ADD COLUMN CurrentUsers Text"
-    DB.Execute "ALTER TABLE TblUsers ADD COLUMN LoggedOn date"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
-    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '14 Nov 17', 7)"
+    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '21 Nov 17', 7)"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v1,392"
+        .Fields(0) = "v1,393"
         .Update
     End With
     
-'    UpdateSysMsg
+    UpdateSysMsg
     
     MsgBox "Database successfully updated", vbOKOnly + vbInformation
     
@@ -273,14 +270,13 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "DROP TABLE TblUsers"
     DB.Execute "DROP TABLE TblReports"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v1,391"
+        .Fields(0) = "v1,392"
         .Update
     End With
     
@@ -307,8 +303,8 @@ Public Function GetDBVer() As String
 
     GetDBVer = DBVer.Fields(0)
 
+    Debug.Print DBVer.Fields(0)
     Set DBVer = Nothing
-    
 Exit Function
 
 ErrorExit:
@@ -343,18 +339,18 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields("SystemMessage") = "Version 1.152 - What's New" _
+        .Fields("SystemMessage") = "Version 1.153 - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
                     & Chr(13) & " - Weekly CFS Stock email " _
                     & Chr(13) & "" _
                     & Chr(13) & " - Some Boring System Changes " _
         
-        .Fields("ReleaseNotes") = "Software Version 1.152" _
-                    & Chr(13) & "Database Version 1.392" _
-                    & Chr(13) & "Date 14 Nov 17" _
+        .Fields("ReleaseNotes") = "Software Version 1.153" _
+                    & Chr(13) & "Database Version 1.393" _
+                    & Chr(13) & "Date 21 Nov 17" _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a stock status email " _
+                    & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
                     & Chr(13) & "" _
                     & Chr(13) & "- System now logs who is currently logged on to the system" _
                     & Chr(13) & "_________________________________________________________________________________________________" _

@@ -9,9 +9,9 @@ Attribute VB_Name = "ModReports"
 ' v0,5 - Exclude Orders with Null or 0 Order No in Report 1
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
-' v0,8 - Schedule email reports
+' v0,81 - Schedule email reports
 '---------------------------------------------------------------
-' Date - 17 Nov 17
+' Date - 21 Nov 17
 '===============================================================
 
 Option Explicit
@@ -469,6 +469,8 @@ End Function
 ' Generates the automatic email reports
 ' ---------------------------------------------------------------
 Private Function GenerateEmailReports(ReportType As String, RstReportData As Recordset) As Boolean
+    Dim StrHead As String
+    Dim StrBody As String
     Dim StrReport As String
     
     Const StrPROCEDURE As String = "GenerateEmailReports()"
@@ -478,26 +480,78 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
     If Not ModLibrary.OutlookRunning Then
         Shell "Outlook.exe"
     End If
+    StrHead = "<!DOCTYPE html><html><head><style>" _
+                & "body    {" _
+                    & "background-color:RGB(248,255,244);} " _
+                & "#Line       {" _
+                    & "color:RGB(28,71,84);" _
+                    & "font-family:'Tahoma';" _
+                    & "font-size:12px;}" _
+                & "#Stock th{" _
+                    & "padding-top: 4px;" _
+                    & "padding-bottom: 4px;" _
+                    & "text-align: center;" _
+                    & "background-color: RGB(32,163,158);" _
+                    & "color: RGB(248,255,244);" _
+                    & "font-size:14px;}" _
+                & "#Stock   {" _
+                    & "width: 90%;" _
+                    & "font-family: Tahoma; " _
+                    & "border-collapse: collapse; }" _
+                & "#Stock td      { " _
+                    & "border: 1px solid #ddd;" _
+                    & "padding: 8px;" _
+                    & "color:RGB(28,71,84);" _
+                    & "font-size:14px;} "
 
-    With RstReportData
-        StrReport = "<table style='width:100%' border='1'>" _
-                        & "<tr>" _
-                            & "<th>CFS Item</th>" _
-                            & "<th>Quantity</th>" _
-                        & "</tr>"
-        
-        Do While Not .EOF
-            StrReport = StrReport _
-                & "<tr>" _
-                    & "<td>" & Trim(![CFS Item]) & "</td>" _
-                    & "<td align:'Center'>" & Trim(!QtyInStock) & "</td>" _
-                & "</tr>"
-            .MoveNext
-            Loop
-        StrReport = StrReport _
-        & "</table>"
-        Debug.Print StrReport
-    End With
+    StrHead = StrHead _
+                & "#Stock tr:nth -Child(Even){" _
+                    & "background-color: #f2f2f2;}" _
+                & "#Stock tr:hover{" _
+                    & "background-color: #ddd};" _
+                & "#Header th{" _
+                    & "font-size:22px;" _
+                    & "padding: 10px;" _
+                    & "text-align:center;" _
+                    & "color:RGB(28,71,84);" _
+                    & "font-family:'Calibri';" _
+                    & "background-color:RGB(255,166,52);}" _
+                & "#Header{" _
+                    & "width: 50%;}" _
+          & "</style></head>"
+
+  StrBody = "<body>" _
+                & "<table id='Header'>" _
+                    & "<tr>" _
+                        & "<th>Stores Ordering System</th>" _
+                    & "</tr>" _
+                & "</table>" _
+                & "<p id = 'Line'>The current CFS stock levels as of  " & Format(Now, "dd mmm yy") & " are:</p>" _
+                & "<table id = 'Stock'>" _
+                    & "<tr>" _
+                        & "<th>CFS Item</th>" _
+                        & "<th>Quantity</th>" _
+                    & "</tr>"
+                    
+                    Do While Not RstReportData.EOF
+                        StrBody = StrBody _
+                            & "<tr>" _
+                                & "<td>" & Trim(RstReportData![CFS Item]) & "</td>" _
+                                & "<td style='text-align:Center'>" & Trim(RstReportData!QtyInStock) & "</td>" _
+                            & "</tr>"
+                        RstReportData.MoveNext
+                        Loop
+                    StrBody = StrBody _
+              & "</table>" _
+              & "<p id = 'Line'>This is an automated system message from Ops Support </p>" _
+        & "</body></html>"
+    
+    
+    StrReport = StrHead & StrBody
+    
+    
+     Debug.Print StrReport
+'    End With
     
     Set MailSystem = New ClsMailSystem
     
@@ -509,9 +563,6 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
     End With
     
     Set MailSystem = Nothing
-
-
-
 
 
     GenerateEmailReports = True
