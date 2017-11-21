@@ -13,8 +13,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Changes to Username functionality
 ' v0,2 - Make Username read/write
 ' v0,3 - Added Message Read Flag
+' v0,4 - Log on and Log Off from DB
 '---------------------------------------------------------------
-' Date - 06 Nov 17
+' Date - 14 Nov 17
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -306,6 +307,38 @@ Public Sub AddTempAccount()
 End Sub
 
 ' ===============================================================
+' Method LogOn
+' Adds the user to the logged on table in DB
+' ---------------------------------------------------------------
+Public Sub LogOn()
+    
+    On Error GoTo ErrorHandler
+    
+    DB.Execute "INSERT INTO TblUsers VALUES ('" & pUsername & "', '" & Now & "')"
+Exit Sub
+
+ErrorHandler:
+    Err.Raise HANDLED_ERROR, , "Unable to add user to user list"
+    Exit Sub
+End Sub
+
+' ===============================================================
+' Method LogUserOff
+' Removes the user from the logged on table in DB
+' ---------------------------------------------------------------
+Public Sub LogUserOff()
+
+    On Error GoTo ErrorHandler
+    
+    DB.Execute "DELETE FROM TblUsers WHERE CurrentUsers = '" & pUsername & "'"
+Exit Sub
+
+ErrorHandler:
+    Err.Raise HANDLED_ERROR, , "Unable to delete user from user list"
+    Exit Sub
+End Sub
+
+' ===============================================================
 ' Method GetParentFromPtr
 ' Private routine to copy memory address of parent class
 ' ---------------------------------------------------------------
@@ -329,3 +362,5 @@ Private Sub Class_Terminate()
 End Sub
 
 '---------------------------------------------------------------
+
+

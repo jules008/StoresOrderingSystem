@@ -3,8 +3,9 @@ Attribute VB_Name = "ModCloseDown"
 ' Module ModCloseDown
 ' v0,0 - Initial Version
 ' v0,1 - Delete menu item no on close down
+' v0,2 - Made Terminate a function and added Log Off 
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
@@ -13,9 +14,9 @@ Private Const StrMODULE As String = "ModCloseDown"
 
 ' ===============================================================
 ' Terminate
-' Functions for graceful close down of system
+' Closedown processing
 ' ---------------------------------------------------------------
-Public Sub Terminate()
+Public Function Terminate() As Boolean
     Dim Frame As ClsUIFrame
     Dim DashObj As ClsUIDashObj
     Dim MenuItem As ClsUIMenuItem
@@ -25,6 +26,8 @@ Public Sub Terminate()
     On Error Resume Next
         
     ShtMain.Unprotect
+    
+    CurrentUser.LogUserOff
     
     For Each Frame In MainScreen.Frames
         'debug.print Frame.Name
@@ -60,9 +63,31 @@ Public Sub Terminate()
 
     ModDatabase.DBTerminate
     DeleteAllShapes
-    
-End Sub
 
+    Terminate = True
+
+Exit Function
+
+ErrorExit:
+
+    If Not Stations Is Nothing Then Set Stations = Nothing
+    If Not CurrentUser Is Nothing Then Set CurrentUser = Nothing
+    If Not Vehicles Is Nothing Then Set Vehicles = Nothing
+
+    ModDatabase.DBTerminate
+    DeleteAllShapes
+    
+    Terminate = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' DeleteAllShapes

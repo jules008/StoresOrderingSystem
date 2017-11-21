@@ -10,13 +10,70 @@ Attribute VB_Exposed = True
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Rest menu item store on start up
+' v0,2 - trigger terminate processing and Log Off from DB
 '---------------------------------------------------------------
-' Date - 19 Apr 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
 
 Private Const StrMODULE As String = "ThisWorkbook"
+
+' ===============================================================
+' Workbook_BeforeClose
+' Triggers closedown
+' ---------------------------------------------------------------
+Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    Const StrPROCEDURE As String = "Workbook_BeforeClose()"
+
+    On Error GoTo ErrorHandler
+
+    If Not CloseDown Then Err.Raise HANDLED_ERROR
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
+' CloseDown
+' Carries out closedown procedures
+' ---------------------------------------------------------------
+Private Function CloseDown() As Boolean
+    Const StrPROCEDURE As String = "CloseDown()"
+
+    On Error GoTo ErrorHandler
+
+    If Not ModCloseDown.Terminate Then Err.Raise HANDLED_ERROR
+
+    CloseDown = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    CloseDown = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' Workbook_Open

@@ -10,7 +10,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,6 - Seperated out Update Message procedure
 ' v0,7 - Added Release Notes
 '---------------------------------------------------------------
-' Date - 13 Nov 17
+' Date - 14 Nov 17
 '===============================================================
 
 Option Explicit
@@ -225,22 +225,24 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v0,39" Then
-        MsgBox "Database needs to be upgraded to v0,39 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,391" Then
+        MsgBox "Database needs to be upgraded to v1,391 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "ALTER TABLE TblMessage ADD COLUMN ReleaseNotes memo"
+    DB.Execute "CREATE TABLE TblUsers"
+    DB.Execute "ALTER TABLE TblUsers ADD COLUMN CurrentUsers Text"
+    DB.Execute "ALTER TABLE TblUsers ADD COLUMN LoggedOn date"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v1,391"
+        .Fields(0) = "v1,392"
         .Update
     End With
     
-    UpdateSysMsg
+'    UpdateSysMsg
     
     MsgBox "Database successfully updated", vbOKOnly + vbInformation
     
@@ -265,15 +267,17 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
                     
-    DB.Execute "ALTER TABLE TblMessage DROP COLUMN ReleaseNotes"
+    DB.Execute "DROP TABLE TblUsers"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v0,39"
+        .Fields(0) = "v1,391"
         .Update
     End With
+    
+    MsgBox "Database reset successfully", vbOKOnly + vbInformation
     
     Set RstTable = Nothing
     Set TableDef = Nothing
@@ -332,14 +336,10 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields("SystemMessage") = "Version 1.151 - What's New" _
+        .Fields("SystemMessage") = "Version 1.152 - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
                     & Chr(13) & " - 'Return Req'd' added to Order Form " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - 'Nil Return Report' Added to reports section " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - 'Release Notes added to Support Screen"
         
         .Fields("ReleaseNotes") = "Software Version 1.151" _
                     & Chr(13) & "Database Version 1.391" _
