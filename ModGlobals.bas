@@ -23,7 +23,7 @@ Attribute VB_Name = "ModGlobals"
 ' v0,18 - Added Report 3 button
 ' v0,19 - Added Release Notes frame
 '---------------------------------------------------------------
-' Date - 21 Nov 17
+' Date - 22 Nov 17
 '===============================================================
 
 Option Explicit
@@ -36,9 +36,9 @@ Public Const INI_FILE As String = "System.ini"
 Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
-Public Const VERSION = "1.53"
+Public Const VERSION = "1.53.01"
 Public Const DB_VER = "v1,393"
-Public Const VER_DATE = "21/11/17"
+Public Const VER_DATE = "22/11/17"
 
 ' ===============================================================
 ' Error Constants

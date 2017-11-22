@@ -15,6 +15,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
@@ -271,6 +272,14 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     Else
         Resume ErrorExit
     End If
+End Sub
+
+Private Sub BtnEmailAlerts_Click()
+
+End Sub
+
+Private Sub BtnGuests_Click()
+
 End Sub
 
 ' ===============================================================
