@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmReportAdmin 
-   Caption         =   "Action Plan"
+   Caption         =   "Stores Ordering System"
    ClientHeight    =   7035
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   9210
+   ClientWidth     =   10380
    OleObjectBlob   =   "FrmReportAdmin.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -18,17 +18,12 @@ Attribute VB_Exposed = False
 
 '===============================================================
 ' v0,0 - Initial version
-' v0,1 - User administration fixes
-' v0,2 - improved message boxes
-' v0,3 - Bug fix for empty mail alert list
-' v0,4 - Process Guest Accounts
-' v0,5 - Bug fix for Guest Account processing
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 22 Nov 17
 '===============================================================
 Option Explicit
 
-Private Const StrMODULE As String = "FrmUserAdmin"
+Private Const StrMODULE As String = "FrmReportAdmin"
 
 Private SelectedUser As ClsPerson
 
@@ -50,6 +45,8 @@ Exit Function
 
 ErrorExit:
     ShowForm = False
+    FormTerminate
+    Terminate
 
 Exit Function
 
@@ -63,6 +60,119 @@ ErrorHandler:
 End Function
 
 ' ===============================================================
+' BtnAddCC_Click
+' Adds selected name to To list
+' ---------------------------------------------------------------
+Private Sub BtnAddCC_Click()
+    Dim SelName As String
+    Dim i As Integer
+    Dim NameFound As Boolean
+    Dim CrewNo As String
+    Dim ReportNo As Integer
+    
+    Const StrPROCEDURE As String = "BtnAddCC_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If LstUserList.ListIndex <> -1 Then
+        
+        SelName = LstUserList.List(LstUserList.ListIndex, 1)
+        CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
+        ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
+        
+        'check if name already added
+        With LstCC
+            For i = 0 To .ListCount - 1
+                If .List(i) = SelName Then NameFound = True
+            Next
+            
+            'add name if not found and update database
+            If Not NameFound Then
+                
+                With LstCC
+                    .AddItem
+                    .List(.ListCount, 0) = CrewNo
+                    .List(.ListCount, 1) = SelName
+                End With
+                
+                ModReports.EmailReportsAddAddress CrewNo, ReportNo, "CC"
+            End If
+        End With
+    End If
+Exit Sub
+
+ErrorExit:
+
+    FormTerminate
+    Terminate
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' BtnAddTo_Click
+' Adds selected name to To list
+' ---------------------------------------------------------------
+Private Sub BtnAddTo_Click()
+    Dim SelName As String
+    Dim i As Integer
+    Dim NameFound As Boolean
+    Dim CrewNo As String
+    Dim ReportNo As Integer
+    
+    Const StrPROCEDURE As String = "BtnAddTo_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If LstUserList.ListIndex <> -1 Then
+        
+        SelName = LstUserList.List(LstUserList.ListIndex, 1)
+        CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
+        ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
+        
+        'check if name already added
+        With LstTo
+            For i = 0 To .ListCount - 1
+                If .List(i) = SelName Then NameFound = True
+            Next
+            
+            'add name if not found and update database
+            If Not NameFound Then
+                
+                With LstTo
+                    .AddItem
+                    .List(.ListCount, 0) = CrewNo
+                    .List(.ListCount, 1) = SelName
+                End With
+                
+                ModReports.EmailReportsAddAddress CrewNo, ReportNo, "To"
+            End If
+        End With
+    End If
+Exit Sub
+
+ErrorExit:
+
+    FormTerminate
+    Terminate
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
 ' BtnClose_Click
 ' Event for page close button
 ' ---------------------------------------------------------------
@@ -75,364 +185,46 @@ Private Sub BtnClose_Click()
 End Sub
 
 ' ===============================================================
-' BtnDel_Click
-' Deletes user
+' BtnDelete_Click
+' Removes name from selected list
 ' ---------------------------------------------------------------
-Private Sub BtnDel_Click()
-    Dim Response As Integer
-    Dim SelUser As Integer
-    Dim UserName As String
+Private Sub BtnDelete_Click()
+    Dim SelName As String
     Dim CrewNo As String
+    Dim ReportNo As Integer
     
-    Const StrPROCEDURE As String = "BtnDel_Click()"
-    
-    On Error GoTo ErrorHandler
-        
-    SelUser = LstAccessList.ListIndex
-    
-    If SelUser <> -1 Then
-        CrewNo = LstAccessList.List(SelUser, 0)
-        UserName = LstAccessList.List(SelUser, 1)
-        Response = MsgBox("Are you sure you want to remove " _
-                            & UserName & " from the system? ", vbYesNo + vbExclamation + vbDefaultButton2, APP_NAME)
-    
-        If Response = 6 Then SelectedUser.DBDelete FullDelete:=True
-        
-        If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
-
-        If Not ResetForm Then Err.Raise HANDLED_ERROR
-    End If
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
-' BtnAdd_Click
-' Clears form for new user
-' ---------------------------------------------------------------
-Private Sub BtnAdd_Click()
-    Const StrPROCEDURE As String = "BtnAdd_Click()"
+    Const StrPROCEDURE As String = "BtnDelete_Click()"
 
     On Error GoTo ErrorHandler
 
-    If Not ResetForm Then Err.Raise HANDLED_ERROR
+    SelName = LstUserList.List(LstUserList.ListIndex, 1)
+    CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
+    ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
 
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
-' ShowGuestAccounts
-' Processes any guest accounts
-' ---------------------------------------------------------------
-Private Function ShowGuestAccounts() As Boolean
-    Dim RstGuests As Recordset
-    Dim Persons As ClsPersons
-    Dim i As Integer
-    
-    Const StrPROCEDURE As String = "ShowGuestAccounts()"
-
-    On Error GoTo ErrorHandler
-
-    Set Persons = New ClsPersons
-    
-    Set RstGuests = Persons.GetGuestAccts
-
-    If Not RstGuests Is Nothing Then
-        With LstAccessList
-            .Clear
-
-            For i = 0 To RstGuests.RecordCount - 1
-                .AddItem
-                .List(i, 0) = RstGuests!CrewNo
-                .List(i, 1) = RstGuests!UserName
-                RstGuests.MoveNext
-            Next
-
-        End With
-    End If
-
-    ShowGuestAccounts = True
-    Set Persons = Nothing
-
-Exit Function
-
-ErrorExit:
-    ShowGuestAccounts = False
-    Set Persons = Nothing
-'    ***CleanUpCode***
-
-Exit Function
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-
-' ===============================================================
-' BtnGuestAcct_Click
-' Shows only guest accounts
-' ---------------------------------------------------------------
-Private Sub BtnGuestAcct_Click()
-    Const StrPROCEDURE As String = "BtnGuestAcct_Click()"
-
-    On Error GoTo ErrorHandler
-
-    If Not ShowGuestAccounts Then Err.Raise HANDLED_ERROR
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-' ===============================================================
-' BtnShowMail_Click
-' Shows users with mail alert selected
-' ---------------------------------------------------------------
-Private Sub BtnShowMail_Click()
-    Dim Persons As ClsPersons
-    Dim RstPersons As Recordset
-    Dim i As Integer
-    
-    Const StrPROCEDURE As String = "BtnShowMail_Click()"
-
-    On Error GoTo ErrorHandler
-    
-    Set Persons = New ClsPersons
-    Set RstPersons = Persons.GetMailAlertUsers
-    
-    If Not RstPersons Is Nothing Then
-        With LstAccessList
-            .Clear
-            
-            For i = 0 To RstPersons.RecordCount - 1
-                .AddItem
-                .List(i, 0) = RstPersons!CrewNo
-                .List(i, 1) = RstPersons!UserName
-                RstPersons.MoveNext
-            Next
-        
-        End With
-    End If
-
-
-    Set Persons = Nothing
-    Set RstPersons = Nothing
-Exit Sub
-
-ErrorExit:
-    Set Persons = Nothing
-    Set RstPersons = Nothing
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
-' BtnUpdate_Click
-' updates users details
-' ---------------------------------------------------------------
-Private Sub BtnUpdate_Click()
-    Const StrPROCEDURE As String = "BtnUpdate_Click()"
-    
-    On Error GoTo ErrorHandler
-
-    Select Case ValidateForm
-    
-        Case Is = FunctionalError
-            Err.Raise HANDLED_ERROR
-        
-        Case Is = FormOK
-        
-            With SelectedUser
-                .CrewNo = TxtCrewNo
-                .AccessLvl = CmoAccessLvl.ListIndex
-                .Forename = TxtForeName
-                .Role = TxtRole
-                .Surname = TxtSurname
-                .RankGrade = TxtRankGrade
-                .Station.DBGet CmoStation.ListIndex
-                .Watch = TxtWatch
-                .MailAlert = ChkMailAlert
-                .UserName = TxtUsername
-                .DBSave
-            End With
-            MsgBox "User updated successfully.  If any change have been made " _
-                    & "to your own profile, please restart the system for these changes " _
-                     & "to take effect", vbInformation, APP_NAME
-            
-            If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
-
-    End Select
-Exit Sub
-
-ErrorExit:
-
-Exit Sub
-
-ErrorHandler:
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-Private Sub CommandButton1_Click()
-
-End Sub
-
-Private Sub Label1_Click()
-
-End Sub
-
-' ===============================================================
-' LstAccessList_Click
-' Selects user that is clicked in the list
-' ---------------------------------------------------------------
-Private Sub LstAccessList_Click()
-    Const StrPROCEDURE As String = "LstAccessList_Click()"
-
-    On Error GoTo ErrorHandler
-
-    If Not RefreshUserDetails Then Err.Raise HANDLED_ERROR
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-
-' ===============================================================
-' LstAccessList_DblClick
-' Processes guest account if guest selected
-' ---------------------------------------------------------------
-Private Sub LstAccessList_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
-    Dim Response As Integer
-    Dim NewUser As ClsPerson
-    Dim RstOrder As Recordset
-    Dim Orders As ClsOrders
-    
-    Const StrPROCEDURE As String = "LstAccessList_DblClick()"
-
-    On Error GoTo ErrorHandler
-
-    If Len(SelectedUser.CrewNo) = 4 And Left(SelectedUser.CrewNo, 2) = "99" Then
-        Response = MsgBox("Would you like to convert the Guest Account?", vbInformation + vbYesNo, APP_NAME)
-        
-        If Response = 6 Then
-        
-            Set Orders = New ClsOrders
-            Set NewUser = FrmPersonPicker.ShowForm
-        
-            If NewUser Is Nothing Then Err.Raise NO_NAMES_SELECTED
-        
-            NewUser.UserName = SelectedUser.UserName
-            NewUser.DBSave
-            
-            Set RstOrder = Orders.FindOrders(SelectedUser.CrewNo)
-            
-            If Not RstOrder Is Nothing Then
-            With RstOrder
-                Do While Not .EOF
-                    .Edit
-                    !RequestorID = NewUser.CrewNo
-                    .Update
-                    .MoveNext
-                Loop
-            End With
-            End If
-            
-            SelectedUser.DBDelete True
-
-            If Not ResetForm Then Err.Raise HANDLED_ERROR
-            If Not ShowGuestAccounts Then Err.Raise HANDLED_ERROR
-            
-            Set RstOrder = Nothing
-            Set Orders = Nothing
+    With LstTo
+        If .ListIndex <> -1 Then
+            .RemoveItem (.ListIndex)
         End If
-    End If
-    
-GracefulExit:
+        .ListIndex = -1
+    End With
 
-    Set RstOrder = Nothing
-    Set Orders = Nothing
-    Set NewUser = Nothing
+    With LstCC
+        If .ListIndex <> -1 Then
+            .RemoveItem (.ListIndex)
+        End If
+        .ListIndex = -1
+    End With
 
 Exit Sub
 
 ErrorExit:
 
-    Set NewUser = Nothing
-'    ***CleanUpCode***
+    FormTerminate
+    Terminate
 
 Exit Sub
 
-ErrorHandler:
-    
-    If Err.Number >= 1000 And Err.Number <= 1500 Then
-        CustomErrorHandler Err.Number
-        Resume GracefulExit:
-    End If
-    
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else
@@ -441,35 +233,41 @@ ErrorHandler:
 End Sub
 
 ' ===============================================================
-' TxtCrewNo_Change
-' Textbox change
+' CmoSelectReport_Change
+' Enable or disable search box dependent on whether report is selected
 ' ---------------------------------------------------------------
-Private Sub TxtCrewNo_Change()
-    TxtCrewNo.BackColor = COLOUR_3
-End Sub
+Private Sub CmoSelectReport_Change()
+    Const StrPROCEDURE As String = "CmoSelectReport_Change()"
 
-' ===============================================================
-' TxtForeName_Change
-' Textbox change
-' ---------------------------------------------------------------
-Private Sub TxtForeName_Change()
-    TxtForeName.BackColor = COLOUR_3
-End Sub
+    On Error GoTo ErrorHandler
 
-' ===============================================================
-' TxtRankGrade_Change
-' Textbox change
-' ---------------------------------------------------------------
-Private Sub TxtRankGrade_Change()
-    TxtRankGrade.BackColor = COLOUR_3
-End Sub
+    With CmoSelectReport
+        If .ListIndex = -1 Then
+            TxtSearch.Enabled = False
+            TxtSearch.Value = "Please select a report"
+        Else
+            TxtSearch.Enabled = True
+            TxtSearch.Value = ""
+            If Not PopulateForm Then Err.Raise HANDLED_ERROR
+        End If
+    End With
 
-' ===============================================================
-' TxtRole_Change
-' Textbox change
-' ---------------------------------------------------------------
-Private Sub TxtRole_Change()
-    TxtRole.BackColor = COLOUR_3
+
+Exit Sub
+
+ErrorExit:
+
+    FormTerminate
+    Terminate
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
 End Sub
 
 ' ===============================================================
@@ -484,12 +282,8 @@ Private Sub TxtSearch_Change()
     Dim ListResults As String
 
     On Error GoTo ErrorHandler
-    
-    If TxtSearch = "" Then
-        If Not ResetForm Then Err.Raise HANDLED_ERROR
-    End If
-    
-    With LstAccessList
+            
+    With LstUserList
         If .ListIndex <> -1 Then ListResults = .List(.ListIndex)
     
         'if the search box has been changed since being updated by the results box, clear the result box
@@ -511,7 +305,8 @@ Exit Sub
 
 ErrorExit:
 
-'    ***CleanUpCode***
+    FormTerminate
+    Terminate
 
 Exit Sub
 
@@ -524,103 +319,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 
 ' ===============================================================
-' ValidateForm
-' Ensures the form is filled out correctly before moving on
-' ---------------------------------------------------------------
-Private Function ValidateForm() As EnumFormValidation
-    Const StrPROCEDURE As String = "ValidateForm()"
-
-    On Error GoTo ErrorHandler
-
-
-    With TxtCrewNo
-        If Trim(.Value) = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    If Not IsNumeric(TxtCrewNo) Then Err.Raise CREWNO_UNRECOGNISED
-
-    With TxtRankGrade
-        If Trim(.Value) = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With TxtForeName
-        If Trim(.Value) = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With TxtSurname
-        If Trim(.Value) = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With CmoStation
-        If .ListIndex = -1 Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With TxtRole
-        If Trim(.Value) = "" Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    With CmoAccessLvl
-        If .ListIndex = -1 Then
-            .BackColor = COLOUR_6
-            ValidateForm = ValidationError
-        End If
-    End With
-    
-    If ValidateForm = ValidationError Then
-        Err.Raise FORM_INPUT_EMPTY
-    Else
-        ValidateForm = FormOK
-    End If
-
-Exit Function
-
-ValidationError:
-
-
-Exit Function
-
-ErrorExit:
-
-    ValidateForm = FunctionalError
-    FormTerminate
-    Terminate
-
-Exit Function
-
-ErrorHandler:
-    
-    If Err.Number >= 1000 And Err.Number <= 1500 Then
-        CustomErrorHandler Err.Number
-        Resume ValidationError
-    End If
-
-If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-' ===============================================================
 ' ResetForm
 ' Resets form fields
 ' ---------------------------------------------------------------
@@ -629,81 +327,24 @@ Private Function ResetForm() As Boolean
 
     On Error GoTo ErrorHandler
 
-
-    CmoAccessLvl = ""
-    CmoStation = ""
-    TxtCrewNo = ""
-    TxtForeName = ""
-    TxtSurname = ""
-    TxtSearch = ""
-    TxtRankGrade = ""
-    TxtRole = ""
-    TxtUsername = ""
-    TxtWatch = ""
-
-    LstAccessList.Clear
-    LstAccessList = ""
-
+    LstCC.Clear
+    LstTo.Clear
+    LstUserList.Clear
+    TxtSearch.Value = ""
+    
     ResetForm = True
 
 Exit Function
 
 ErrorExit:
 
-'    ***CleanUpCode***
+    FormTerminate
+    Terminate
     ResetForm = False
 
 Exit Function
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-
-' ===============================================================
-' RefreshUserList
-' Lists all users in system
-' ---------------------------------------------------------------
-Public Function RefreshUserList() As Boolean
-    Const StrPROCEDURE As String = "RefreshUserList()"
-
-    Dim RstUserList As Recordset
-    Dim i As Integer
-    
-    On Error GoTo ErrorHandler
-
-'   Set RstUserList = GetAccessList
-    
-    LstAccessList.Clear
-    
-    If Not RstUserList Is Nothing Then
-        With RstUserList
-            Do While Not .EOF
-                    
-                LstAccessList.AddItem
-                LstAccessList.List(i, 0) = RstUserList!UserName
-                .MoveNext
-                i = i + 1
-            Loop
-        End With
-    End If
-    Set RstUserList = Nothing
-
-    RefreshUserList = True
-Exit Function
-
-ErrorExit:
-    Set RstUserList = Nothing
-    RefreshUserList = False
-
-Exit Function
-
-ErrorHandler:
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
     Else
@@ -740,14 +381,14 @@ Private Function GetSearchItems(StrSearch As String) As Boolean
     Set RngResult = RngItems.Find(StrSearch)
     Set RngFirstResult = RngResult
     
-    LstAccessList.Clear
+    LstUserList.Clear
     'search item list and populate results.  Stop before looping back to start
     If Not RngResult Is Nothing Then
     
         i = 0
         Do
             Set RngResult = RngItems.FindNext(RngResult)
-                With LstAccessList
+                With LstUserList
                     .AddItem
                     If IsNumeric(StrSearch) Then
                         .List(i, 0) = RngResult.Value
@@ -791,76 +432,6 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' RefreshUserDetails
-' Adds details from selected user
-' ---------------------------------------------------------------
-Private Function RefreshUserDetails() As Boolean
-    Dim ListSelection As Integer
-    Dim CrewNo As String
-    
-    Const StrPROCEDURE As String = "RefreshUserDetails()"
-
-    On Error GoTo ErrorHandler
-
-    ListSelection = LstAccessList.ListIndex
-    
-    If ListSelection = -1 Then
-        TxtCrewNo = ""
-        TxtForeName = ""
-        CmoAccessLvl = ""
-        CmoStation = ""
-        TxtRankGrade = ""
-        TxtRole = ""
-        TxtSurname = ""
-        TxtUsername = ""
-    Else
-        CrewNo = LstAccessList.List(ListSelection, 0)
-        
-        SelectedUser.DBGet CrewNo
-        
-        With SelectedUser
-            TxtCrewNo = .CrewNo
-            TxtForeName = .Forename
-            CmoAccessLvl.ListIndex = .AccessLvl
-            CmoStation.ListIndex = .Station.StationID
-            TxtRankGrade = .RankGrade
-            TxtRole = .Role
-            TxtWatch = .Watch
-            TxtSurname = .Surname
-            ChkMailAlert = .MailAlert
-            TxtUsername = .UserName
-        End With
-    
-    End If
-
-    RefreshUserDetails = True
-
-Exit Function
-
-ErrorExit:
-
-'    ***CleanUpCode***
-    RefreshUserDetails = False
-
-Exit Function
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-' ===============================================================
-' TxtSurname_Change
-' Textbox change
-' ---------------------------------------------------------------
-Private Sub TxtSurname_Change()
-    TxtSurname.BackColor = COLOUR_3
-End Sub
-
-' ===============================================================
 ' UserForm_Terminate
 ' Automatic Terminate event that triggers custom Terminate
 ' ---------------------------------------------------------------
@@ -877,28 +448,16 @@ End Sub
 ' initialises controls on form at start up
 ' ---------------------------------------------------------------
 Private Function FormInitialise() As Boolean
-    Dim RstAccessLevels As Recordset
+    Dim RstReports As Recordset
     Dim i As Integer
     
     Const StrPROCEDURE As String = "FormInitialise()"
 
     On Error GoTo ErrorHandler
 
-Restart:
-
-    Application.StatusBar = ""
+    Set RstReports = ModReports.ReturnReportList
     
-    If Vehicles Is Nothing Then Err.Raise SYSTEM_RESTART, Description:="Object Model Failed, system restarting"
-    
-    If Stations Is Nothing Then Err.Raise SYSTEM_RESTART, Description:="Object Model Failed, system restarting"
-    
-    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART, Description:="Object Model Failed, system restarting"
-        
-    If ModErrorHandling.FaultCount1002 > 0 Then ModErrorHandling.FaultCount1002 = 0
-    
-    If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
-    
-    Set SelectedUser = New ClsPerson
+    If RstReports Is Nothing Then Err.Raise GENERIC_ERROR, , "No reports returned"
     
     With LstHeadings
         .AddItem
@@ -906,26 +465,33 @@ Restart:
         .List(0, 1) = "Name"
     End With
     
-    With CmoStation
-        For i = 1 To Stations.Count
-            .AddItem Stations(i).Name
-        Next
+    i = 0
+    With CmoSelectReport
+        Do While Not RstReports.EOF
+            .AddItem
+            .List(i, 0) = RstReports!ReportNo
+            .List(i, 1) = RstReports!ReportName
+            i = i + 1
+            RstReports.MoveNext
+        Loop
     End With
     
-    With CmoAccessLvl
-        Set RstAccessLevels = ModSecurity.GetAccessLevelList
-        
-        For i = 1 To RstAccessLevels.RecordCount
-            .AddItem RstAccessLevels!AccessLevel
-            RstAccessLevels.MoveNext
-        Next
+    With TxtSearch
+        .Enabled = False
+        .Value = "Please select a report"
     End With
+    
+    If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
+    
+    Set RstReports = Nothing
     
     FormInitialise = True
 
 Exit Function
 
 ErrorExit:
+    
+    Set RstReports = Nothing
     
     FormTerminate
     Terminate
@@ -938,7 +504,6 @@ ErrorHandler:
         
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume Restart
     End If
     
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
@@ -973,4 +538,75 @@ Private Function FormTerminate() As Boolean
     
     Unload Me
 
+End Function
+
+' ===============================================================
+' PopulateForm
+' Gets the To and CC data for the report addresses
+' ---------------------------------------------------------------
+Private Function PopulateForm() As Boolean
+    Dim RstAddresses As Recordset
+    Dim ReportNo As Integer
+    
+    Const StrPROCEDURE As String = "PopulateForm()"
+
+    On Error GoTo ErrorHandler
+
+    With CmoSelectReport
+        ReportNo = .List(.ListIndex, 0)
+    End With
+    
+    Set RstAddresses = ModReports.GetReportAddresses(ReportNo)
+
+    With RstAddresses
+        Do While Not .EOF
+            If !ToCC = "To" Then
+                
+                With LstTo
+                    .AddItem
+                    Debug.Print !CrewNo
+                    
+                    .List(.ListCount, 0) = !CrewNo
+                    .List(.ListCount, 1) = !UserName
+                End With
+            
+            End If
+            
+            If !ToCC = "CC" Then
+            
+                With LstCC
+                    .AddItem
+                    .List(.ListCount, 0) = !CrewNo
+                    .List(.ListCount, 1) = !UserName
+                End With
+            
+            End If
+            .MoveNext
+        Loop
+    End With
+    Set RstAddresses = Nothing
+
+    PopulateForm = True
+
+Exit Function
+
+ErrorExit:
+
+    Set RstAddresses = Nothing
+    
+    FormTerminate
+    Terminate
+    
+    PopulateForm = False
+
+Exit Function
+
+ErrorHandler:
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
 End Function

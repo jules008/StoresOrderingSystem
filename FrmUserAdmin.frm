@@ -23,8 +23,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Bug fix for empty mail alert list
 ' v0,4 - Process Guest Accounts
 ' v0,5 - Bug fix for Guest Account processing
+' v0,6 - Added buttons for Email Alerts and reports
 '---------------------------------------------------------------
-' Date - 10 May 17
+' Date - 22 Nov 17
 '===============================================================
 Option Explicit
 
@@ -199,11 +200,11 @@ End Function
 
 
 ' ===============================================================
-' BtnGuestAcct_Click
+' BtnGuests_Click
 ' Shows only guest accounts
 ' ---------------------------------------------------------------
-Private Sub BtnGuestAcct_Click()
-    Const StrPROCEDURE As String = "BtnGuestAcct_Click()"
+Private Sub BtnGuests_Click()
+    Const StrPROCEDURE As String = "BtnGuests_Click()"
 
     On Error GoTo ErrorHandler
 
@@ -225,61 +226,31 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
     End If
 End Sub
 ' ===============================================================
-' BtnShowMail_Click
-' Shows users with mail alert selected
+' BtnEmailReports_Click
+' Shows Email Reports admin page
 ' ---------------------------------------------------------------
-Private Sub BtnShowMail_Click()
-    Dim Persons As ClsPersons
-    Dim RstPersons As Recordset
-    Dim i As Integer
-    
-    Const StrPROCEDURE As String = "BtnShowMail_Click()"
+Private Sub BtnEmailReports_Click()
+    Const StrPROCEDURE As String = "BtnEmailReports_Click()"
 
     On Error GoTo ErrorHandler
-    
-    Set Persons = New ClsPersons
-    Set RstPersons = Persons.GetMailAlertUsers
-    
-    If Not RstPersons Is Nothing Then
-        With LstAccessList
-            .Clear
-            
-            For i = 0 To RstPersons.RecordCount - 1
-                .AddItem
-                .List(i, 0) = RstPersons!CrewNo
-                .List(i, 1) = RstPersons!UserName
-                RstPersons.MoveNext
-            Next
-        
-        End With
-    End If
 
+    If Not FrmReportAdmin.ShowForm Then Err.Raise HANDLED_ERROR
 
-    Set Persons = Nothing
-    Set RstPersons = Nothing
 Exit Sub
 
 ErrorExit:
-    Set Persons = Nothing
-    Set RstPersons = Nothing
+
 '    ***CleanUpCode***
 
 Exit Sub
 
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else
         Resume ErrorExit
     End If
-End Sub
-
-Private Sub BtnEmailAlerts_Click()
-
-End Sub
-
-Private Sub BtnGuests_Click()
-
 End Sub
 
 ' ===============================================================
@@ -307,7 +278,6 @@ Private Sub BtnUpdate_Click()
                 .RankGrade = TxtRankGrade
                 .Station.DBGet CmoStation.ListIndex
                 .Watch = TxtWatch
-                .MailAlert = ChkMailAlert
                 .UserName = TxtUsername
                 .DBSave
             End With
@@ -331,10 +301,6 @@ ErrorHandler:
     Else
         Resume ErrorExit
     End If
-End Sub
-
-Private Sub CommandButton1_Click()
-
 End Sub
 
 ' ===============================================================
@@ -831,7 +797,6 @@ Private Function RefreshUserDetails() As Boolean
             TxtRole = .Role
             TxtWatch = .Watch
             TxtSurname = .Surname
-            ChkMailAlert = .MailAlert
             TxtUsername = .UserName
         End With
     

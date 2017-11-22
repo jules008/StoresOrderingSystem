@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 21 Nov 17
+' Date - 22 Nov 17
 '===============================================================
 
 Option Explicit
@@ -227,7 +227,7 @@ Public Sub UpdateDBScript()
     
     'check preceding DB Version
     If RstTable.Fields(0) <> "v1,392" Then
-        MsgBox "Database needs to be upgraded to v1,392 to continue", vbOKOnly + vbCritical
+        MsgBox "Database needs to be upgraded to v1,393 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
@@ -236,8 +236,14 @@ Public Sub UpdateDBScript()
     DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
-    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '21 Nov 17', 7)"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportNo Int"
+    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '22 Nov 17', 7, 1)"
     
+    DB.Execute "CREATE TABLE TblRptsAlerts"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN CrewNo Text"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ReportNo Int"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ToCC Text"
+        
     'update DB Version
     With RstTable
         .Edit
@@ -254,8 +260,7 @@ Public Sub UpdateDBScript()
     Set Fld = Nothing
     
 End Sub
-        
-        
+              
 ' ===============================================================
 ' UpdateDBScriptUndo
 ' Script to update DB
@@ -269,8 +274,9 @@ Public Sub UpdateDBScriptUndo()
     Dim Fld As DAO.Field
         
     DBConnect
-                    
+    
     DB.Execute "DROP TABLE TblReports"
+    DB.Execute "DROP TABLE TblRptsAlerts"
  
     Set RstTable = SQLQuery("TblDBVersion")
 
@@ -347,8 +353,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & " - Some Boring System Changes " _
         
         .Fields("ReleaseNotes") = "Software Version 1.153" _
-                    & Chr(13) & "Database Version 1.393" _
-                    & Chr(13) & "Date 21 Nov 17" _
+                    & Chr(13) & "Database Version 1.394" _
+                    & Chr(13) & "Date 22 Nov 17" _
                     & Chr(13) & "" _
                     & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
                     & Chr(13) & "" _

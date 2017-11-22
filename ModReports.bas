@@ -10,8 +10,9 @@ Attribute VB_Name = "ModReports"
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
 ' v0,81 - Schedule email reports
+' v0,9 - Added Email Reports
 '---------------------------------------------------------------
-' Date - 21 Nov 17
+' Date - 22 Nov 17
 '===============================================================
 
 Option Explicit
@@ -583,4 +584,109 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' ReturnReportList
+' Returns a list of reports in the system
+' ---------------------------------------------------------------
+Public Function ReturnReportList() As Recordset
+    Dim RstReports As Recordset
+    
+    Const StrPROCEDURE As String = "ReturnReportList()"
+
+    On Error GoTo ErrorHandler
+
+    Set RstReports = SQLQuery("TblReports")
+
+    Set ReturnReportList = RstReports
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set ReturnReportList = Nothing
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' GetReportAddresses
+' Returns the To and CC addresses for a given report
+' ---------------------------------------------------------------
+Public Function GetReportAddresses(ReportNo As Integer) As Recordset
+    Dim RstAddresses As Recordset
+    
+    Const StrPROCEDURE As String = "GetReportAddresses()"
+
+    On Error GoTo ErrorHandler
+
+    Set RstAddresses = SQLQuery("SELECT " _
+                                  & "TblPerson.UserName, " _
+                                  & "TblRptsAlerts.ToCC " _
+                                & "From " _
+                                  & "(TblReports " _
+                                  & "RIGHT JOIN TblRptsAlerts ON TblRptsAlerts.ReportNo = TblReports.ReportNo) " _
+                                  & "LEFT JOIN TblPerson ON TblRptsAlerts.CrewNo = TblPerson.CrewNo " _
+                                & "WHERE " _
+                                  & "TblRptsAlerts.ReportNo = " & ReportNo)
+
+    Set GetReportAddresses = RstAddresses
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    Set GetReportAddresses = Nothing
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' EmailReportsAddAddress
+' Adds a CC or To addressee to an email report
+' ---------------------------------------------------------------
+Public Sub EmailReportsAddAddress(CrewNo As String, ReportNo As Integer, ToCC As String)
+    Dim SQL As String
+    
+    On Error Resume Next
+    
+    SQL = "INSERT INTO TblRptsAlerts VALUES ('" & CrewNo & "'," & ReportNo & ",'" & ToCC & "')"
+    DB.Execute (SQL)
+    
+    Debug.Print SQL
+End Sub
+
+' ===============================================================
+' EmailReportsRemoveAddress
+' Adds a CC or To addressee to an email report
+' ---------------------------------------------------------------
+Public Sub EmailReportsRemoveAddress(CrewNo As String, ReportNo As Integer, ToCC As String)
+    Dim SQL As String
+    
+    On Error Resume Next
+    
+    SQL = "DELETE FROM TblRptsAlerts WHERE CrewNo = " & CrewNo _
+                & " AND ReportNo = " & ReportNo _
+                & " AND ToCC = " & ToCC
+    
+    DB.Execute (SQL)
+
+    Debug.Print SQL
+End Sub
 
