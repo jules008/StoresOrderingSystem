@@ -19,7 +19,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 22 Nov 17
+' Date - 23 Nov 17
 '===============================================================
 Option Explicit
 
@@ -64,56 +64,8 @@ End Function
 ' Adds selected name to To list
 ' ---------------------------------------------------------------
 Private Sub BtnAddCC_Click()
-    Dim SelName As String
-    Dim i As Integer
-    Dim NameFound As Boolean
-    Dim CrewNo As String
-    Dim ReportNo As Integer
-    
-    Const StrPROCEDURE As String = "BtnAddCC_Click()"
-
-    On Error GoTo ErrorHandler
-
-    If LstUserList.ListIndex <> -1 Then
-        
-        SelName = LstUserList.List(LstUserList.ListIndex, 1)
-        CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
-        ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
-        
-        'check if name already added
-        With LstCC
-            For i = 0 To .ListCount - 1
-                If .List(i) = SelName Then NameFound = True
-            Next
-            
-            'add name if not found and update database
-            If Not NameFound Then
-                
-                With LstCC
-                    .AddItem
-                    .List(.ListCount, 0) = CrewNo
-                    .List(.ListCount, 1) = SelName
-                End With
-                
-                ModReports.EmailReportsAddAddress CrewNo, ReportNo, "CC"
-            End If
-        End With
-    End If
-Exit Sub
-
-ErrorExit:
-
-    FormTerminate
-    Terminate
-
-Exit Sub
-
-ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
+    On Error Resume Next
+    AddNameToCC ("CC")
 End Sub
 
 ' ===============================================================
@@ -121,38 +73,55 @@ End Sub
 ' Adds selected name to To list
 ' ---------------------------------------------------------------
 Private Sub BtnAddTo_Click()
+    On Error Resume Next
+    AddNameToCC ("To")
+End Sub
+
+' ===============================================================
+' AddNameToCC
+' Adds selected name to To and CC lists
+' ---------------------------------------------------------------
+
+Private Sub AddNameToCC(ToCC As String)
     Dim SelName As String
-    Dim i As Integer
-    Dim NameFound As Boolean
     Dim CrewNo As String
     Dim ReportNo As Integer
+    Dim ActiveList As Control
+    Dim i As Integer
+    Dim NameFound As Boolean
     
-    Const StrPROCEDURE As String = "BtnAddTo_Click()"
+    Const StrPROCEDURE As String = "AddNameToCC()"
 
     On Error GoTo ErrorHandler
 
     If LstUserList.ListIndex <> -1 Then
+        
+        If ToCC = "To" Then
+            Set ActiveList = LstTo
+        Else
+            Set ActiveList = LstCC
+        End If
         
         SelName = LstUserList.List(LstUserList.ListIndex, 1)
         CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
         ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
         
         'check if name already added
-        With LstTo
+        With ActiveList
             For i = 0 To .ListCount - 1
-                If .List(i) = SelName Then NameFound = True
+                If .List(i, 1) = SelName Then NameFound = True
             Next
             
             'add name if not found and update database
             If Not NameFound Then
                 
-                With LstTo
+                With ActiveList
                     .AddItem
-                    .List(.ListCount, 0) = CrewNo
-                    .List(.ListCount, 1) = SelName
+                    .List(.ListCount - 1, 0) = CrewNo
+                    .List(.ListCount - 1, 1) = SelName
                 End With
                 
-                ModReports.EmailReportsAddAddress CrewNo, ReportNo, "To"
+                ModReports.EmailReportsAddAddress CrewNo, ReportNo, ToCC
             End If
         End With
     End If
@@ -191,34 +160,47 @@ End Sub
 Private Sub BtnDelete_Click()
     Dim SelName As String
     Dim CrewNo As String
+    Dim ListActive As Boolean
     Dim ReportNo As Integer
+    Dim ToCC As String
+    Dim ActiveList As Control
     
     Const StrPROCEDURE As String = "BtnDelete_Click()"
 
     On Error GoTo ErrorHandler
 
-    SelName = LstUserList.List(LstUserList.ListIndex, 1)
-    CrewNo = LstUserList.List(LstUserList.ListIndex, 0)
-    ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
-
-    With LstTo
-        If .ListIndex <> -1 Then
-            .RemoveItem (.ListIndex)
-        End If
-        .ListIndex = -1
-    End With
-
-    With LstCC
-        If .ListIndex <> -1 Then
-            .RemoveItem (.ListIndex)
-        End If
-        .ListIndex = -1
-    End With
-
+    If LstTo.ListIndex <> -1 Then
+        Set ActiveList = LstTo
+        ToCC = "To"
+        ListActive = True
+    End If
+    
+    If LstCC.ListIndex <> -1 Then
+        Set ActiveList = LstCC
+        ToCC = "CC"
+        ListActive = True
+    End If
+    
+    If ListActive Then
+    
+        SelName = ActiveList.List(ActiveList.ListIndex, 1)
+        CrewNo = ActiveList.List(ActiveList.ListIndex, 0)
+        ReportNo = CmoSelectReport.List(CmoSelectReport.ListIndex, 0)
+    
+        With ActiveList
+            If .ListIndex <> -1 Then
+                .RemoveItem (.ListIndex)
+                ModReports.EmailReportsRemoveAddress CrewNo, ReportNo, ToCC
+            End If
+            .ListIndex = -1
+        End With
+    End If
+    
+    Set ActiveList = Nothing
 Exit Sub
 
 ErrorExit:
-
+    Set ActiveList = Nothing
     FormTerminate
     Terminate
 
@@ -240,7 +222,9 @@ Private Sub CmoSelectReport_Change()
     Const StrPROCEDURE As String = "CmoSelectReport_Change()"
 
     On Error GoTo ErrorHandler
-
+    
+    If Not ResetForm Then Err.Raise HANDLED_ERROR
+    
     With CmoSelectReport
         If .ListIndex = -1 Then
             TxtSearch.Enabled = False
@@ -561,25 +545,18 @@ Private Function PopulateForm() As Boolean
     With RstAddresses
         Do While Not .EOF
             If !ToCC = "To" Then
+                LstTo.AddItem
+                Debug.Print !UserName
+                Debug.Print !CrewNo
                 
-                With LstTo
-                    .AddItem
-                    Debug.Print !CrewNo
-                    
-                    .List(.ListCount, 0) = !CrewNo
-                    .List(.ListCount, 1) = !UserName
-                End With
-            
+                LstTo.List(LstTo.ListCount - 1, 0) = !CrewNo
+                LstTo.List(LstTo.ListCount - 1, 1) = !UserName
             End If
             
             If !ToCC = "CC" Then
-            
-                With LstCC
-                    .AddItem
-                    .List(.ListCount, 0) = !CrewNo
-                    .List(.ListCount, 1) = !UserName
-                End With
-            
+                LstCC.AddItem
+                LstCC.List(LstCC.ListCount - 1, 0) = !CrewNo
+                LstCC.List(LstCC.ListCount - 1, 1) = !UserName
             End If
             .MoveNext
         Loop

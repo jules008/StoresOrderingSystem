@@ -10,9 +10,9 @@ Attribute VB_Name = "ModReports"
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
 ' v0,81 - Schedule email reports
-' v0,9 - Added Email Reports
+' v0,91 - Added Email Reports
 '---------------------------------------------------------------
-' Date - 22 Nov 17
+' Date - 23 Nov 17
 '===============================================================
 
 Option Explicit
@@ -630,6 +630,7 @@ Public Function GetReportAddresses(ReportNo As Integer) As Recordset
 
     Set RstAddresses = SQLQuery("SELECT " _
                                   & "TblPerson.UserName, " _
+                                  & "TblPerson.CrewNo, " _
                                   & "TblRptsAlerts.ToCC " _
                                 & "From " _
                                   & "(TblReports " _
@@ -679,11 +680,11 @@ End Sub
 Public Sub EmailReportsRemoveAddress(CrewNo As String, ReportNo As Integer, ToCC As String)
     Dim SQL As String
     
-    On Error Resume Next
+'    On Error Resume Next
     
-    SQL = "DELETE FROM TblRptsAlerts WHERE CrewNo = " & CrewNo _
-                & " AND ReportNo = " & ReportNo _
-                & " AND ToCC = " & ToCC
+    SQL = "DELETE FROM TblRptsAlerts WHERE CrewNo = '" & CrewNo _
+                & "' AND ReportNo = " & ReportNo _
+                & " AND ToCC = '" & ToCC & "'"
     
     DB.Execute (SQL)
 
