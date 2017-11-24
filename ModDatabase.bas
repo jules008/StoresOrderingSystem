@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 22 Nov 17
+' Date - 24 Nov 17
 '===============================================================
 
 Option Explicit
@@ -243,6 +243,9 @@ Public Sub UpdateDBScript()
     DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN CrewNo Text"
     DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ReportNo Int"
     DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ToCC Text"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3682', 1, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 1, 'CC')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 1, 'CC')"
         
     'update DB Version
     With RstTable
