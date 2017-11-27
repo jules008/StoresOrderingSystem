@@ -19,7 +19,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 23 Nov 17
+' Date - 27 Nov 17
 '===============================================================
 Option Explicit
 
@@ -255,6 +255,59 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 
 ' ===============================================================
+' OptAlerts_Click
+' Selects email alerts
+' ---------------------------------------------------------------
+Private Sub OptAlerts_Click()
+    Const StrPROCEDURE As String = "OptAlerts_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Not EmailTypeChange(2) Then Err.Raise HANDLED_ERROR
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+
+' ===============================================================
+' OptReports_Click
+' Selects email reports
+' ---------------------------------------------------------------
+Private Sub OptReports_Click()
+    Const StrPROCEDURE As String = "OptReports_Click()"
+
+    On Error GoTo ErrorHandler
+
+    If Not EmailTypeChange(1) Then Err.Raise HANDLED_ERROR
+
+Exit Sub
+
+ErrorExit:
+
+'    ***CleanUpCode***
+
+Exit Sub
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
 ' TxtSearch_Change
 ' Entry for search string
 ' ---------------------------------------------------------------
@@ -432,32 +485,22 @@ End Sub
 ' initialises controls on form at start up
 ' ---------------------------------------------------------------
 Private Function FormInitialise() As Boolean
-    Dim RstReports As Recordset
     Dim i As Integer
     
     Const StrPROCEDURE As String = "FormInitialise()"
 
     On Error GoTo ErrorHandler
 
-    Set RstReports = ModReports.ReturnReportList
-    
-    If RstReports Is Nothing Then Err.Raise GENERIC_ERROR, , "No reports returned"
-    
+  
     With LstHeadings
         .AddItem
         .List(0, 0) = "No"
         .List(0, 1) = "Name"
     End With
     
-    i = 0
     With CmoSelectReport
-        Do While Not RstReports.EOF
-            .AddItem
-            .List(i, 0) = RstReports!ReportNo
-            .List(i, 1) = RstReports!ReportName
-            i = i + 1
-            RstReports.MoveNext
-        Loop
+        .Clear
+        .Value = ""
     End With
     
     With TxtSearch
@@ -467,7 +510,6 @@ Private Function FormInitialise() As Boolean
     
     If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
     
-    Set RstReports = Nothing
     
     FormInitialise = True
 
@@ -475,7 +517,6 @@ Exit Function
 
 ErrorExit:
     
-    Set RstReports = Nothing
     
     FormTerminate
     Terminate
@@ -587,3 +628,57 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Function
+
+' ===============================================================
+' EmailTypeChange
+' Changes email type between alerts and reports
+' ---------------------------------------------------------------
+Public Function EmailTypeChange(EmailType As Integer) As Boolean
+    Dim i As Integer
+    Dim RstReports As Recordset
+    
+    Const StrPROCEDURE As String = "EmailTypeChange()"
+
+    On Error GoTo ErrorHandler
+    
+    Set RstReports = ModReports.ReturnReportList(EmailType)
+    
+    If RstReports Is Nothing Then Err.Raise GENERIC_ERROR, , "No reports returned"
+
+    i = 0
+    With CmoSelectReport
+        .Clear
+        .Value = ""
+        Do While Not RstReports.EOF
+            .AddItem
+            .List(i, 0) = RstReports!ReportNo
+            .List(i, 1) = RstReports!ReportName
+            i = i + 1
+            RstReports.MoveNext
+        Loop
+    End With
+
+
+    Set RstReports = Nothing
+
+
+    EmailTypeChange = True
+
+Exit Function
+
+ErrorExit:
+    Set RstReports = Nothing
+
+'    ***CleanUpCode***
+    EmailTypeChange = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+

@@ -22,8 +22,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,17 - Add new station Ops Support
 ' v0,18 - Added Report 3 button
 ' v0,19 - Added Release Notes frame
+' v0,20 - Added EnumReportName
 '---------------------------------------------------------------
-' Date - 22 Nov 17
+' Date - 27 Nov 17
 '===============================================================
 
 Option Explicit
@@ -344,6 +345,12 @@ Enum EnumBtnNo
     EnumReport3Btn
 End Enum
 
+Enum EnumReportName
+    EnumCFSStockCountReport = 1
+    EnumNewGuestUser
+    EnumSupportQueryRecieved
+    EnumNewOrderReceived
+End Enum
 ' ===============================================================
 ' Type Declarations
 ' ---------------------------------------------------------------

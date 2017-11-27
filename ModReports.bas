@@ -10,9 +10,9 @@ Attribute VB_Name = "ModReports"
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
 ' v0,81 - Schedule email reports
-' v0,91 - Added Email Reports
+' v0,92 - Added Email Reports
 '---------------------------------------------------------------
-' Date - 23 Nov 17
+' Date - 27 Nov 17
 '===============================================================
 
 Option Explicit
@@ -354,10 +354,9 @@ End Function
 ' Schedules automatic email reports
 ' ---------------------------------------------------------------
 Public Function ScheduleReports() As Boolean
+    Dim ReportName As EnumReportName
     Dim RstDueReports As Recordset
     Dim RstReportData As Recordset
-    
-    Dim ReportType As String
     
     Const StrPROCEDURE As String = "ScheduleReports()"
 
@@ -368,12 +367,12 @@ Public Function ScheduleReports() As Boolean
     With RstDueReports
         If .RecordCount > 0 Then
             
-            ReportType = !ReportName
+            ReportName = !ReportNo
             
-            Select Case ReportType
-                Case Is = "CFS Status"
+            Select Case ReportName
+                Case Is = EnumCFSStockCountReport
                     
-                    Debug.Print "Run Report " & ReportType
+                    Debug.Print "Run Report " & ReportName
                     
                     ' Send CFS Report
                     Set RstReportData = CFS_emailQuery
@@ -478,9 +477,6 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
 
     On Error GoTo ErrorHandler
 
-    If Not ModLibrary.OutlookRunning Then
-        Shell "Outlook.exe"
-    End If
     StrHead = "<!DOCTYPE html><html><head><style>" _
                 & "body    {" _
                     & "background-color:RGB(248,255,244);} " _
@@ -547,25 +543,10 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
               & "<p id = 'Line'>This is an automated system message from Ops Support </p>" _
         & "</body></html>"
     
-    
     StrReport = StrHead & StrBody
     
+    If Not SendEmailReports(StrReport) Then Err.Raise HANDLED_ERROR
     
-     Debug.Print StrReport
-'    End With
-    
-    Set MailSystem = New ClsMailSystem
-    
-    With MailSystem.MailItem
-        .To = "Julian Turner"
-        .Subject = "CFS Stock Report"
-        .HTMLBody = StrReport
-        If SEND_EMAILS Then .Send
-    End With
-    
-    Set MailSystem = Nothing
-
-
     GenerateEmailReports = True
 
 Exit Function
@@ -587,16 +568,16 @@ End Function
 
 ' ===============================================================
 ' ReturnReportList
-' Returns a list of reports in the system
+' Returns a list of reports or alerts in the system
 ' ---------------------------------------------------------------
-Public Function ReturnReportList() As Recordset
+Public Function ReturnReportList(EmailType As Integer) As Recordset
     Dim RstReports As Recordset
     
     Const StrPROCEDURE As String = "ReturnReportList()"
 
     On Error GoTo ErrorHandler
 
-    Set RstReports = SQLQuery("TblReports")
+    Set RstReports = SQLQuery("SELECT * FROM TblReports WHERE ReportType = " & EmailType)
 
     Set ReturnReportList = RstReports
 
@@ -691,3 +672,65 @@ Public Sub EmailReportsRemoveAddress(CrewNo As String, ReportNo As Integer, ToCC
     Debug.Print SQL
 End Sub
 
+' ===============================================================
+' SendEmailReports
+' Sends the Email Reports to the addresses that have been set up
+' ---------------------------------------------------------------
+Public Function SendEmailReports(ReportBody As String, ReportNo As Integer) As Boolean
+    Dim RstToCC As Recordset
+
+    Const StrPROCEDURE As String = "SendEmailReports()"
+
+    On Error GoTo ErrorHandler
+
+    Set MailSystem = New ClsMailSystem
+    Set RstToCC = GetReportAddresses(ReportNo)
+    
+    If Not ModLibrary.OutlookRunning Then
+        Shell "Outlook.exe"
+    End If
+    
+    With MailSystem.MailItem
+            
+        Do While Not RstToCC.EOF
+            If RstToCC!ToCC = "To" Then
+                .To = .To & RstToCC!UserName & ";"
+            End If
+            
+            If RstToCC!ToCC = "CC" Then
+                .CC = .CC & RstToCC!UserName & ";"
+            End If
+            
+            'strip off final ';' in string
+            .To = Left(.To, Len(.To) - 1)
+            .CC = Left(.CC, Len(.CC) - 1)
+        Loop
+            .Subject = "CFS Stock Report"
+            .HTMLBody = ReportBody
+            If SEND_EMAILS Then .Send
+    End With
+    
+    Set MailSystem = Nothing
+
+
+
+
+
+    SendEmailReports = True
+
+Exit Function
+
+ErrorExit:
+
+'    ***CleanUpCode***
+    SendEmailReports = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function

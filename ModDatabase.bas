@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 24 Nov 17
+' Date - 27 Nov 17
 '===============================================================
 
 Option Explicit
@@ -233,11 +233,15 @@ Public Sub UpdateDBScript()
     
     'Table changes
     DB.Execute "CREATE TABLE TblReports"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportNo Int"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportType Integer"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportNo Int"
-    DB.Execute "INSERT INTO TblReports VALUES ('CFS Status', '22 Nov 17', 7, 1)"
+    DB.Execute "INSERT INTO TblReports VALUES (1, 1,'CFS Stock Count Report', '22 Nov 17', 7)"
+    DB.Execute "INSERT INTO TblReports VALUES (2, 2,'New Guest User', '', 0)"
+    DB.Execute "INSERT INTO TblReports VALUES (3, 2,'Support Query Recieved', '', 0)"
+    DB.Execute "INSERT INTO TblReports VALUES (4, 2,'New Order Received', '', 0)"
     
     DB.Execute "CREATE TABLE TblRptsAlerts"
     DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN CrewNo Text"
@@ -246,7 +250,14 @@ Public Sub UpdateDBScript()
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3682', 1, 'To')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 1, 'CC')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 1, 'CC')"
-        
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 2, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 2, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('2506', 3, 'CC')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 4, 'To')"
+    
     'update DB Version
     With RstTable
         .Edit

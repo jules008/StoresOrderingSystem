@@ -1,4 +1,5 @@
+ReportNo,  dbLong
+ReportType,  dbLong
 ReportName,  dbText
 DueDate,  dbDate
 Frequency,  dbDouble
-ReportNo,  dbLong
