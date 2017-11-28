@@ -16,10 +16,11 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 27 Nov 17
+' Date - 23 Nov 17
 '===============================================================
 Option Explicit
 
@@ -491,7 +492,7 @@ Private Function FormInitialise() As Boolean
 
     On Error GoTo ErrorHandler
 
-  
+    
     With LstHeadings
         .AddItem
         .List(0, 0) = "No"
