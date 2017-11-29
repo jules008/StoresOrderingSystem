@@ -12,7 +12,7 @@ Attribute VB_Name = "ModReports"
 ' v0,81 - Schedule email reports
 ' v0,92 - Added Email Reports
 '---------------------------------------------------------------
-' Date - 27 Nov 17
+' Date - 29 Nov 17
 '===============================================================
 
 Option Explicit
@@ -354,8 +354,9 @@ End Function
 ' Schedules automatic email reports
 ' ---------------------------------------------------------------
 Public Function ScheduleReports() As Boolean
-    Dim ReportName As EnumReportName
+    Dim ReportNo As EnumReportNo
     Dim RstDueReports As Recordset
+    Dim StrReportHTML As String
     Dim RstReportData As Recordset
     
     Const StrPROCEDURE As String = "ScheduleReports()"
@@ -367,18 +368,22 @@ Public Function ScheduleReports() As Boolean
     With RstDueReports
         If .RecordCount > 0 Then
             
-            ReportName = !ReportNo
+            ReportNo = !ReportNo
             
-            Select Case ReportName
+            Select Case ReportNo
                 Case Is = EnumCFSStockCountReport
                     
-                    Debug.Print "Run Report " & ReportName
+                    Debug.Print "Run Report " & ReportNo
                     
                     ' Send CFS Report
                     Set RstReportData = CFS_emailQuery
                     If RstReportData Is Nothing Then Err.Raise HANDLED_ERROR
-                    If Not GenerateEmailReports("CFS Status", RstReportData) Then Err.Raise HANDLED_ERROR
                     
+                    StrReportHTML = GenerateEmailReports(ReportNo, RstReportData)
+                    If StrReportHTML = "Error" Then Err.Raise HANDLED_ERROR, , "No Report Text"
+
+                    If Not SendEmailReports(StrReportHTML, ReportNo) Then Err.Raise HANDLED_ERROR
+
                     'Reset due date
                     .Edit
                     !DueDate = !DueDate + !Frequency
@@ -468,7 +473,7 @@ End Function
 ' GenerateEmailReports
 ' Generates the automatic email reports
 ' ---------------------------------------------------------------
-Private Function GenerateEmailReports(ReportType As String, RstReportData As Recordset) As Boolean
+Private Function GenerateEmailReports(ReportNo As EnumReportNo, RstReportData As Recordset) As String
     Dim StrHead As String
     Dim StrBody As String
     Dim StrReport As String
@@ -544,17 +549,15 @@ Private Function GenerateEmailReports(ReportType As String, RstReportData As Rec
         & "</body></html>"
     
     StrReport = StrHead & StrBody
-    
-    If Not SendEmailReports(StrReport) Then Err.Raise HANDLED_ERROR
-    
-    GenerateEmailReports = True
+        
+    GenerateEmailReports = StrReport
 
 Exit Function
 
 ErrorExit:
 
 '    ***CleanUpCode***
-    GenerateEmailReports = False
+    GenerateEmailReports = "Error"
 
 Exit Function
 
@@ -602,7 +605,7 @@ End Function
 ' GetReportAddresses
 ' Returns the To and CC addresses for a given report
 ' ---------------------------------------------------------------
-Public Function GetReportAddresses(ReportNo As Integer) As Recordset
+Public Function GetReportAddresses(ReportNo As EnumReportNo) As Recordset
     Dim RstAddresses As Recordset
     
     Const StrPROCEDURE As String = "GetReportAddresses()"
@@ -676,7 +679,7 @@ End Sub
 ' SendEmailReports
 ' Sends the Email Reports to the addresses that have been set up
 ' ---------------------------------------------------------------
-Public Function SendEmailReports(ReportBody As String, ReportNo As Integer) As Boolean
+Public Function SendEmailReports(ReportBody As String, ReportNo As EnumReportNo) As Boolean
     Dim RstToCC As Recordset
 
     Const StrPROCEDURE As String = "SendEmailReports()"
@@ -694,20 +697,24 @@ Public Function SendEmailReports(ReportBody As String, ReportNo As Integer) As B
             
         Do While Not RstToCC.EOF
             If RstToCC!ToCC = "To" Then
-                .To = .To & RstToCC!UserName & ";"
+                .To = .To & RstToCC!UserName
+                .To = .To & "; "
             End If
             
             If RstToCC!ToCC = "CC" Then
-                .CC = .CC & RstToCC!UserName & ";"
+                .CC = .CC & RstToCC!UserName
+                .CC = .CC & ", "
             End If
-            
-            'strip off final ';' in string
-            .To = Left(.To, Len(.To) - 1)
-            .CC = Left(.CC, Len(.CC) - 1)
+            RstToCC.MoveNext
         Loop
-            .Subject = "CFS Stock Report"
-            .HTMLBody = ReportBody
-            If SEND_EMAILS Then .Send
+            
+        'strip off final ';' in string
+        If Len(.To) > 0 Then .To = Left(.To, Len(.To) - 1)
+        If Len(.CC) > 0 Then .CC = Left(.CC, Len(.CC) - 1)
+        
+        .Subject = "CFS Stock Report"
+        .HTMLBody = ReportBody
+        If SEND_EMAILS Then .Send Else .Display
     End With
     
     Set MailSystem = Nothing

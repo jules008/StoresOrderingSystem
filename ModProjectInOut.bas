@@ -48,7 +48,7 @@ Public Sub ExportModules()
     
     Terminate
     
-    ThisWorkbook.SaveAs ExportFilePath & "\Stores IT System v0", 51
+    ThisWorkbook.SaveAs ExportFilePath & "Stores IT System v0", 51
     
     Set DlgOpen = Nothing
 
