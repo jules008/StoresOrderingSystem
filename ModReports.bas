@@ -10,7 +10,7 @@ Attribute VB_Name = "ModReports"
 ' v0,6 - Add cost to Order Report
 ' v0,7 - Added query for Report 3
 ' v0,81 - Schedule email reports
-' v0,92 - Added Email Reports
+' v0,93 - Added Email Reports
 '---------------------------------------------------------------
 ' Date - 29 Nov 17
 '===============================================================
@@ -694,24 +694,22 @@ Public Function SendEmailReports(ReportBody As String, ReportNo As EnumReportNo)
     End If
     
     With MailSystem.MailItem
-            
+        
         Do While Not RstToCC.EOF
             If RstToCC!ToCC = "To" Then
-                .To = .To & RstToCC!UserName
-                .To = .To & "; "
+                .To = RstToCC!UserName
+                .Recipients.ResolveAll
+                Debug.Print .To
             End If
             
             If RstToCC!ToCC = "CC" Then
-                .CC = .CC & RstToCC!UserName
-                .CC = .CC & ", "
+                .CC = RstToCC!UserName
+                .Recipients.ResolveAll
+                Debug.Print .CC
             End If
             RstToCC.MoveNext
         Loop
-            
-        'strip off final ';' in string
-        If Len(.To) > 0 Then .To = Left(.To, Len(.To) - 1)
-        If Len(.CC) > 0 Then .CC = Left(.CC, Len(.CC) - 1)
-        
+                    
         .Subject = "CFS Stock Report"
         .HTMLBody = ReportBody
         If SEND_EMAILS Then .Send Else .Display
