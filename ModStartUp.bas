@@ -13,8 +13,10 @@ Attribute VB_Name = "ModStartUp"
 ' v0,9 - Added System Messages on start up
 ' v0,10 - Added optional parameter to allow start up to page
 ' v0,11 - Log On user in DB
+' v0,122 - Schedule email reports
+' v0,13 - changes to filepth for laptop change
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 29 Nov 17
 '===============================================================
 
 Option Explicit
@@ -98,7 +100,12 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
         
     'Show any messages
     If Not MessageCheck Then Err.Raise HANDLED_ERROR
-        
+    
+    'check for email reports to send
+    If CurrentUser.AccessLvl = AdminLvl_5 Then
+        If Not ScheduleReports Then Err.Raise HANDLED_ERROR
+    End If
+    
     ActiveSheet.Range("A1").Select
 
     ShtMain.Protect
@@ -144,11 +151,11 @@ Public Function GetUserName() As Boolean
     
     If Not UpdateUsername Then Err.Raise HANDLED_ERROR
     
-    If TEST_MODE Then
-        If ShtSettings.Range("C15") = True Then
+    If DEV_MODE Then
+       If ShtSettings.Range("C15") = True Then
             UserName = ShtSettings.Range("Test_User")
         Else
-            UserName = Application.UserName
+            UserName = "Julian Turner"
         End If
     Else
         UserName = Application.UserName
@@ -195,7 +202,6 @@ End Function
 ' ---------------------------------------------------------------
 Private Function ReadINIFile() As Boolean
     Dim AppFPath As String
-    Dim IniFPath As String
     Dim DebugMode As String
     Dim TestMode As String
     Dim OutputMode As String
@@ -203,17 +209,24 @@ Private Function ReadINIFile() As Boolean
     Dim DBPath As String
     Dim SendEmails As String
     Dim DevMode As String
-    Dim INIFile As Integer
     Dim TmpFPath As String
+    Dim INIFile As Integer
+    Dim INIFPath As String
     Dim StopFlag As String
     Dim MaintMsg As String
     
     Const StrPROCEDURE As String = "ReadINIFile()"
 
     On Error GoTo ErrorHandler
-
+    
     AppFPath = ThisWorkbook.Path
-    IniFPath = AppFPath & INI_FILE_PATH
+    
+    If Left(AppFPath, 5) = "https" Then
+        INIFPath = "C:\Users\Julian\OneDrive\RDS Project\Stores IT Project\DevArea\System Files\"
+    Else
+        INIFPath = AppFPath & "\System Files\"
+    End If
+    
     INIFile = FreeFile()
     
     If Dir(IniFPath & INI_FILE) = "" Then Err.Raise NO_INI_FILE
@@ -240,7 +253,6 @@ Private Function ReadINIFile() As Boolean
     ShtSettings.Range("DBPath") = DBPath
     SEND_EMAILS = CBool(SendEmails)
     DEV_MODE = CBool(DevMode)
-    TMP_FILE_PATH = TmpFPath
     
     If StopFlag = True Then Stop
     
