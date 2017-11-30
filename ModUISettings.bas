@@ -16,8 +16,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,12 - Change Delivery button to Supplier
 ' v0,13 - Added Report 3 button
 ' v0,14 - Added Release notes frame and text box style
+' v0,15 - Added Report Settings Buton
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -186,17 +187,22 @@ Public Const ORDER_LINEITEM_TITLES As String = "Order No:Days Old:Items:Requeste
 Public Const BTN_REPORT_1_HEIGHT As Integer = 30
 Public Const BTN_REPORT_1_WIDTH As Integer = 175
 Public Const BTN_REPORT_1_LEFT As Integer = 180
-Public Const BTN_REPORT_1_TOP As Integer = 30
+Public Const BTN_REPORT_1_TOP As Integer = 20
 
 Public Const BTN_REPORT_2_HEIGHT As Integer = 30
 Public Const BTN_REPORT_2_WIDTH As Integer = 175
-Public Const BTN_REPORT_2_LEFT As Integer = 365
-Public Const BTN_REPORT_2_TOP As Integer = 30
+Public Const BTN_REPORT_2_LEFT As Integer = 180
+Public Const BTN_REPORT_2_TOP As Integer = 60
 
 Public Const BTN_REPORT_3_HEIGHT As Integer = 30
 Public Const BTN_REPORT_3_WIDTH As Integer = 175
-Public Const BTN_REPORT_3_LEFT As Integer = 550
-Public Const BTN_REPORT_3_TOP As Integer = 30
+Public Const BTN_REPORT_3_LEFT As Integer = 180
+Public Const BTN_REPORT_3_TOP As Integer = 100
+
+Public Const BTN_RPT_SETTINGS_HEIGHT As Integer = 30
+Public Const BTN_RPT_SETTINGS_WIDTH As Integer = 175
+Public Const BTN_RPT_SETTINGS_LEFT As Integer = 850
+Public Const BTN_RPT_SETTINGS_TOP As Integer = 20
 
 ' ===============================================================
 ' Style Declarations

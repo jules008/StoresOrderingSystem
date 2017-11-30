@@ -17,6 +17,7 @@ Attribute VB_Exposed = False
 
 
 
+
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - User administration fixes
@@ -220,33 +221,6 @@ ErrorExit:
 Exit Sub
 
 ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Sub
-' ===============================================================
-' BtnEmailReports_Click
-' Shows Email Reports admin page
-' ---------------------------------------------------------------
-Private Sub BtnEmailReports_Click()
-    Const StrPROCEDURE As String = "BtnEmailReports_Click()"
-
-    On Error GoTo ErrorHandler
-
-    If Not FrmReportAdmin.ShowForm Then Err.Raise HANDLED_ERROR
-
-Exit Sub
-
-ErrorExit:
-
-'    ***CleanUpCode***
-
-Exit Sub
-
-ErrorHandler:
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
         Stop
         Resume
     Else

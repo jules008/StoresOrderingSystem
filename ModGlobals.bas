@@ -23,8 +23,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,18 - Added Report 3 button
 ' v0,19 - Added Release Notes frame
 ' v0,201 - Added EnumReportNo
+' v0,21 - Added Report Settings Buton
 '---------------------------------------------------------------
-' Date - 29 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -132,6 +133,7 @@ Public BtnFindOrder As ClsUIMenuItem
 Public BtnReport1 As ClsUIMenuItem
 Public BtnReport2 As ClsUIMenuItem
 Public BtnReport3 As ClsUIMenuItem
+Public BtnRptSettings As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -343,6 +345,7 @@ Enum EnumBtnNo
     EnumReport2Btn
     EnumFindOrderBtn
     EnumReport3Btn
+    EnumRptSettings
 End Enum
 
 Enum EnumReportNo

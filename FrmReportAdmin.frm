@@ -20,7 +20,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
-' Date - 23 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 Option Explicit
 
@@ -572,7 +572,7 @@ End Function
 ' ---------------------------------------------------------------
 Private Function PopulateForm() As Boolean
     Dim RstAddresses As Recordset
-    Dim ReportNo As Integer
+    Dim ReportNo As EnumReportNo
     
     Const StrPROCEDURE As String = "PopulateForm()"
 

@@ -7,8 +7,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,3 - Removed hard numbering from buttons
 ' v0,4 - Add cost to Order Report
 ' v0,5 - Added Report 3
+' v0,6 - Added Report Settings Buton
 '---------------------------------------------------------------
-' Date - 10 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -30,7 +31,8 @@ Public Function BuildReporting() As Boolean
     If Not BuildReport1Btn Then Err.Raise HANDLED_ERROR
     If Not BuildReport2Btn Then Err.Raise HANDLED_ERROR
     If Not BuildReport3Btn Then Err.Raise HANDLED_ERROR
-        
+    If Not BuildSettingsBtn Then Err.Raise HANDLED_ERROR
+    
     ModLibrary.PerfSettingsOff
                     
     BuildReporting = True
@@ -189,6 +191,51 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
+' BuildSettingsBtn
+' Adds the button to switch order list between open and closed orders
+' ---------------------------------------------------------------
+Private Function BuildSettingsBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildSettingsBtn()"
+
+    On Error GoTo ErrorHandler
+
+    Set BtnRptSettings = New ClsUIMenuItem
+
+    With BtnRptSettings
+        
+        .Height = BTN_RPT_SETTINGS_HEIGHT
+        .Left = BTN_RPT_SETTINGS_LEFT
+        .Top = BTN_RPT_SETTINGS_TOP
+        .Width = BTN_RPT_SETTINGS_WIDTH
+        .Name = "BtnSettings"
+        .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumRptSettings & ")'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Report Settings"
+    End With
+
+    MainScreen.Menu.AddItem BtnRptSettings
+    
+    BuildSettingsBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildSettingsBtn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
 ' ProcessBtnPress
 ' Receives all button presses and processes
 ' ---------------------------------------------------------------
@@ -215,6 +262,11 @@ Restart:
             Case EnumReport3Btn
             
                 If Not BtnReport3Sel Then Err.Raise HANDLED_ERROR
+                
+            Case EnumRptSettings
+            
+                If Not FrmReportAdmin.ShowForm Then Err.Raise HANDLED_ERROR
+          
         End Select
     
 GracefulExit:

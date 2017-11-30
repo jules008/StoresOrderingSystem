@@ -257,7 +257,6 @@ Public Sub UpdateDBScript()
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 3, 'To')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('2506', 3, 'CC')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 4, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3356', 4, 'To')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5075', 4, 'To')"
     
     'update DB Version
