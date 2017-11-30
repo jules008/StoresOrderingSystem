@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 29 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -225,8 +225,6 @@ Public Sub UpdateDBScript()
         
     Set RstTable = SQLQuery("TblDBVersion")
     
-    MsgBox "Add SysFile to INI File!", vbOK + vbCritical
-    
     'check preceding DB Version
     If RstTable.Fields(0) <> "v1,392" Then
         MsgBox "Database needs to be upgraded to v1,393 to continue", vbOKOnly + vbCritical
@@ -259,6 +257,8 @@ Public Sub UpdateDBScript()
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 3, 'To')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('2506', 3, 'CC')"
     DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 4, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3356', 4, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5075', 4, 'To')"
     
     'update DB Version
     With RstTable
@@ -293,9 +293,7 @@ Public Sub UpdateDBScriptUndo()
     
     DB.Execute "DROP TABLE TblReports"
     DB.Execute "DROP TABLE TblRptsAlerts"
-    
-    MsgBox "Remove SysFile from INI File!", vbOK + vbCritical
- 
+     
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable

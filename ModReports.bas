@@ -12,7 +12,7 @@ Attribute VB_Name = "ModReports"
 ' v0,81 - Schedule email reports
 ' v0,93 - Added Email Reports
 '---------------------------------------------------------------
-' Date - 29 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -379,10 +379,10 @@ Public Function ScheduleReports() As Boolean
                     Set RstReportData = CFS_emailQuery
                     If RstReportData Is Nothing Then Err.Raise HANDLED_ERROR
                     
-                    StrReportHTML = GenerateEmailReports(ReportNo, RstReportData)
+                    StrReportHTML = CFSEmailReportGen(RstReportData)
                     If StrReportHTML = "Error" Then Err.Raise HANDLED_ERROR, , "No Report Text"
 
-                    If Not SendEmailReports(StrReportHTML, ReportNo) Then Err.Raise HANDLED_ERROR
+                    If Not SendEmailReports("CFS Stock Report", StrReportHTML, EnumCFSStockCountReport) Then Err.Raise HANDLED_ERROR
 
                     'Reset due date
                     .Edit
@@ -470,15 +470,15 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
 End Function
 
 ' ===============================================================
-' GenerateEmailReports
+' CFSEmailReportGen
 ' Generates the automatic email reports
 ' ---------------------------------------------------------------
-Private Function GenerateEmailReports(ReportNo As EnumReportNo, RstReportData As Recordset) As String
+Private Function CFSEmailReportGen(RstReportData As Recordset) As String
     Dim StrHead As String
     Dim StrBody As String
     Dim StrReport As String
     
-    Const StrPROCEDURE As String = "GenerateEmailReports()"
+    Const StrPROCEDURE As String = "CFSEmailReportGen()"
 
     On Error GoTo ErrorHandler
 
@@ -550,14 +550,14 @@ Private Function GenerateEmailReports(ReportNo As EnumReportNo, RstReportData As
     
     StrReport = StrHead & StrBody
         
-    GenerateEmailReports = StrReport
+    CFSEmailReportGen = StrReport
 
 Exit Function
 
 ErrorExit:
 
 '    ***CleanUpCode***
-    GenerateEmailReports = "Error"
+    CFSEmailReportGen = "Error"
 
 Exit Function
 
@@ -679,9 +679,13 @@ End Sub
 ' SendEmailReports
 ' Sends the Email Reports to the addresses that have been set up
 ' ---------------------------------------------------------------
-Public Function SendEmailReports(ReportBody As String, ReportNo As EnumReportNo) As Boolean
+Public Function SendEmailReports(ReportSubject As String, ReportBody As String, ReportNo As EnumReportNo) As Boolean
+    Dim TestFlag As String
     Dim RstToCC As Recordset
-
+    Dim MailRecipients As Outlook.Recipients
+    Dim MailRecipient As Outlook.Recipient
+    Dim i As Integer
+    
     Const StrPROCEDURE As String = "SendEmailReports()"
 
     On Error GoTo ErrorHandler
@@ -693,33 +697,39 @@ Public Function SendEmailReports(ReportBody As String, ReportNo As EnumReportNo)
         Shell "Outlook.exe"
     End If
     
-    With MailSystem.MailItem
+    If TEST_MODE Then
+        TestFlag = TEST_PREFIX
+    Else
+        TestFlag = ""
+    End If
+
+    With RstToCC
         
-        Do While Not RstToCC.EOF
-            If RstToCC!ToCC = "To" Then
-                .To = RstToCC!UserName
-                .Recipients.ResolveAll
-                Debug.Print .To
-            End If
-            
-            If RstToCC!ToCC = "CC" Then
-                .CC = RstToCC!UserName
-                .Recipients.ResolveAll
-                Debug.Print .CC
+        Set MailRecipients = MailSystem.MailItem.Recipients
+        
+        Do While Not .EOF
+            Set MailRecipient = MailRecipients.Add(!UserName)
+            MailRecipient.Resolve
+            If MailRecipient.Resolved Then
+                If !ToCC = "To" Then MailRecipient.Type = olTo
+                If !ToCC = "CC" Then MailRecipient.Type = olCC
+            Else
+                For i = 1 To MailRecipients.Count
+                    If MailRecipients(i).Name = !UserName Then MailRecipients.Remove i
+                Next
             End If
             RstToCC.MoveNext
         Loop
-                    
-        .Subject = "CFS Stock Report"
-        .HTMLBody = ReportBody
+    End With
+    With MailSystem.MailItem
+        .Subject = TestFlag & ReportSubject
+        .HTMLBody = TestFlag & ReportBody
         If SEND_EMAILS Then .Send Else .Display
     End With
     
     Set MailSystem = Nothing
-
-
-
-
+    Set MailRecipient = Nothing
+    Set MailRecipients = Nothing
 
     SendEmailReports = True
 
@@ -729,6 +739,8 @@ ErrorExit:
 
 '    ***CleanUpCode***
     SendEmailReports = False
+    Set MailRecipient = Nothing
+    Set MailRecipients = Nothing
 
 Exit Function
 

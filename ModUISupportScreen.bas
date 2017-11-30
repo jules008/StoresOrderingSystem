@@ -9,8 +9,9 @@ Attribute VB_Name = "ModUISupportScreen"
 ' v0,5 - Removed hard numbering for buttons
 ' v0,6 - Add Julia Whitfield as cc to support query email
 ' v0,7 - Added Release notes
+' v0,8 - Centralised mail messages
 '---------------------------------------------------------------
-' Date - 13 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -344,23 +345,10 @@ Private Function BtnFeedbackSend() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not ModLibrary.OutlookRunning Then
-        Shell "Outlook.exe"
-    End If
-
-    Set MailSystem = New ClsMailSystem
-    
-    With MailSystem.MailItem
-        .To = "Julian Turner; Emma Morton; Shane Redhead"
-        .CC = "Julia Whitfield"
-        .Subject = "Stores IT Project - Query received from " & Application.UserName
-        .Body = SupportFrame1.DashObs("CommentBox").Text
-        If SEND_EMAILS Then .Send
-    End With
+    If Not ModReports.SendEmailReports("Stores IT Project - Query received from " & CurrentUser.UserName, SupportFrame1.DashObs("CommentBox").Text, EnumSupportQueryRecieved) Then Err.Raise HANDLED_ERROR
     
     SupportFrame1.DashObs("CommentBox").Text = ""
-    Set MailSystem = Nothing
-    
+        
     BtnFeedbackSend = True
     
 Exit Function
@@ -369,8 +357,6 @@ ErrorExit:
     BtnFeedbackSend = False
     
     Terminate
-
-    Set MailSystem = Nothing
 
 Exit Function
 
