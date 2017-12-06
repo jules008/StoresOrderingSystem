@@ -14,7 +14,7 @@ Attribute VB_Name = "ModStartUp"
 ' v0,10 - Added optional parameter to allow start up to page
 ' v0,11 - Log On user in DB
 ' v0,122 - Schedule email reports
-' v0,131 - changes to filepth for laptop change
+' v0,13 - changes to filepth for laptop change
 '---------------------------------------------------------------
 ' Date - 29 Nov 17
 '===============================================================
@@ -102,7 +102,7 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
     If Not MessageCheck Then Err.Raise HANDLED_ERROR
     
     'check for email reports to send
-    If CurrentUser.UserName = "Julian Turner" Or CurrentUser.UserName = "Shane Redhead" Then
+    If CurrentUser.AccessLvl = AdminLvl_5 Then
         If Not ScheduleReports Then Err.Raise HANDLED_ERROR
     End If
     

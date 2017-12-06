@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - Bug fix - Changing size1 does not update size 2 choices
 ' v0,2 - Adapted for Supplier Functionality
+' v0,3 - Temporarily disable Calendar widget
 '---------------------------------------------------------------
-' Date - 17 Jul 17
+' Date - 06 Nov 17
 '===============================================================
 Option Explicit
 
@@ -214,9 +215,10 @@ End Sub
 ' Shows date picker form
 ' ---------------------------------------------------------------
 Private Sub BtnDatePicker_Click()
-    FrmDatePicker.Show
-    TxtDate = Format(FrmDatePicker.Tag, "dd/mm/yy")
-    TxtQty.BackColor = COLOUR_3
+'    On Error Resume Next
+'    FrmDatePicker.Show
+'    TxtDate = Format(FrmDatePicker.Tag, "dd/mm/yy")
+'    TxtQty.BackColor = COLOUR_3
 
 End Sub
 
@@ -466,6 +468,11 @@ Private Function ValidateForm() As EnumFormValidation
     
     With TxtDate
         If .Value = "" Then
+            .BackColor = COLOUR_6
+            ValidateForm = ValidationError
+        End If
+        
+        If Not IsDate(.Value) Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
         End If
