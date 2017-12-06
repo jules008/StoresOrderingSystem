@@ -24,15 +24,18 @@ Private Sub BtnClear_Click()
 End Sub
 
 Private Sub Calendar1_Click()
-    On Error Resume Next
-    Tag = Me.Calendar1.Day & "/" & Calendar1.Month & "/" & Calendar1.Year
-    Me.Hide
+
+'****CALENDAR TEMPORARILY REMOVED*****************
+'    On Error Resume Next
+'    Tag = Me.Calendar1.Day & "/" & Calendar1.Month & "/" & Calendar1.Year
+'    Me.Hide
 End Sub
 
 Private Sub UserForm_Activate()
-    On Error Resume Next
-    Me.Calendar1.Day = Format(Now, "dd")
-    Me.Calendar1.Month = Format(Now, "mm")
-    Me.Calendar1.Year = Format(Now, "yyyy")
+'****CALENDAR TEMPORARILY REMOVED*****************
+'    On Error Resume Next
+'    Me.Calendar1.Day = Format(Now, "dd")
+'    Me.Calendar1.Month = Format(Now, "mm")
+'    Me.Calendar1.Year = Format(Now, "yyyy")
 End Sub
 

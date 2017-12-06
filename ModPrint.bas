@@ -13,8 +13,10 @@ Attribute VB_Name = "ModPrint"
 ' v0,9 - Printer issue fix
 ' v0,10 - Added Order Date to Order Form.  Removed PDF Print
 ' v0,11 - Added Return Required flag to Order List Printout
+' v0,12 - change sys file path name
+' v0,13 - Reverted to TmpFile Path name
 '---------------------------------------------------------------
-' Date - 07 Nov 17
+' Date - 06 Dec 17
 '===============================================================
 
 Option Explicit
