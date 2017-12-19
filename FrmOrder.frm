@@ -25,9 +25,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Added checks before removing line items
 ' v0,6 - 287 issue, tried different Outlook detector
 ' v0,7 - Do not save order if no lineitems
-' v0,8 - Centralised the mail messages
+' v0,81 - Centralised the mail messages
 '---------------------------------------------------------------
-' Date - 30 Nov 17
+' Date - 19 Dec 17
 '===============================================================
 Option Explicit
 
@@ -635,7 +635,7 @@ Private Function SendEmailAlerts() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not ModReports.SendEmailReports(TestFlag & "New Order Alert", TestFlag & "A new Stores Order has been received from " & Order.Requestor.UserName, EnumNewOrderReceived) Then Err.Raise HANDLED_ERROR
+    If Not ModReports.SendEmailReports("New Order Alert", "A new Stores Order has been received from " & Order.Requestor.UserName, EnumNewOrderReceived) Then Err.Raise HANDLED_ERROR
     
     SendEmailAlerts = True
 

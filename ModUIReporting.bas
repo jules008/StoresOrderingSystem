@@ -7,9 +7,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,3 - Removed hard numbering from buttons
 ' v0,4 - Add cost to Order Report
 ' v0,5 - Added Report 3
-' v0,6 - Added Report Settings Buton
+' v0,61 - Added Report Settings Button
 '---------------------------------------------------------------
-' Date - 30 Nov 17
+' Date - 19 Dec 17
 '===============================================================
 
 Option Explicit
@@ -209,10 +209,15 @@ Private Function BuildSettingsBtn() As Boolean
         .Top = BTN_RPT_SETTINGS_TOP
         .Width = BTN_RPT_SETTINGS_WIDTH
         .Name = "BtnSettings"
+        .Icon = ShtMain.Shapes("TEMPLATE - Settings").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "AlertSettings_Button"
+        .Icon.Visible = msoCTrue
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumRptSettings & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
-        .Text = "Report Settings"
+        .Text = "Alert Settings"
     End With
 
     MainScreen.Menu.AddItem BtnRptSettings
