@@ -238,7 +238,7 @@ Public Sub UpdateDBScript()
     DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
     DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
-    DB.Execute "INSERT INTO TblReports VALUES (1, 1,'CFS Stock Count Report', '22 Nov 17', 7)"
+    DB.Execute "INSERT INTO TblReports VALUES (1, 1,'CFS Stock Count Report', '27 Dec 17', 7)"
     DB.Execute "INSERT INTO TblReports VALUES (2, 2,'New Guest User', '', 0)"
     DB.Execute "INSERT INTO TblReports VALUES (3, 2,'Support Query Recieved', '', 0)"
     DB.Execute "INSERT INTO TblReports VALUES (4, 2,'New Order Received', '', 0)"
@@ -369,7 +369,7 @@ Public Sub UpdateSysMsg()
         
         .Fields("ReleaseNotes") = "Software Version 1.6" _
                     & Chr(13) & "Database Version 1.393" _
-                    & Chr(13) & "Date 29 Nov 17" _
+                    & Chr(13) & "Date 22 Dec 17" _
                     & Chr(13) & "" _
                     & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
                     & Chr(13) & "" _
