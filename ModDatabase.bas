@@ -373,7 +373,7 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "" _
                     & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
                     & Chr(13) & "" _
-                    & Chr(13) & "- New Reports/Alerts Admin Console - This is accessed from the User Admin Form and allows " _
+                    & Chr(13) & "- New Reports/Alerts Admin Console - This is accessed from the Settings Button on the Reports Tab and allows " _
                     & Chr(13) & "the target addresses (To/CC) for all system alerts and automatic email reports to be managed"
         .Update
     End With
