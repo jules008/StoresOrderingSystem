@@ -13,8 +13,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,9 - Printer issue fix
 ' v0,10 - Added Order Date to Order Form.  Removed PDF Print
 ' v0,11 - Added Return Required flag to Order List Printout
+' v0,12 - change sys file path name
 '---------------------------------------------------------------
-' Date - 07 Nov 17
+' Date - 29 Nov 17
 '===============================================================
 
 Option Explicit
@@ -35,7 +36,7 @@ Public Function CreateTmpFile() As String
 
     On Error GoTo ErrorHandler
 
-    TmpFilePath = TMP_FILE_PATH
+    TmpFilePath = SYS_PATH
 
     If Right$(TmpFilePath, 1) <> "\" Then TmpFilePath = TmpFilePath & "\"
 
