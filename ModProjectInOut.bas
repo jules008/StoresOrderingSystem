@@ -12,7 +12,7 @@ Public Sub ExportModules()
     SourceBookName = ActiveWorkbook.Name
     Set SourceBook = Application.Workbooks(SourceBookName)
     
-    ExportFilePath = ExportFilePath & "C:\Users\Julian\OneDrive\Dev Area\Dev Library\"
+    ExportFilePath = ExportFilePath & "C:\Users\Julian\Documents\Dev Library\"
     
     Kill ExportFilePath & "*.*"
     

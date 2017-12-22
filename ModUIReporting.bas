@@ -8,8 +8,9 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,4 - Add cost to Order Report
 ' v0,5 - Added Report 3
 ' v0,61 - Added Report Settings Button
+' v0,7 - Added icons to buttons
 '---------------------------------------------------------------
-' Date - 19 Dec 17
+' Date - 22 Dec 17
 '===============================================================
 
 Option Explicit
@@ -75,6 +76,11 @@ Private Function BuildReport1Btn() As Boolean
         .Width = BTN_REPORT_1_WIDTH
         .Name = "BtnReport1"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport1Btn & ")'"
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report1_Button"
+        .Icon.Visible = msoCTrue
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "All Order Report"
@@ -118,6 +124,11 @@ Private Function BuildReport2Btn() As Boolean
         .Left = BTN_REPORT_2_LEFT
         .Top = BTN_REPORT_2_TOP
         .Width = BTN_REPORT_2_WIDTH
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report2"
+        .Icon.Visible = msoCTrue
         .Name = "BtnReport2"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport2Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
@@ -163,6 +174,11 @@ Private Function BuildReport3Btn() As Boolean
         .Left = BTN_REPORT_3_LEFT
         .Top = BTN_REPORT_3_TOP
         .Width = BTN_REPORT_3_WIDTH
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report3"
+        .Icon.Visible = msoCTrue
         .Name = "BtnReport3"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport3Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
