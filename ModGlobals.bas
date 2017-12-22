@@ -22,8 +22,10 @@ Attribute VB_Name = "ModGlobals"
 ' v0,17 - Add new station Ops Support
 ' v0,18 - Added Report 3 button
 ' v0,19 - Added Release Notes frame
+' v0,201 - Added EnumReportNo
+' v0,21 - Added Report Settings Buton
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -36,9 +38,9 @@ Public Const INI_FILE As String = "System.ini"
 Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
-Public Const VERSION = "1.52"
-Public Const DB_VER = "v1,392"
-Public Const VER_DATE = "14/11/17"
+Public Const VERSION = "1.6"
+Public Const DB_VER = "v1,393"
+Public Const VER_DATE = "22/11/17"
 
 ' ===============================================================
 ' Error Constants
@@ -89,7 +91,7 @@ Public OUTPUT_MODE As String
 Public ENABLE_PRINT As Boolean
 Public SEND_EMAILS As Boolean
 Public DEV_MODE As Boolean
-Public TMP_FILE_PATH As String
+Public SYS_PATH As String
 Public MENU_ITEM_SEL As Integer
 
 ' ===============================================================
@@ -131,6 +133,7 @@ Public BtnFindOrder As ClsUIMenuItem
 Public BtnReport1 As ClsUIMenuItem
 Public BtnReport2 As ClsUIMenuItem
 Public BtnReport3 As ClsUIMenuItem
+Public BtnRptSettings As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Others
@@ -342,8 +345,15 @@ Enum EnumBtnNo
     EnumReport2Btn
     EnumFindOrderBtn
     EnumReport3Btn
+    EnumRptSettings
 End Enum
 
+Enum EnumReportNo
+    EnumCFSStockCountReport = 1
+    EnumNewGuestUser
+    EnumSupportQueryRecieved
+    EnumNewOrderReceived
+End Enum
 ' ===============================================================
 ' Type Declarations
 ' ---------------------------------------------------------------

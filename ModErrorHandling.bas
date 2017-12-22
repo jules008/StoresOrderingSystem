@@ -13,8 +13,9 @@ Attribute VB_Name = "ModErrorHandling"
 ' v0,8 - 287 issue, tried new Outlook detector
 ' v0,9 - Added Emma to Unknown user alert
 ' v0,10 - Correct spelling of moreton and stop error messages
+' v0,11 - Centralised mail messages
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -148,6 +149,8 @@ End Function
 ' Handles system custom errors 1000 - 1500
 ' ---------------------------------------------------------------
 Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String) As Boolean
+    Dim MailSubject As String
+    Dim MailBody As String
     
     Const StrPROCEDURE As String = "CustomErrorHandler()"
 
@@ -155,6 +158,10 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
 
     Select Case ErrorCode
         Case UNKNOWN_USER
+            MailSubject = "Unknown User - " & APP_NAME
+            MailBody = "A new user needs to be added to the database - " & CurrentUser.CrewNo & " " & CurrentUser.UserName
+                                
+            If Not ModReports.SendEmailReports(MailSubject, MailBody, EnumNewGuestUser) Then Err.Raise HANDLED_ERROR
             
             MsgBox "Sorry, the system does not recognise you.  Please continue with " _
                     & "the order as a guest.  Your name has been forwarded onto the " _
@@ -164,22 +171,6 @@ Public Function CustomErrorHandler(ErrorCode As Long, Optional Message As String
             
             CurrentUser.DBSave
             
-            If Not ModLibrary.OutlookRunning Then
-                Shell "Outlook.exe"
-            End If
-            
-            Set MailSystem = New ClsMailSystem
-            
-            With MailSystem
-                .MailItem.To = "Julian Turner; Emma Morton"
-                .MailItem.Subject = "Unknown User - " & APP_NAME
-                .MailItem.Importance = olImportanceHigh
-                .MailItem.Body = "A new user needs to be added to the database - " _
-                                & CurrentUser.CrewNo & " " & CurrentUser.UserName
-                
-                If SEND_EMAILS Then .MailItem.Send
-            End With
-
         Case NO_ITEM_SELECTED
             MsgBox "Please select an item", vbOKOnly + vbInformation, APP_NAME
             

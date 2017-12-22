@@ -9,8 +9,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,5 - Added System Message
 ' v0,6 - Seperated out Update Message procedure
 ' v0,7 - Added Release Notes
+' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 30 Nov 17
 '===============================================================
 
 Option Explicit
@@ -225,24 +226,47 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,391" Then
-        MsgBox "Database needs to be upgraded to v1,391 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,392" Then
+        MsgBox "Database needs to be upgraded to v1,393 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'Table changes
-    DB.Execute "CREATE TABLE TblUsers"
-    DB.Execute "ALTER TABLE TblUsers ADD COLUMN CurrentUsers Text"
-    DB.Execute "ALTER TABLE TblUsers ADD COLUMN LoggedOn date"
+    DB.Execute "CREATE TABLE TblReports"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportNo Int"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportType Integer"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
+    DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
+    DB.Execute "INSERT INTO TblReports VALUES (1, 1,'CFS Stock Count Report', '22 Nov 17', 7)"
+    DB.Execute "INSERT INTO TblReports VALUES (2, 2,'New Guest User', '', 0)"
+    DB.Execute "INSERT INTO TblReports VALUES (3, 2,'Support Query Recieved', '', 0)"
+    DB.Execute "INSERT INTO TblReports VALUES (4, 2,'New Order Received', '', 0)"
+    
+    DB.Execute "CREATE TABLE TblRptsAlerts"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN CrewNo Text"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ReportNo Int"
+    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ToCC Text"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3682', 1, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 1, 'CC')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 1, 'CC')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 2, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 2, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 3, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('2506', 3, 'CC')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 4, 'To')"
+    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5075', 4, 'To')"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v1,392"
+        .Fields(0) = "v1,393"
         .Update
     End With
     
-'    UpdateSysMsg
+    UpdateSysMsg
     
     MsgBox "Database successfully updated", vbOKOnly + vbInformation
     
@@ -251,8 +275,7 @@ Public Sub UpdateDBScript()
     Set Fld = Nothing
     
 End Sub
-        
-        
+              
 ' ===============================================================
 ' UpdateDBScriptUndo
 ' Script to update DB
@@ -266,14 +289,15 @@ Public Sub UpdateDBScriptUndo()
     Dim Fld As DAO.Field
         
     DBConnect
-                    
-    DB.Execute "DROP TABLE TblUsers"
- 
+    
+    DB.Execute "DROP TABLE TblReports"
+    DB.Execute "DROP TABLE TblRptsAlerts"
+     
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v1,391"
+        .Fields(0) = "v1,392"
         .Update
     End With
     
@@ -300,8 +324,8 @@ Public Function GetDBVer() As String
 
     GetDBVer = DBVer.Fields(0)
 
+    Debug.Print DBVer.Fields(0)
     Set DBVer = Nothing
-    
 Exit Function
 
 ErrorExit:
@@ -336,24 +360,21 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields("SystemMessage") = "Version 1.152 - What's New" _
+        .Fields("SystemMessage") = "Version 1.6 - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - 'Return Req'd' added to Order Form " _
+                    & Chr(13) & " - Weekly CFS Stock email " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - New Reports/Alerts Admin Console " _
         
-        .Fields("ReleaseNotes") = "Software Version 1.151" _
-                    & Chr(13) & "Database Version 1.391" _
-                    & Chr(13) & "Date 13 Nov 17" _
+        .Fields("ReleaseNotes") = "Software Version 1.6" _
+                    & Chr(13) & "Database Version 1.393" _
+                    & Chr(13) & "Date 29 Nov 17" _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Return Req'd' added to Order Form - New column has been added to the " _
-                    & "printed order form to indicate whether a return is required following delivery of the new item " _
+                    & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
                     & Chr(13) & "" _
-                    & Chr(13) & "- New 'Nil Return Report' added to the Reports section - This report will list all items that " _
-                    & "were not returned to stores following a delivery. For this report to be effective, returned items will " _
-                    & "need to be logged on return to stores" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Release Notes Added - These notes will be added for each new release to add further information " _
-                    & "regarding the new release."
+                    & Chr(13) & "- New Reports/Alerts Admin Console - This is accessed from the User Admin Form and allows " _
+                    & Chr(13) & "the target addresses (To/CC) for all system alerts and automatic email reports to be managed"
         .Update
     End With
     
@@ -362,4 +383,24 @@ Public Sub UpdateSysMsg()
     
     Set RstMessage = Nothing
 
+End Sub
+
+' ===============================================================
+' ShowUsers
+' Show users logged onto system
+' ---------------------------------------------------------------
+Public Sub ShowUsers()
+    Dim RstUsers As Recordset
+    
+    Set RstUsers = SQLQuery("TblUsers")
+    
+    With RstUsers
+        Debug.Print
+        Do While Not .EOF
+            Debug.Print "User: " & .Fields(0) & " - Logged on: " & .Fields(1)
+            .MoveNext
+        Loop
+    End With
+    
+    Set RstUsers = Nothing
 End Sub

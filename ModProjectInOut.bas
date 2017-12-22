@@ -12,7 +12,7 @@ Public Sub ExportModules()
     SourceBookName = ActiveWorkbook.Name
     Set SourceBook = Application.Workbooks(SourceBookName)
     
-    ExportFilePath = ExportFilePath & "C:\Users\Julian\OneDrive\Dev Area\Dev Library\"
+    ExportFilePath = ExportFilePath & "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
     
     Kill ExportFilePath & "*.*"
     
@@ -48,7 +48,7 @@ Public Sub ExportModules()
     
     Terminate
     
-    ThisWorkbook.SaveAs ExportFilePath & "Stores IT System v0", 51
+    ThisWorkbook.SaveAs ExportFilePath & "\Stores IT System v0", 51
     
     Set DlgOpen = Nothing
 

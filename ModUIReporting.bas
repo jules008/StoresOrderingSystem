@@ -7,8 +7,10 @@ Attribute VB_Name = "ModUIReporting"
 ' v0,3 - Removed hard numbering from buttons
 ' v0,4 - Add cost to Order Report
 ' v0,5 - Added Report 3
+' v0,61 - Added Report Settings Button
+' v0,7 - Added icons to buttons
 '---------------------------------------------------------------
-' Date - 10 Nov 17
+' Date - 22 Dec 17
 '===============================================================
 
 Option Explicit
@@ -30,7 +32,8 @@ Public Function BuildReporting() As Boolean
     If Not BuildReport1Btn Then Err.Raise HANDLED_ERROR
     If Not BuildReport2Btn Then Err.Raise HANDLED_ERROR
     If Not BuildReport3Btn Then Err.Raise HANDLED_ERROR
-        
+    If Not BuildSettingsBtn Then Err.Raise HANDLED_ERROR
+    
     ModLibrary.PerfSettingsOff
                     
     BuildReporting = True
@@ -73,6 +76,11 @@ Private Function BuildReport1Btn() As Boolean
         .Width = BTN_REPORT_1_WIDTH
         .Name = "BtnReport1"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport1Btn & ")'"
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report1_Button"
+        .Icon.Visible = msoCTrue
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "All Order Report"
@@ -116,6 +124,11 @@ Private Function BuildReport2Btn() As Boolean
         .Left = BTN_REPORT_2_LEFT
         .Top = BTN_REPORT_2_TOP
         .Width = BTN_REPORT_2_WIDTH
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report2"
+        .Icon.Visible = msoCTrue
         .Name = "BtnReport2"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport2Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
@@ -161,6 +174,11 @@ Private Function BuildReport3Btn() As Boolean
         .Left = BTN_REPORT_3_LEFT
         .Top = BTN_REPORT_3_TOP
         .Width = BTN_REPORT_3_WIDTH
+        .Icon = ShtMain.Shapes("TEMPLATE - Graph").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Report3"
+        .Icon.Visible = msoCTrue
         .Name = "BtnReport3"
         .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumReport3Btn & ")'"
         .UnSelectStyle = GENERIC_BUTTON
@@ -177,6 +195,56 @@ Exit Function
 ErrorExit:
 
     BuildReport3Btn = False
+
+Exit Function
+
+ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' BuildSettingsBtn
+' Adds the button to switch order list between open and closed orders
+' ---------------------------------------------------------------
+Private Function BuildSettingsBtn() As Boolean
+
+    Const StrPROCEDURE As String = "BuildSettingsBtn()"
+
+    On Error GoTo ErrorHandler
+
+    Set BtnRptSettings = New ClsUIMenuItem
+
+    With BtnRptSettings
+        
+        .Height = BTN_RPT_SETTINGS_HEIGHT
+        .Left = BTN_RPT_SETTINGS_LEFT
+        .Top = BTN_RPT_SETTINGS_TOP
+        .Width = BTN_RPT_SETTINGS_WIDTH
+        .Name = "BtnSettings"
+        .Icon = ShtMain.Shapes("TEMPLATE - Settings").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "AlertSettings_Button"
+        .Icon.Visible = msoCTrue
+        .OnAction = "'ModUIReporting.ProcessBtnPress(" & EnumRptSettings & ")'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Alert Settings"
+    End With
+
+    MainScreen.Menu.AddItem BtnRptSettings
+    
+    BuildSettingsBtn = True
+
+Exit Function
+
+ErrorExit:
+
+    BuildSettingsBtn = False
 
 Exit Function
 
@@ -215,6 +283,11 @@ Restart:
             Case EnumReport3Btn
             
                 If Not BtnReport3Sel Then Err.Raise HANDLED_ERROR
+                
+            Case EnumRptSettings
+            
+                If Not FrmReportAdmin.ShowForm Then Err.Raise HANDLED_ERROR
+          
         End Select
     
 GracefulExit:

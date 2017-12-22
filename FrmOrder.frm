@@ -25,8 +25,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Added checks before removing line items
 ' v0,6 - 287 issue, tried different Outlook detector
 ' v0,7 - Do not save order if no lineitems
+' v0,81 - Centralised the mail messages
 '---------------------------------------------------------------
-' Date - 31 May 17
+' Date - 19 Dec 17
 '===============================================================
 Option Explicit
 
@@ -629,69 +630,18 @@ End Function
 ' Sends alerts to selected users
 ' ---------------------------------------------------------------
 Private Function SendEmailAlerts() As Boolean
-    Dim RstUsers As Recordset
-    Dim TestFlag As String
-    Dim Persons As ClsPersons
-    Dim ToList As String
-    Dim i As Integer
     
     Const StrPROCEDURE As String = "SendEmailAlerts()"
 
     On Error GoTo ErrorHandler
+
+    If Not ModReports.SendEmailReports("New Order Alert", "A new Stores Order has been received from " & Order.Requestor.UserName, EnumNewOrderReceived) Then Err.Raise HANDLED_ERROR
     
-    Set Persons = New ClsPersons
-    Set RstUsers = Persons.GetMailAlertUsers
-    
-    If Not RstUsers Is Nothing Then
-        With RstUsers
-            .MoveFirst
-            For i = 1 To .RecordCount - 1
-                ToList = ToList & !UserName & "; "
-                .MoveNext
-            Next
-            
-            ToList = ToList & !UserName
-        
-        End With
-        If TEST_MODE Then
-            TestFlag = TEST_PREFIX
-        Else
-            TestFlag = ""
-        End If
-    
-        If Not ModLibrary.OutlookRunning Then
-            Shell "Outlook.exe"
-        End If
-        
-        If MailSystem Is Nothing Then Set MailSystem = New ClsMailSystem
-        
-        With MailSystem.MailItem
-            .To = ToList
-            .Subject = TestFlag & "New Order Alert"
-            .Body = TestFlag & "A new Stores Order has been received from " & Order.Requestor.UserName
-            .Importance = olImportanceHigh
-        End With
-        
-        
-        With MailSystem
-            If SEND_EMAILS Then .MailItem.Send
-        End With
-        
-    End If
-                
-    
-    Set MailSystem = Nothing
-    Set Persons = Nothing
-    Set RstUsers = Nothing
     SendEmailAlerts = True
 
 Exit Function
 
 ErrorExit:
-
-    Set MailSystem = Nothing
-    Set Persons = Nothing
-    Set RstUsers = Nothing
 
 '    ***CleanUpCode***
 

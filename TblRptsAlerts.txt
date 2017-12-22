@@ -1,0 +1,3 @@
+CrewNo,  dbText
+ReportNo,  dbLong
+ToCC,  dbText
