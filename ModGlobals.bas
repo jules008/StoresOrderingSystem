@@ -38,9 +38,9 @@ Public Const INI_FILE As String = "System.ini"
 Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
-Public Const VERSION = "1.6"
+Public Const VERSION = "1.61"
 Public Const DB_VER = "v1,393"
-Public Const VER_DATE = "22/11/17"
+Public Const VER_DATE = "19/01/18"
 
 ' ===============================================================
 ' Error Constants
