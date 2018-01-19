@@ -15,8 +15,9 @@ Attribute VB_Name = "ModStartUp"
 ' v0,11 - Log On user in DB
 ' v0,122 - Schedule email reports
 ' v0,13 - changes to filepth for laptop change
+' v0,14 - Fixed printing issue and 'whats new' message to all
 '---------------------------------------------------------------
-' Date - 29 Nov 17
+' Date - 19 Jan 18
 '===============================================================
 
 Option Explicit
@@ -253,6 +254,7 @@ Private Function ReadINIFile() As Boolean
     ShtSettings.Range("DBPath") = DBPath
     SEND_EMAILS = CBool(SendEmails)
     DEV_MODE = CBool(DevMode)
+    SYS_PATH = TmpFPath
     
     If StopFlag = True Then Stop
     
@@ -309,7 +311,7 @@ Public Function MessageCheck() As Boolean
     
     If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
 
-    If CurrentUser.AccessLvl > BasicLvl_1 Then
+    If CurrentUser.AccessLvl >= BasicLvl_1 Then
         If Not CurrentUser.MessageRead Then
             
             Set RstMessage = SQLQuery("TblMessage")

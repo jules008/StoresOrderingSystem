@@ -11,7 +11,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
 '---------------------------------------------------------------
-' Date - 30 Nov 17
+' Date - 19 Jan 18
 '===============================================================
 
 Option Explicit
@@ -360,21 +360,18 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields("SystemMessage") = "Version 1.6 - What's New" _
+        .Fields("SystemMessage") = "Version 1.61 - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Weekly CFS Stock email " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - New Reports/Alerts Admin Console " _
+                    & Chr(13) & " - Order printing issue fixed " _
+                    & Chr(13) & ""
         
-        .Fields("ReleaseNotes") = "Software Version 1.6" _
+        .Fields("ReleaseNotes") = "Software Version 1.61" _
                     & Chr(13) & "Database Version 1.393" _
-                    & Chr(13) & "Date 22 Dec 17" _
+                    & Chr(13) & "Date 19 Jan 18" _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Weekly CFS Stock Email - The system will now automatically send a  stock status email " _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- New Reports/Alerts Admin Console - This is accessed from the Settings Button on the Reports Tab and allows " _
-                    & Chr(13) & "the target addresses (To/CC) for all system alerts and automatic email reports to be managed"
+                    & Chr(13) & "- 'Fixed the recent issue that prevented the Order from being printed.  Apologies, this was a sloppy error on my part..... " _
+                    & Chr(13) & ""
         .Update
     End With
     
