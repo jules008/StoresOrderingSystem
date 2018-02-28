@@ -219,6 +219,7 @@ Public Sub UpdateDBScript()
     Dim Ind As DAO.Index
     Dim RstTable As Recordset
     Dim i As Integer
+    Dim Binary As String
     
     Dim Fld As DAO.Field
     
@@ -248,7 +249,36 @@ Public Sub UpdateDBScript()
     DB.Execute "SELECT * INTO TblVehicleType FROM TblVehicleTypeNEW"
     DB.Execute "DROP TABLE TblVehicleTypeNEW"
     
+    'clear new issue flag
+    
+    DB.Execute "SELECT * INTO TblAssetOLD FROM TblAsset"
+    Set RstTable = SQLQuery("TblAsset")
+    
+    i = 1
+    With RstTable
+        Do While Not .EOF
+            Debug.Print !AssetNo
+            Binary = !AllowedOrderReasons
+            
+            If Len(Binary) <> 13 Then
+                Binary = Left(Binary, 13)
+                Debug.Print "Length corrected on Asset " & !AssetNo
+            End If
+            
+            Binary = Left(Binary, 12) & "0"
+            
+            .Edit
+            !AllowedOrderReasons = Binary
+            .Update
+            .MoveNext
+            i = i + 1
+        Loop
+    
+    End With
+    
     'update DB Version
+    Set RstTable = SQLQuery("TblDBVersion")
+    
     With RstTable
         .Edit
         .Fields(0) = "v1,394"
@@ -285,7 +315,8 @@ Public Sub UpdateDBScriptUndo()
         MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
-        
+       
+    'Undo Vehicle update
     DB.Execute "SELECT * INTO TblVehicleNEW FROM TblVehicle"
     DB.Execute "DROP TABLE TblVehicle"
     DB.Execute "SELECT * INTO TblVehicle FROM TblVehicleOLD"
@@ -298,6 +329,11 @@ Public Sub UpdateDBScriptUndo()
      
     Set RstTable = SQLQuery("TblDBVersion")
 
+    'undo new issue update
+    DB.Execute "DROP TABLE TblAsset"
+    DB.Execute "SELECT * INTO TblAsset FROM TblAssetOLD"
+    DB.Execute "DROP TABLE TblAssetOLD"
+    
     With RstTable
         .Edit
         .Fields(0) = "v1,393"
@@ -369,15 +405,20 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & " - Phone Order Fixed " _
                     & Chr(13) & "" _
                     & Chr(13) & " - Updated Vehicle List " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - 'New Issue' removed from Order Reasons " _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Phone Order Fixed - Fixed the bug that stopped Phone Orders being shown on the Order List" _
+                    & Chr(13) & "- Phone Order Fixed - Fixed the bug that stopped Phone Orders being shown on the Order List" _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Updated Vehicle List - updated fleet list including new vans and Isuzu Pick Ups" _
+                    & Chr(13) & "- Updated Vehicle List - updated fleet list including new vans and Isuzu Pick Ups" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- 'New Issue' removed from Order Reasons - The 'New Issue' has been removed from the order reason list to ensure the " _
+                              & "Loss Report system is used correctly.  If you feel the item you are ordering is genuinely a new issue, flag this up using a Support Message" _
                     & Chr(13) & ""
         .Update
     End With
