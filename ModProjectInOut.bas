@@ -12,7 +12,7 @@ Public Sub ExportModules()
     SourceBookName = ActiveWorkbook.Name
     Set SourceBook = Application.Workbooks(SourceBookName)
     
-    ExportFilePath = ExportFilePath & "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
+    ExportFilePath = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
     
     Kill ExportFilePath & "*.*"
     

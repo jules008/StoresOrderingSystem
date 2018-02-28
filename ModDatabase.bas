@@ -10,8 +10,9 @@ Attribute VB_Name = "ModDatabase"
 ' v0,6 - Seperated out Update Message procedure
 ' v0,7 - Added Release Notes
 ' v0,8 - Show logged on users
+' v0,9 - Test DB Ver before roll back
 '---------------------------------------------------------------
-' Date - 19 Jan 18
+' Date - 28 Feb 18
 '===============================================================
 
 Option Explicit
@@ -226,43 +227,31 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,392" Then
+    If RstTable.Fields(0) <> "v1,393" Then
         MsgBox "Database needs to be upgraded to v1,393 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    'Table changes
-    DB.Execute "CREATE TABLE TblReports"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportNo Int"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportType Integer"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN ReportName Text"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN DueDate Date"
-    DB.Execute "ALTER TABLE TblReports ADD COLUMN Frequency number"
-    DB.Execute "INSERT INTO TblReports VALUES (1, 1,'CFS Stock Count Report', '27 Dec 17', 7)"
-    DB.Execute "INSERT INTO TblReports VALUES (2, 2,'New Guest User', '', 0)"
-    DB.Execute "INSERT INTO TblReports VALUES (3, 2,'Support Query Recieved', '', 0)"
-    DB.Execute "INSERT INTO TblReports VALUES (4, 2,'New Order Received', '', 0)"
+    MsgBox "Import tables TblVehicle and TblVehicleType"
     
-    DB.Execute "CREATE TABLE TblRptsAlerts"
-    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN CrewNo Text"
-    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ReportNo Int"
-    DB.Execute "ALTER TABLE TblRptsAlerts ADD COLUMN ToCC Text"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('3682', 1, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 1, 'CC')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 1, 'CC')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 2, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 2, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5398', 3, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 3, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5196', 3, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('2506', 3, 'CC')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5073', 4, 'To')"
-    DB.Execute "INSERT INTO TblRptsAlerts VALUES ('5075', 4, 'To')"
+    'Table changes
+    
+    ' delete old vehicle table and add new
+    DB.Execute "SELECT * INTO TblVehicleOLD FROM TblVehicle"
+    DB.Execute "DROP TABLE TblVehicle"
+    DB.Execute "SELECT * INTO TblVehicle FROM TblVehicleNEW"
+    DB.Execute "DROP TABLE TblVehicleNEW"
+    
+    ' delete old vehicleType table and add new
+    DB.Execute "SELECT * INTO TblVehicleTypeOLD FROM TblVehicleType"
+    DB.Execute "DROP TABLE TblVehicleType"
+    DB.Execute "SELECT * INTO TblVehicleType FROM TblVehicleTypeNEW"
+    DB.Execute "DROP TABLE TblVehicleTypeNEW"
     
     'update DB Version
     With RstTable
         .Edit
-        .Fields(0) = "v1,393"
+        .Fields(0) = "v1,394"
         .Update
     End With
     
@@ -290,14 +279,28 @@ Public Sub UpdateDBScriptUndo()
         
     DBConnect
     
-    DB.Execute "DROP TABLE TblReports"
-    DB.Execute "DROP TABLE TblRptsAlerts"
+    Set RstTable = SQLQuery("TblDBVersion")
+
+    If RstTable.Fields(0) <> "v1,394" Then
+        MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
+        Exit Sub
+    End If
+        
+    DB.Execute "SELECT * INTO TblVehicleNEW FROM TblVehicle"
+    DB.Execute "DROP TABLE TblVehicle"
+    DB.Execute "SELECT * INTO TblVehicle FROM TblVehicleOLD"
+    DB.Execute "DROP TABLE TblVehicleOLD"
+    
+    DB.Execute "SELECT * INTO TblVehicleTypeNEW FROM TblVehicleType"
+    DB.Execute "DROP TABLE TblVehicleType"
+    DB.Execute "SELECT * INTO TblVehicleType FROM TblVehicleTypeOLD"
+    DB.Execute "DROP TABLE TblVehicleTypeOLD"
      
     Set RstTable = SQLQuery("TblDBVersion")
 
     With RstTable
         .Edit
-        .Fields(0) = "v1,392"
+        .Fields(0) = "v1,393"
         .Update
     End With
     
@@ -360,17 +363,21 @@ Public Sub UpdateSysMsg()
             .Edit
         End If
         
-        .Fields("SystemMessage") = "Version 1.61 - What's New" _
+        .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Order printing issue fixed " _
+                    & Chr(13) & " - Phone Order Fixed " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Updated Vehicle List " _
                     & Chr(13) & ""
         
-        .Fields("ReleaseNotes") = "Software Version 1.61" _
-                    & Chr(13) & "Database Version 1.393" _
-                    & Chr(13) & "Date 19 Jan 18" _
+        .Fields("ReleaseNotes") = "Software Version: " & VERSION _
+                    & Chr(13) & "Database Version: " & DB_VER _
+                    & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- 'Fixed the recent issue that prevented the Order from being printed.  Apologies, this was a sloppy error on my part..... " _
+                    & Chr(13) & "- 'Phone Order Fixed - Fixed the bug that stopped Phone Orders being shown on the Order List" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- 'Updated Vehicle List - updated fleet list including new vans and Isuzu Pick Ups" _
                     & Chr(13) & ""
         .Update
     End With
