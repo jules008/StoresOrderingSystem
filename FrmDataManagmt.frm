@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial version
 ' v0,1 - Added format to report columns
 ' v0,2 - Added Hide From View Flag
+' v0,3 - No longer exports Quantity
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 06 Feb 18
 '===============================================================
 Option Explicit
 
@@ -71,7 +72,11 @@ Private Sub BtnAssetExport_Click()
     Dim Headings(0 To 24) As String
     Dim ColFormats(0 To 24) As String
     Dim RstAssets As Recordset
-    
+    Dim StrSelect As String
+    Dim StrFrom As String
+    Dim StrWhere As String
+    Dim StrOrderBy As String
+
     Const StrPROCEDURE As String = "BtnAssetExport_Click()"
 
     On Error GoTo ErrorHandler
@@ -157,8 +162,43 @@ Private Sub BtnAssetExport_Click()
     ColFormats(23) = "General"
     ColFormats(24) = "General"
     
-    Set RstAssets = ModDatabase.SQLQuery("TblAsset")
-
+    'construct SQL query for getting asset data.  Create dummy column for Quantity so that it appears as NULL
+    'in the report
+    
+    StrSelect = "SELECT " _
+                    & "TblAsset.AssetNo, " _
+                    & "TblAsset.AllocationType, " _
+                    & "TblAsset.Brand, " _
+                    & "TblAsset.Description, " _
+                    & "Null as Qty, " _
+                    & "TblAsset.Category1, " _
+                    & "TblAsset.Category2, " _
+                    & "TblAsset.Category3, " _
+                    & "TblAsset.Size1, " _
+                    & "TblAsset.Size2, " _
+                    & "TblAsset.PurchaseUnit, " _
+                    & "TblAsset.MinAmount, " _
+                    & "TblAsset.MaxAmount, " _
+                    & "TblAsset.OrderLevel, " _
+                    & "TblAsset.LeadTime, " _
+                    & "TblAsset.Keywords, " _
+                    & "TblAsset.AllowedOrderReasons, " _
+                    & "TblAsset.AdditInfo, " _
+                    & "TblAsset.NoOrderMessage, " _
+                    & "TblAsset.Location, " _
+                    & "TblAsset.Status, " _
+                    & "TblAsset.Cost, " _
+                    & "TblAsset.Supplier1, " _
+                    & "TblAsset.Supplier2, "
+                    
+                    StrSelect = StrSelect _
+                    & "TblAsset.HideFromView "
+                    
+    StrFrom = "FROM " _
+                    & "TblAsset"
+                    
+    Set RstAssets = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
+    
     If Not ModReports.CreateReport(RstAssets, ColWidths, Headings, ColFormats) Then Err.Raise HANDLED_ERROR
     
     Set RstAssets = Nothing

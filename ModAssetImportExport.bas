@@ -6,8 +6,9 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,2 - Test to ensure DBAsset is not nothing before copying qty
 ' v0,3 - Highlight if location changes
 ' v0,4 - Added Hide From View Flag
+' v0,5 - Imports Null quantity as -1
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 06 Feb 18
 '===============================================================
 
 Option Explicit
@@ -285,7 +286,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         .AllocationType = Trim(AssetData(1))
         .Brand = Trim(AssetData(2))
         .Description = Trim(AssetData(3))
-        If AssetData(4) <> "" Then .QtyInStock = Trim(AssetData(4))
+        If AssetData(4) = "" Then .QtyInStock = -1 Else .QtyInStock = (AssetData(4))
         .Category1 = Trim(AssetData(5))
         .Category2 = Trim(AssetData(6))
         .Category3 = Trim(AssetData(7))
@@ -483,7 +484,7 @@ Public Function Stage3_CopyData() As Boolean
 
     For Rw = 1 To MaxAssetNo
         
-        'debug.print "Copying " & Rw & " of " & MaxAssetNo
+        Debug.Print "Copying " & Rw & " of " & MaxAssetNo
         
         Set ShtAsset = ShtAssets(CStr(Rw))
         Set DBAsset = DBAssets(CStr(Rw))
@@ -492,8 +493,10 @@ Public Function Stage3_CopyData() As Boolean
             If Not DBAsset Is Nothing Then DBAsset.DBDelete
         Else
         
-            'don't overwrite quantity
-            If Not DBAsset Is Nothing Then ShtAsset.QtyInStock = DBAsset.QtyInStock
+            'if quantity in SOD is not null, copy and right to DB.  Otherwise, don't overwrite quantity
+            If ShtAsset.QtyInStock = -1 Then
+                If Not DBAsset Is Nothing Then ShtAsset.QtyInStock = DBAsset.QtyInStock
+            End If
             ShtAsset.DBSave Rw
         End If
         Rw = FrmDataImport.UpdateProgrGges(MaxAssetNo, Rw, 3)

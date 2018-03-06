@@ -407,6 +407,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & " - Updated Vehicle List " _
                     & Chr(13) & "" _
                     & Chr(13) & " - 'New Issue' removed from Order Reasons " _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Asset Import now updates Quantity " _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
@@ -419,6 +421,9 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "" _
                     & Chr(13) & "- 'New Issue' removed from Order Reasons - The 'New Issue' has been removed from the order reason list to ensure the " _
                               & "Loss Report system is used correctly.  If you feel the item you are ordering is genuinely a new issue, flag this up using a Support Message" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- Asset Import now updates Quantity - When importing the Spreadsheet of Doom (SOD), the logic has been changed.  If the quantity is blank, it ignores it  " _
+                              & " and does not update the quantity in the database.  If a number is entered in the quantity column, this is used to update the quantity in the database. " _
                     & Chr(13) & ""
         .Update
     End With
