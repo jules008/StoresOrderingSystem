@@ -14,8 +14,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,10 - Added Order Date to Order Form.  Removed PDF Print
 ' v0,11 - Added Return Required flag to Order List Printout
 ' v0,12 - change sys file path name
+' v0,13 - Bug Fix - Extended RngOrders to include Returns col 
 '---------------------------------------------------------------
-' Date - 29 Nov 17
+' Date - 13 Mar 18
 '===============================================================
 
 Option Explicit
@@ -199,7 +200,7 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Set RngStation = ShtOrderList.Range("J3")
     Set RngReturn = ShtOrderList.Range("K3")
     Set RngItemsRefPnt = ShtOrderList.Range("B6")
-    Set RngOrders = ShtOrderList.Range("B6:J39")
+    Set RngOrders = ShtOrderList.Range("B6:K39")
     Set RngDate = ShtOrderList.Range("E3")
     
     With Order
