@@ -402,28 +402,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Phone Order Fixed " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Updated Vehicle List " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - 'New Issue' removed from Order Reasons " _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Asset Import now updates Quantity " _
+                    & Chr(13) & " - Bug Fix - Hidden Assets" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Phone Order Fixed - Fixed the bug that stopped Phone Orders being shown on the Order List" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Updated Vehicle List - updated fleet list including new vans and Isuzu Pick Ups" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- 'New Issue' removed from Order Reasons - The 'New Issue' has been removed from the order reason list to ensure the " _
-                              & "Loss Report system is used correctly.  If you feel the item you are ordering is genuinely a new issue, flag this up using a Support Message" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Asset Import now updates Quantity - When importing the Spreadsheet of Doom (SOD), the logic has been changed.  If the quantity is blank, it ignores it  " _
-                              & " and does not update the quantity in the database.  If a number is entered in the quantity column, this is used to update the quantity in the database. " _
+                    & Chr(13) & "- Bug Fix - Hidden Assets - Fixed bug that stopped hidden assets being hidden" _
                     & Chr(13) & ""
         .Update
     End With

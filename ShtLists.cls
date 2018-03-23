@@ -37,7 +37,7 @@ Public Function RefreshAssetList() As Boolean
     Set RstAssets = ModDatabase.SQLQuery("SELECT DISTINCT Description,keywords FROM tblasset " _
                                         & "WHERE Description IS NOT NULL " _
                                         & "AND Description <> '' " _
-										& "WHERE NOT HideFromView")
+                                        & "AND NOT HideFromView")
 
     Me.Range("A1").CopyFromRecordset RstAssets
 
@@ -107,6 +107,7 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Resume ErrorExit
     End If
 End Function
+
 
 
 

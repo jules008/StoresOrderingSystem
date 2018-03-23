@@ -14,7 +14,7 @@ Attribute VB_Name = "ModPrint"
 ' v0,10 - Added Order Date to Order Form.  Removed PDF Print
 ' v0,11 - Added Return Required flag to Order List Printout
 ' v0,12 - change sys file path name
-' v0,13 - Bug Fix - Extended RngOrders to include Returns col 
+' v0,13 - Bug Fix - Extended RngOrders to include Returns col
 '---------------------------------------------------------------
 ' Date - 13 Mar 18
 '===============================================================
