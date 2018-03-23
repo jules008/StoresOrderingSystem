@@ -403,6 +403,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
                     & Chr(13) & " - Bug Fix - Hidden Assets" _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Bug Fix - Phone Order" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
@@ -410,6 +412,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
                     & Chr(13) & "- Bug Fix - Hidden Assets - Fixed bug that stopped hidden assets being hidden" _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- Bug Fix - Phone Order - Fixed bug that prevented phone orders being displayed in order list" _
                     & Chr(13) & ""
         .Update
     End With
