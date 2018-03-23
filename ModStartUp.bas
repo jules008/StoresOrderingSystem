@@ -355,6 +355,8 @@ Private Function UpdateUsername() As Boolean
     On Error GoTo ErrorHandler
 
     If Application.Username = "PaulJ Wright" Then Application.Username = "Paul Wright"
+    
+    If Application.UserName = "Ian Taylor (LRF)" Then Application.UserName = "Ian Taylor (LFR)"
 
     If Application.UserName = "#" Then Application.UserName = "Samuel Hayward"
     
