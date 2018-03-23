@@ -25,8 +25,9 @@ Attribute VB_Exposed = False
 ' v0,7 - Bug fix - reference lineitem parent not order
 ' v0,8 - Test to see if LineItem exists before cleaning up
 ' v0,9 - Set LineItem on start up
+' v0.10 - Fix Phone Order Bug
 '---------------------------------------------------------------
-' Date - 05 Oct 17
+' Date - 26 Feb 18
 '===============================================================
 Option Explicit
 
@@ -56,6 +57,7 @@ Public Function ShowForm(LocRemoteOrder As Boolean, Optional LocLineItem As ClsL
         LblAllocation = "Who are you raising the Order on behalf of?"
     Else
         If Not LocLineItem Is Nothing Then
+        
             Set Lineitem = LocLineItem
             
             If Not PopulateForm Then Err.Raise HANDLED_ERROR
@@ -230,8 +232,11 @@ Private Sub BtnNext_Click()
             Hide
             
             If RemoteOrder Then
+                Order.PhoneOrder = True
+                If OptMe Then Order.Requestor = CurrentUser
                 If Not FrmOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
             Else
+                If OptMe Then Lineitem.ForPerson = CurrentUser
                 If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             End If
             
