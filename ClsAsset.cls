@@ -298,8 +298,8 @@ Public Property Get HideFromView() As Boolean
     HideFromView = pHideFromView
 End Property
 
-Public Property Let HideFromView(ByVal vNewValue As Boolean)
-    pHideFromView = vNewValue
+Public Property Let HideFromView(ByVal VnewValue As Boolean)
+    pHideFromView = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -365,7 +365,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
 
     With RstAsset
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             
             'if an asset no has been passed, then overwrite that asset in the database, otherwise
             'create new record

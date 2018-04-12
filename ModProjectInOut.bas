@@ -303,7 +303,7 @@ Public Sub CopyShtCodeModule()
     Dim VBCodeMod As VBIDE.CodeModule
     Dim i As Integer
 
-    If ModuleExists("Thisworkbook1") Then
+    If ModuleExists("ThisWorkbook1") Then
         Set SourceMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook1")
         Set DestMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook")
     

@@ -35,7 +35,7 @@ Private pDeliveries As Collection
 
 Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pDeliveries.[_newenum]
+    Set NewEnum = pDeliveries.[_NewEnum]
 End Function
 
 ' ===============================================================

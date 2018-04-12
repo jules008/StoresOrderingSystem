@@ -50,8 +50,8 @@ Public Property Get MaxAssetNo() As Integer
     MaxAssetNo = pMaxAssetNo
 End Property
 
-Public Property Let MaxAssetNo(ByVal vNewValue As Integer)
-    pMaxAssetNo = vNewValue
+Public Property Let MaxAssetNo(ByVal VnewValue As Integer)
+    pMaxAssetNo = VnewValue
 End Property
 
 ' ===============================================================
