@@ -23,8 +23,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Override 'No Order' message for Phone Orders
 ' v0,6 - Bug fix - size 2 list does not update when Size 1 changes
 ' v0,7 - Clean up when cancelling form
+' v0,8 - Phone Order Bug
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 12 Apr 18
 '===============================================================
 Option Explicit
 
@@ -1040,7 +1041,7 @@ Private Function SelectNextForm() As Boolean
     
     Select Case Lineitem.Asset.AllocationType
         Case Is = Person
-            If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Is = Vehicle
             If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR

@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Bug fix hide crime no box when changing to used
 ' v0,3 - Fixed Loss Report details being shown as 'True'
 ' v0,4 - Clean up if user cancels form
+' v0,5 - Phone Order Bug Fix
 '---------------------------------------------------------------
-' Date - 01 Jun 17
+' Date - 12 Apr 18
 '===============================================================
 Option Explicit
 
@@ -609,7 +610,7 @@ Private Function SelectPrevForm() As Boolean
     
         Case Is = Person
             Hide
-            If Not FrmPerson.ShowForm(False, Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
         Case Is = Vehicle

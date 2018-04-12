@@ -44,7 +44,7 @@ Public Function Terminate() As Boolean
             Set MenuItem = Nothing
         Next
         
-        [MenuItemNo] = ""
+        [menuitemno] = ""
         
         Frame.Header.Icon.Delete
         Frame.Header.ShpHeader.Delete

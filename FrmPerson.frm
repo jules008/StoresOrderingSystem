@@ -27,7 +27,7 @@ Attribute VB_Exposed = False
 ' v0,9 - Set LineItem on start up
 ' v0.10 - Fix Phone Order Bug
 '---------------------------------------------------------------
-' Date - 26 Feb 18
+' Date - 12 Apr 18
 '===============================================================
 Option Explicit
 
@@ -41,13 +41,13 @@ Private RemoteOrder As Boolean
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(LocRemoteOrder As Boolean, Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    RemoteOrder = LocRemoteOrder
+    If Not Order Is Nothing Then RemoteOrder = Order.PhoneOrder
     
     If RemoteOrder Then
         Set Order = New ClsOrder
