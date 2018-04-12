@@ -7,8 +7,9 @@ Attribute VB_Name = "ModAssetImportExport"
 ' v0,3 - Highlight if location changes
 ' v0,4 - Added Hide From View Flag
 ' v0,5 - Imports Null quantity as -1
+' v0,6 - Fixed Hide Asset Bug
 '---------------------------------------------------------------
-' Date - 06 Feb 18
+' Date - 12 Apr 18
 '===============================================================
 
 Option Explicit
@@ -306,6 +307,7 @@ Private Function BuildAsset(AssetData() As String) As ClsAsset
         If AssetData(21) <> "" Then .cost = AssetData(21)
         .Supplier1 = Trim(AssetData(22))
         .Supplier2 = Trim(AssetData(23))
+        .HideFromView = Trim(AssetData(24))
     
     End With
 

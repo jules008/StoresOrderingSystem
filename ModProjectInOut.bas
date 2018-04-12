@@ -1,6 +1,6 @@
 Attribute VB_Name = "ModProjectInOut"
-Const EXPORT_FILE_PATH As String = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Phase 2\Master Spreadsheet\Library\Dev\"
-Const PROJECT_FILE_NAME As String = "Phase 2 Progress Master Spreadsheet"
+Const EXPORT_FILE_PATH As String = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
+Const PROJECT_FILE_NAME As String = "Stores IT System v0"
 
 Public Sub ExportModules()
     Dim ExportYN As Boolean
@@ -307,7 +307,10 @@ Public Sub CopyShtCodeModule()
         Set SourceMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook1")
         Set DestMod = ThisWorkbook.VBProject.VBComponents("Thisworkbook")
     
-        DestMod.CodeModule.DeleteLines 1, DestMod.CodeModule.CountOfLines
+        If DestMod.CodeModule.CountOfLines > 0 Then
+            DestMod.CodeModule.DeleteLines 1, DestMod.CodeModule.CountOfLines
+        End If
+        
         DestMod.CodeModule.AddFromString SourceMod.CodeModule.Lines(1, SourceMod.CodeModule.CountOfLines)
     End If
     
