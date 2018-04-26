@@ -27,7 +27,7 @@ Attribute VB_Exposed = False
 ' v0,9 - Set LineItem on start up
 ' v0.10 - Fix Phone Order Bug
 '---------------------------------------------------------------
-' Date - 12 Apr 18
+' Date - 26 Apr 18
 '===============================================================
 Option Explicit
 
@@ -41,18 +41,19 @@ Private RemoteOrder As Boolean
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocRemoteOrder As Boolean, Optional LocLineItem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If Not Order Is Nothing Then RemoteOrder = Order.PhoneOrder
-    
-    If RemoteOrder Then
+    If Order Is Nothing Then
         Set Order = New ClsOrder
         Set Lineitem = New ClsLineItem
-        
+    End If
+    
+    If LocRemoteOrder Then
+        RemoteOrder = True
         BtnPrev.Enabled = False
         LblAllocation = "Who are you raising the Order on behalf of?"
     Else
@@ -219,18 +220,7 @@ Private Sub BtnNext_Click()
             Err.Raise HANDLED_ERROR
         
         Case Is = FormOK
-        
-            If OptMe Then Lineitem.ForPerson = CurrentUser
-            
-            If RemoteOrder Then
-                Order.PhoneOrder = True
-            Else
-                If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
-                If Not Order Is Nothing Then Order.PhoneOrder = False
-            End If
-            
-            Hide
-            
+                    
             If RemoteOrder Then
                 Order.PhoneOrder = True
                 If OptMe Then Order.Requestor = CurrentUser
@@ -238,6 +228,7 @@ Private Sub BtnNext_Click()
             Else
                 If OptMe Then Lineitem.ForPerson = CurrentUser
                 If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+                If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
             End If
             
             Unload Me

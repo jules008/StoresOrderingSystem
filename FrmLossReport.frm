@@ -610,7 +610,7 @@ Private Function SelectPrevForm() As Boolean
     
         Case Is = Person
             Hide
-            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(LocLineItem:=Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
             
         Case Is = Vehicle

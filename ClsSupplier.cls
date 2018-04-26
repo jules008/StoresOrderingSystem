@@ -47,8 +47,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
 End Property
 
 '---------------------------------------------------------------

@@ -155,8 +155,8 @@ Public Property Get MessageRead() As Boolean
    MessageRead = pMessageRead
 End Property
 
-Public Property Let MessageRead(ByVal vNewValue As Boolean)
-    pMessageRead = vNewValue
+Public Property Let MessageRead(ByVal VnewValue As Boolean)
+    pMessageRead = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -223,7 +223,7 @@ Public Sub DBSave()
     
     With RstPerson
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
         Else
             .Edit
         End If

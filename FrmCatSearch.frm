@@ -1041,7 +1041,7 @@ Private Function SelectNextForm() As Boolean
     
     Select Case Lineitem.Asset.AllocationType
         Case Is = Person
-            If Not FrmPerson.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(LocLineItem:=Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Is = Vehicle
             If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR

@@ -40,7 +40,7 @@ Public Property Get Top() As Integer
     Top = pShpDashObj.Top
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
+Public Property Let Top(ByVal vNewValue As Integer)
     pTop = VnewValue
     pShpDashObj.Top = pTop + Parent.Top
 End Property
@@ -50,7 +50,7 @@ Public Property Get Left() As Integer
     Left = pShpDashObj.Left
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
+Public Property Let Left(ByVal vNewValue As Integer)
     pLeft = VnewValue
     pShpDashObj.Left = pLeft + Parent.Left
 End Property
@@ -60,7 +60,7 @@ Public Property Get Height() As Integer
     Height = pShpDashObj.Height
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
+Public Property Let Height(ByVal vNewValue As Integer)
     pHeight = VnewValue
     pShpDashObj.Height = pHeight
 End Property
@@ -70,7 +70,7 @@ Public Property Get Width() As Integer
     Width = pShpDashObj.Width
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
+Public Property Let Width(ByVal vNewValue As Integer)
     pWidth = VnewValue
     pShpDashObj.Width = pWidth
 End Property
@@ -80,7 +80,7 @@ Public Property Get Name() As String
     Name = pName
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
+Public Property Let Name(ByVal vNewValue As String)
     pName = VnewValue
     pShpDashObj.Name = pName
 End Property
@@ -91,7 +91,7 @@ Public Property Get Text() As String
     Text = pText
 End Property
 
-Public Property Let Text(ByVal VnewValue As String)
+Public Property Let Text(ByVal vNewValue As String)
     pText = VnewValue
     pShpDashObj.TextFrame.Characters.Text = pText
 End Property
@@ -102,7 +102,7 @@ Public Property Get Locked() As Boolean
     Locked = pLocked
 End Property
 
-Public Property Let Locked(ByVal VnewValue As Boolean)
+Public Property Let Locked(ByVal vNewValue As Boolean)
     pLocked = VnewValue
     pShpDashObj.Locked = True
     pShpDashObj.ControlFormat.LockedText = Locked
@@ -113,7 +113,7 @@ Public Property Get ShpDashObj() As Shape
     Set ShpDashObj = pShpDashObj
 End Property
 
-Public Property Let ShpDashObj(ByVal VnewValue As Shape)
+Public Property Let ShpDashObj(ByVal vNewValue As Shape)
     Set pShpDashObj = VnewValue
 End Property
 
@@ -122,8 +122,8 @@ Public Property Get Visible() As Boolean
     Visible = pShpDashObj.Visible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
-    pVisible = VnewValue
+Public Property Let Visible(ByVal vNewValue As Boolean)
+    pVisible = vNewValue
     If Not pShpDashObj Is Nothing Then pShpDashObj.Visible = VnewValue
 End Property
 
@@ -133,7 +133,7 @@ Public Property Get EnumObjType() As EnumObjType
 End Property
 
 Public Property Let EnumObjType(ByVal VnewValue As EnumObjType)
-    pEnumObjType = VnewValue
+    pEnumObjType = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -141,34 +141,34 @@ Public Property Get Style() As TypeStyle
     Style = pStyle
 End Property
 
-Public Property Let Style(vNewValue As TypeStyle)
-    pStyle = vNewValue
+Public Property Let Style(VnewValue As TypeStyle)
+    pStyle = VnewValue
     
     With pShpDashObj.Fill
         .TwoColorGradient msoGradientHorizontal, 1
-        .ForeColor.RGB = vNewValue.Fill1
-        .BackColor.RGB = vNewValue.Fill2
+        .ForeColor.RGB = VnewValue.Fill1
+        .BackColor.RGB = VnewValue.Fill2
     End With
     
     With pShpDashObj.Line
-        .ForeColor.RGB = vNewValue.BorderColour
-        .Weight = vNewValue.BorderWidth
+        .ForeColor.RGB = VnewValue.BorderColour
+        .Weight = VnewValue.BorderWidth
         If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
     End With
     
     With pShpDashObj.TextFrame
-        .Characters.Font.Bold = vNewValue.FontBold
-        .Characters.Font.Name = vNewValue.FontStyle
-        .Characters.Font.Color = vNewValue.FontColour
-        .Characters.Font.Size = vNewValue.FontSize
-        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
+        .Characters.Font.Bold = VnewValue.FontBold
+        .Characters.Font.Name = VnewValue.FontStyle
+        .Characters.Font.Color = VnewValue.FontColour
+        .Characters.Font.Size = VnewValue.FontSize
+        If VnewValue.FontXJust <> 0 Then .HorizontalAlignment = VnewValue.FontXJust
     End With
     
     With pShpDashObj.Shadow
-        If vNewValue.Shadow = 0 Then
+        If VnewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
-            .Type = vNewValue.Shadow
+            .Type = VnewValue.Shadow
             .Visible = msoCTrue
         End If
     End With

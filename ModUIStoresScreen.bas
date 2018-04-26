@@ -481,10 +481,9 @@ Restart:
         
             Case EnumRemoteOrder
                 
-                MsgBox "Temporarily Disabled", vbInformation
-'                If Not FrmPerson.ShowForm(True) Then Err.Raise HANDLED_ERROR
-'
-'                If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
+                If Not FrmPerson.ShowForm(LocRemoteOrder:=True) Then Err.Raise HANDLED_ERROR
+
+                If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
             
             Case EnumSupplierBtn
                 
