@@ -17,8 +17,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,131 - Change Delivery Button to Supplier
 ' v0,14 - Allow Stores level into Supplier Area
 ' v0,15 - Add missing PerformSettingsOff
+' v0,16 - Seperate FrmPerson for remote order
 '---------------------------------------------------------------
-' Date - 13 Sep 17
+' Date - 26 Apr 18
 '===============================================================
 
 Option Explicit
@@ -481,7 +482,7 @@ Restart:
         
             Case EnumRemoteOrder
                 
-                If Not FrmPerson.ShowForm(LocRemoteOrder:=True) Then Err.Raise HANDLED_ERROR
+                If Not FrmPhneOrdPerson.ShowForm Then Err.Raise HANDLED_ERROR
 
                 If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
             

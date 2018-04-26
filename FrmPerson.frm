@@ -35,36 +35,26 @@ Private Const StrMODULE As String = "FrmPerson"
 
 Private Order As ClsOrder
 Private Lineitem As ClsLineItem
-Private RemoteOrder As Boolean
 
 ' ===============================================================
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocRemoteOrder As Boolean, Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If Order Is Nothing Then
-        Set Order = New ClsOrder
+    If Order Is Nothing Then Set Order = New ClsOrder
+    
+    If Not LocLineItem Is Nothing Then
+        Set Lineitem = LocLineItem
+    Else
         Set Lineitem = New ClsLineItem
     End If
     
-    If LocRemoteOrder Then
-        RemoteOrder = True
-        BtnPrev.Enabled = False
-        LblAllocation = "Who are you raising the Order on behalf of?"
-    Else
-        If Not LocLineItem Is Nothing Then
-        
-            Set Lineitem = LocLineItem
-            
-            If Not PopulateForm Then Err.Raise HANDLED_ERROR
-        End If
-    End If
-    
+    If Not PopulateForm Then Err.Raise HANDLED_ERROR
     
     Show
     ShowForm = True
@@ -221,15 +211,9 @@ Private Sub BtnNext_Click()
         
         Case Is = FormOK
             Hide
-            If RemoteOrder Then
-                Order.PhoneOrder = True
-                If OptMe Then Order.Requestor = CurrentUser
-                If Not FrmOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
-            Else
-                If OptMe Then Lineitem.ForPerson = CurrentUser
-                If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
-                If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
-            End If
+            If OptMe Then Lineitem.ForPerson = CurrentUser
+            If Lineitem.ForPerson.CrewNo = "" Then Err.Raise NO_NAMES_SELECTED
+            If Not FrmLossReport.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
             
             Unload Me
     End Select
@@ -630,12 +614,7 @@ Private Sub LstNames_Click()
     With LstNames
         Me.TxtSearch.Value = .List(.ListIndex, 1)
         .ListIndex = 0
-        
-        If RemoteOrder Then
-            Order.Requestor.DBGet TxtSearch
-        Else
-            Lineitem.ForPerson.DBGet TxtSearch
-        End If
+        Lineitem.ForPerson.DBGet TxtSearch
     End With
 End Sub
 
