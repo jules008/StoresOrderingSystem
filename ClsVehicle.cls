@@ -176,7 +176,7 @@ Public Sub DBSave()
 
     With RstVehicle
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             pVehNo = LastNo + 1
         Else
             .Edit

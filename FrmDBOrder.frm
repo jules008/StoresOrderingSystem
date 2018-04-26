@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDBOrder 
    Caption         =   "F402"
-   ClientHeight    =   12225
+   ClientHeight    =   10260
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   16380
@@ -24,8 +24,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Add option to print order to PDF
 ' v0,6 - Add Print Date and removed PDF button
 ' v0,7 - Change delete to use .DBDelete
+' v0,8 - Resized for laptop screens
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 26 Apr 18
 '===============================================================
 Option Explicit
 

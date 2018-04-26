@@ -213,7 +213,7 @@ Public Sub DBSave()
 
     With RstLossReport
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             pLossReportNo = LastNo + 1
         Else
             .Edit

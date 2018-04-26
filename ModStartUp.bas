@@ -230,9 +230,9 @@ Private Function ReadINIFile() As Boolean
     
     INIFile = FreeFile()
     
-    If Dir(IniFPath & INI_FILE) = "" Then Err.Raise NO_INI_FILE
+    If Dir(INIFPath & INI_FILE) = "" Then Err.Raise NO_INI_FILE
     
-    Open IniFPath & INI_FILE For Input As #INIFile
+    Open INIFPath & INI_FILE For Input As #INIFile
     
     Line Input #INIFile, DebugMode
     Line Input #INIFile, TestMode
@@ -354,7 +354,7 @@ Private Function UpdateUsername() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Application.Username = "PaulJ Wright" Then Application.Username = "Paul Wright"
+    If Application.UserName = "PaulJ Wright" Then Application.UserName = "Paul Wright"
     
     If Application.UserName = "Ian Taylor (LRF)" Then Application.UserName = "Ian Taylor (LFR)"
 

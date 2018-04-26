@@ -30,7 +30,7 @@ Private pSuppliers As Collection
 
 Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pSuppliers.[_newenum]
+    Set NewEnum = pSuppliers.[_NewEnum]
 End Function
 
 ' ===============================================================
@@ -86,11 +86,11 @@ Public Sub GetCollection()
     With RstSupplier
         .MoveLast
         .MoveFirst
-        For i = 1 To .recordcount
+        For i = 1 To .RecordCount
             Set Supplier = New ClsSupplier
             Supplier.DBGet !SupplierID
             Me.AddItem Supplier
-            .Movenext
+            .MoveNext
         Next
     End With
 End Sub

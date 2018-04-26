@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmDBAsset 
    Caption         =   "Asset"
-   ClientHeight    =   11700
+   ClientHeight    =   10065
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   13050
+   ClientWidth     =   17865
    OleObjectBlob   =   "FrmDBAsset.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -22,8 +22,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Change keyword seperator to ;
 ' v0,4 - Added HideFromView and fixed extra reason bug
 ' v0,5 - Test for null before getting category list
+' v0,6 - Resized for Laptop Screens
 '---------------------------------------------------------------
-' Date - 06 Nov 17
+' Date - 06 Apr 18
 '===============================================================
 Option Explicit
 

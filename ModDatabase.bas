@@ -402,12 +402,17 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
+                    & Chr(13) & " - Resized screens for laptop use" _
+                    & Chr(13) & "" _
                     & Chr(13) & " - Bug Fix - Hidden Assets" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
+                    & Chr(13) & "" _
+                    & Chr(13) & "- Resized screens for laptop use - pop up forms were too big for laptop screens, so " _
+                    & Chr(13) & "they have been resized" _
                     & Chr(13) & "" _
                     & Chr(13) & "- Bug Fix - Hidden Assets - Had ANOTHER go at fixing the hidden assets bug.  Hopefully fixed now" _
                     & Chr(13) & ""

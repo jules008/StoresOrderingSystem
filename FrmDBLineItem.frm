@@ -267,7 +267,7 @@ Private Sub BtnAsset_Click()
     
     If Not FrmDBAsset.ShowForm(Lineitem.Asset) Then Err.Raise HANDLED_ERROR
 
-Gracefulexit:
+GracefulExit:
 
 Exit Sub
 
@@ -283,7 +283,7 @@ ErrorHandler:
     
         If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume Gracefulexit
+        Resume GracefulExit
     End If
     
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -494,7 +494,7 @@ Private Sub BtnUpdate_Click()
         MsgBox "You cannot adjust the quantity of the Order if it has been Issued or Closed", vbExclamation, APP_NAME
     End If
 
-Gracefulexit:
+GracefulExit:
 
 Exit Sub
 
@@ -508,7 +508,7 @@ ErrorHandler:
     
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume Gracefulexit
+        Resume GracefulExit
     End If
 
 
@@ -696,7 +696,7 @@ Private Sub ChkIssued_Click()
 
     End If
 
-Gracefulexit:
+GracefulExit:
 
 
 Exit Sub
@@ -711,7 +711,7 @@ ErrorHandler:
 
     If Err.Number >= 1000 And Err.Number <= 1500 Then
         CustomErrorHandler Err.Number
-        Resume Gracefulexit
+        Resume GracefulExit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then

@@ -130,8 +130,8 @@ Public Property Get PrintedDate() As Date
     PrintedDate = pPrintedDate
 End Property
 
-Public Property Let PrintedDate(ByVal vNewValue As Date)
-    pPrintedDate = vNewValue
+Public Property Let PrintedDate(ByVal VnewValue As Date)
+    pPrintedDate = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -139,8 +139,8 @@ Public Property Get OrderNote() As String
     OrderNote = pOrderNote
 End Property
 
-Public Property Let OrderNote(ByVal vNewValue As String)
-    pOrderNote = vNewValue
+Public Property Let OrderNote(ByVal VnewValue As String)
+    pOrderNote = VnewValue
 End Property
 
 '---------------------------------------------------------------
@@ -191,7 +191,7 @@ Public Sub DBSave()
 
     With RstOrder
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             pOrderNo = LastNo + 1
         Else
             .Edit
@@ -223,7 +223,7 @@ End Sub
 '---------------------------------------------------------------
 Public Sub DBDelete(Optional FullDelete As Boolean)
     Dim RstOrder As Recordset
-    Dim LineItem As ClsLineItem
+    Dim Lineitem As ClsLineItem
     
     Dim i As Integer
 
@@ -233,15 +233,15 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
             If FullDelete Then
                 .Delete
                 .MoveNext
-                For Each LineItem In pLineItems
-                    LineItem.DBDelete True
+                For Each Lineitem In pLineItems
+                    Lineitem.DBDelete True
                 Next
             Else
                 .Edit
                 !Deleted = Now
                 .Update
-                For Each LineItem In pLineItems
-                    LineItem.DBDelete
+                For Each Lineitem In pLineItems
+                    Lineitem.DBDelete
                 Next
 
             End If

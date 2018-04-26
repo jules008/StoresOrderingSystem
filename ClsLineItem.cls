@@ -239,7 +239,7 @@ Public Sub DBSave()
 
     With RstLineItem
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             pLineItemNo = LastNo + 1
         Else
             .Edit
