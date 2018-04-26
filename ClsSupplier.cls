@@ -265,7 +265,7 @@ Public Sub DBSave()
 
     With RstSupplier
         If .RecordCount = 0 Then
-            .addnew
+            .AddNew
             pSupplierID = LastNo + 1
         Else
             .Edit

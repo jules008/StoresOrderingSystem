@@ -41,7 +41,7 @@ Public Property Get Top() As Integer
 End Property
 
 Public Property Let Top(ByVal vNewValue As Integer)
-    pTop = VnewValue
+    pTop = vNewValue
     pShpDashObj.Top = pTop + Parent.Top
 End Property
 
@@ -51,7 +51,7 @@ Public Property Get Left() As Integer
 End Property
 
 Public Property Let Left(ByVal vNewValue As Integer)
-    pLeft = VnewValue
+    pLeft = vNewValue
     pShpDashObj.Left = pLeft + Parent.Left
 End Property
 
@@ -61,7 +61,7 @@ Public Property Get Height() As Integer
 End Property
 
 Public Property Let Height(ByVal vNewValue As Integer)
-    pHeight = VnewValue
+    pHeight = vNewValue
     pShpDashObj.Height = pHeight
 End Property
 
@@ -71,7 +71,7 @@ Public Property Get Width() As Integer
 End Property
 
 Public Property Let Width(ByVal vNewValue As Integer)
-    pWidth = VnewValue
+    pWidth = vNewValue
     pShpDashObj.Width = pWidth
 End Property
 
@@ -81,7 +81,7 @@ Public Property Get Name() As String
 End Property
 
 Public Property Let Name(ByVal vNewValue As String)
-    pName = VnewValue
+    pName = vNewValue
     pShpDashObj.Name = pName
 End Property
 
@@ -92,7 +92,7 @@ Public Property Get Text() As String
 End Property
 
 Public Property Let Text(ByVal vNewValue As String)
-    pText = VnewValue
+    pText = vNewValue
     pShpDashObj.TextFrame.Characters.Text = pText
 End Property
 
@@ -103,7 +103,7 @@ Public Property Get Locked() As Boolean
 End Property
 
 Public Property Let Locked(ByVal vNewValue As Boolean)
-    pLocked = VnewValue
+    pLocked = vNewValue
     pShpDashObj.Locked = True
     pShpDashObj.ControlFormat.LockedText = Locked
 End Property
@@ -114,7 +114,7 @@ Public Property Get ShpDashObj() As Shape
 End Property
 
 Public Property Let ShpDashObj(ByVal vNewValue As Shape)
-    Set pShpDashObj = VnewValue
+    Set pShpDashObj = vNewValue
 End Property
 
 '---------------------------------------------------------------

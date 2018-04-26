@@ -220,7 +220,7 @@ Private Sub BtnNext_Click()
             Err.Raise HANDLED_ERROR
         
         Case Is = FormOK
-                    
+            Hide
             If RemoteOrder Then
                 Order.PhoneOrder = True
                 If OptMe Then Order.Requestor = CurrentUser
