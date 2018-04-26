@@ -35,8 +35,8 @@ Public Property Get Top() As Integer
     Top = pShpScreen.Top
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
-    pTop = VnewValue
+Public Property Let Top(ByVal vNewValue As Integer)
+    pTop = vNewValue
     pShpScreen.Top = pTop
 End Property
 
@@ -45,8 +45,8 @@ Public Property Get Left() As Integer
     Left = pShpScreen.Left
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
-    pLeft = VnewValue
+Public Property Let Left(ByVal vNewValue As Integer)
+    pLeft = vNewValue
     pShpScreen.Left = pLeft
 End Property
 
@@ -55,8 +55,8 @@ Public Property Get Height() As Integer
     Height = pShpScreen.Height
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
-    pHeight = VnewValue
+Public Property Let Height(ByVal vNewValue As Integer)
+    pHeight = vNewValue
     pShpScreen.Height = pHeight
 End Property
 
@@ -65,8 +65,8 @@ Public Property Get Width() As Integer
     Width = pShpScreen.Width
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
-    pWidth = VnewValue
+Public Property Let Width(ByVal vNewValue As Integer)
+    pWidth = vNewValue
     pShpScreen.Width = pWidth
 End Property
 
@@ -75,8 +75,8 @@ Public Property Get Name() As String
     Name = pShpScreen.Name
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
-    pName = VnewValue
+Public Property Let Name(ByVal vNewValue As String)
+    pName = vNewValue
     pShpScreen.Name = pName
 End Property
 
@@ -85,8 +85,8 @@ Public Property Get ShpScreen() As Shape
     Set ShpScreen = pShpScreen
 End Property
 
-Public Property Let ShpScreen(ByVal VnewValue As Shape)
-    Set pShpScreen = VnewValue
+Public Property Let ShpScreen(ByVal vNewValue As Shape)
+    Set pShpScreen = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -94,8 +94,8 @@ Public Property Get Frames() As ClsUIFrames
     Set Frames = pFrames
 End Property
 
-Public Property Let Frames(ByVal VnewValue As ClsUIFrames)
-    Set pFrames = VnewValue
+Public Property Let Frames(ByVal vNewValue As ClsUIFrames)
+    Set pFrames = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -103,8 +103,8 @@ Public Property Get Menu() As ClsUIMenu
     Set Menu = pMenu
 End Property
 
-Public Property Let Menu(ByVal VnewValue As ClsUIMenu)
-    Set pMenu = VnewValue
+Public Property Let Menu(ByVal vNewValue As ClsUIMenu)
+    Set pMenu = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -112,8 +112,8 @@ Public Property Get Style() As TypeStyle
     Style = pStyle
 End Property
 
-Public Property Let Style(VnewValue As TypeStyle)
-    pStyle = VnewValue
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
     
     With pShpScreen.Fill
         .TwoColorGradient msoGradientHorizontal, 1
@@ -128,7 +128,7 @@ Public Property Let Style(VnewValue As TypeStyle)
     End With
     
     With pShpScreen.TextFrame
-        .Characters.Font.Bold = VnewValue.FontBold
+        .Characters.Font.Bold = vNewValue.FontBold
         .Characters.Font.Name = pStyle.FontStyle
         .Characters.Font.Color = pStyle.FontColour
         .Characters.Font.Size = pStyle.FontSize
@@ -136,10 +136,10 @@ Public Property Let Style(VnewValue As TypeStyle)
     End With
     
     With pShpScreen.Shadow
-        If VnewValue.Shadow = 0 Then
+        If vNewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
-            .Type = VnewValue.Shadow
+            .Type = vNewValue.Shadow
             .Visible = msoCTrue
         End If
     End With
@@ -150,8 +150,8 @@ Public Property Get Visible() As Boolean
     Visible = pShpScreen.Visible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
-    pVisible = VnewValue
+Public Property Let Visible(ByVal vNewValue As Boolean)
+    pVisible = vNewValue
     pShpScreen.Visible = pVisible
 End Property
 

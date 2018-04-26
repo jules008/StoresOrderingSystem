@@ -30,8 +30,8 @@ Public Property Get OutlookApp() As Outlook.Application
     Set OutlookApp = pOutlookApp
 End Property
 
-Public Property Let OutlookApp(ByVal VnewValue As Outlook.Application)
-    Set pOutlookApp = VnewValue
+Public Property Let OutlookApp(ByVal vNewValue As Outlook.Application)
+    Set pOutlookApp = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -39,8 +39,8 @@ Public Property Get MailItem() As Outlook.MailItem
     Set MailItem = pMailItem
 End Property
 
-Public Property Let MailItem(ByVal VnewValue As Outlook.MailItem)
-    Set pMailItem = VnewValue
+Public Property Let MailItem(ByVal vNewValue As Outlook.MailItem)
+    Set pMailItem = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -48,8 +48,8 @@ Public Property Get ReturnMail() As ClsMailItem
     Set ReturnMail = pReturnMail
 End Property
 
-Public Property Let ReturnMail(ByVal VnewValue As ClsMailItem)
-    Set pReturnMail = VnewValue
+Public Property Let ReturnMail(ByVal vNewValue As ClsMailItem)
+    Set pReturnMail = vNewValue
 End Property
 
 '===============================================================

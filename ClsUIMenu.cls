@@ -33,8 +33,8 @@ Public Property Get Top() As Integer
     Top = pTop
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
-    pTop = VnewValue
+Public Property Let Top(ByVal vNewValue As Integer)
+    pTop = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -42,8 +42,8 @@ Public Property Get Left() As Integer
     Left = pLeft
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
-    pLeft = VnewValue
+Public Property Let Left(ByVal vNewValue As Integer)
+    pLeft = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -51,13 +51,13 @@ Public Property Get Visible() As Boolean
     Visible = pVisible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
+Public Property Let Visible(ByVal vNewValue As Boolean)
     Dim MenuItem As ClsUIMenuItem
     
-    pVisible = VnewValue
+    pVisible = vNewValue
     
     For Each MenuItem In pUIMenu
-        MenuItem.Visible = VnewValue
+        MenuItem.Visible = vNewValue
     Next
     
 End Property

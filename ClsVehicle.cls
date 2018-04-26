@@ -54,8 +54,8 @@ Public Property Get VehNo() As Integer
     VehNo = pVehNo
 End Property
 
-Public Property Let VehNo(ByVal VnewValue As Integer)
-    pVehNo = VnewValue
+Public Property Let VehNo(ByVal vNewValue As Integer)
+    pVehNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -63,8 +63,8 @@ Public Property Get VehReg() As String
     VehReg = pVehReg
 End Property
 
-Public Property Let VehReg(ByVal VnewValue As String)
-    pVehReg = VnewValue
+Public Property Let VehReg(ByVal vNewValue As String)
+    pVehReg = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -72,8 +72,8 @@ Public Property Get VehType() As EnumVehType
     VehType = pVehType
 End Property
 
-Public Property Let VehType(ByVal VnewValue As EnumVehType)
-    pVehType = VnewValue
+Public Property Let VehType(ByVal vNewValue As EnumVehType)
+    pVehType = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -81,8 +81,8 @@ Public Property Get CallSign() As String
     CallSign = pCallSign
 End Property
 
-Public Property Let CallSign(ByVal VnewValue As String)
-    pCallSign = VnewValue
+Public Property Let CallSign(ByVal vNewValue As String)
+    pCallSign = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -90,8 +90,8 @@ Public Property Get VehicleMake() As String
     VehicleMake = pVehicleMake
 End Property
 
-Public Property Let VehicleMake(ByVal VnewValue As String)
-    pVehicleMake = VnewValue
+Public Property Let VehicleMake(ByVal vNewValue As String)
+    pVehicleMake = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -99,8 +99,8 @@ Public Property Get RegYear() As Integer
     RegYear = pRegYear
 End Property
 
-Public Property Let RegYear(ByVal VnewValue As Integer)
-    pRegYear = VnewValue
+Public Property Let RegYear(ByVal vNewValue As Integer)
+    pRegYear = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -108,8 +108,8 @@ Public Property Get FleetNo() As String
     FleetNo = pFleetNo
 End Property
 
-Public Property Let FleetNo(ByVal VnewValue As String)
-    pFleetNo = VnewValue
+Public Property Let FleetNo(ByVal vNewValue As String)
+    pFleetNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -117,8 +117,8 @@ Public Property Get DisposalDate() As Date
     DisposalDate = pDisposalDate
 End Property
 
-Public Property Let DisposalDate(ByVal VnewValue As Date)
-    pDisposalDate = VnewValue
+Public Property Let DisposalDate(ByVal vNewValue As Date)
+    pDisposalDate = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -126,8 +126,8 @@ Public Property Get StationID() As String
     StationID = pStationID
 End Property
 
-Public Property Let StationID(ByVal VnewValue As String)
-    pStationID = VnewValue
+Public Property Let StationID(ByVal vNewValue As String)
+    pStationID = vNewValue
 End Property
 
 '---------------------------------------------------------------

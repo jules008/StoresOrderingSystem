@@ -48,8 +48,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
     If pDeleted = 0 Then pStatus = OrderOpen Else pStatus = OrderDeleted
 End Property
 
@@ -58,8 +58,8 @@ Public Property Get OrderNo() As Integer
     OrderNo = pOrderNo
 End Property
 
-Public Property Let OrderNo(ByVal VnewValue As Integer)
-    pOrderNo = VnewValue
+Public Property Let OrderNo(ByVal vNewValue As Integer)
+    pOrderNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -67,8 +67,8 @@ Public Property Get Requestor() As ClsPerson
     Set Requestor = pRequestor
 End Property
 
-Public Property Let Requestor(ByVal VnewValue As ClsPerson)
-    Set pRequestor = VnewValue
+Public Property Let Requestor(ByVal vNewValue As ClsPerson)
+    Set pRequestor = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -76,8 +76,8 @@ Public Property Get AssignedTo() As ClsPerson
     Set AssignedTo = pAssignedTo
 End Property
 
-Public Property Let AssignedTo(ByVal VnewValue As ClsPerson)
-    Set pAssignedTo = VnewValue
+Public Property Let AssignedTo(ByVal vNewValue As ClsPerson)
+    Set pAssignedTo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -85,8 +85,8 @@ Public Property Get LineItems() As ClsLineItems
     Set LineItems = pLineItems
 End Property
 
-Public Property Let LineItems(ByVal VnewValue As ClsLineItems)
-    Set pLineItems = VnewValue
+Public Property Let LineItems(ByVal vNewValue As ClsLineItems)
+    Set pLineItems = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -94,8 +94,8 @@ Public Property Get AuthorisedBy() As ClsPerson
     Set AuthorisedBy = pAuthorisedBy
 End Property
 
-Public Property Let AuthorisedBy(ByVal VnewValue As ClsPerson)
-    Set pAuthorisedBy = VnewValue
+Public Property Let AuthorisedBy(ByVal vNewValue As ClsPerson)
+    Set pAuthorisedBy = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -103,8 +103,8 @@ Public Property Get OrderDate() As Date
     OrderDate = pOrderDate
 End Property
 
-Public Property Let OrderDate(ByVal VnewValue As Date)
-    pOrderDate = VnewValue
+Public Property Let OrderDate(ByVal vNewValue As Date)
+    pOrderDate = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -112,8 +112,8 @@ Public Property Get Status() As EnumOrderStatus
     Status = pStatus
 End Property
 
-Public Property Let Status(ByVal VnewValue As EnumOrderStatus)
-    pStatus = VnewValue
+Public Property Let Status(ByVal vNewValue As EnumOrderStatus)
+    pStatus = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -121,8 +121,8 @@ Public Property Get PhoneOrder() As Boolean
     PhoneOrder = pPhoneOrder
 End Property
 
-Public Property Let PhoneOrder(ByVal VnewValue As Boolean)
-    pPhoneOrder = VnewValue
+Public Property Let PhoneOrder(ByVal vNewValue As Boolean)
+    pPhoneOrder = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -130,8 +130,8 @@ Public Property Get PrintedDate() As Date
     PrintedDate = pPrintedDate
 End Property
 
-Public Property Let PrintedDate(ByVal VnewValue As Date)
-    pPrintedDate = VnewValue
+Public Property Let PrintedDate(ByVal vNewValue As Date)
+    pPrintedDate = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -139,8 +139,8 @@ Public Property Get OrderNote() As String
     OrderNote = pOrderNote
 End Property
 
-Public Property Let OrderNote(ByVal VnewValue As String)
-    pOrderNote = VnewValue
+Public Property Let OrderNote(ByVal vNewValue As String)
+    pOrderNote = vNewValue
 End Property
 
 '---------------------------------------------------------------

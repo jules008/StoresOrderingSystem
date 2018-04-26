@@ -39,8 +39,8 @@ Public Property Get Top() As Integer
     Top = pShpLineItem.Top
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
-    pTop = VnewValue
+Public Property Let Top(ByVal vNewValue As Integer)
+    pTop = vNewValue
     pShpLineItem.Top = pTop
 End Property
 
@@ -49,8 +49,8 @@ Public Property Get Left() As Integer
     Left = pShpLineItem.Left
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
-    pLeft = VnewValue
+Public Property Let Left(ByVal vNewValue As Integer)
+    pLeft = vNewValue
     pShpLineItem.Left = pLeft
 End Property
 
@@ -59,8 +59,8 @@ Public Property Get Height() As Integer
     Height = pShpLineItem.Height
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
-    pHeight = VnewValue
+Public Property Let Height(ByVal vNewValue As Integer)
+    pHeight = vNewValue
     pShpLineItem.Height = pHeight
 End Property
 
@@ -69,8 +69,8 @@ Public Property Get Width() As Integer
     Width = pShpLineItem.Width
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
-    pWidth = VnewValue
+Public Property Let Width(ByVal vNewValue As Integer)
+    pWidth = vNewValue
     pShpLineItem.Width = pWidth
 End Property
 
@@ -79,8 +79,8 @@ Public Property Get Text() As String
     Text = pShpLineItem.TextFrame.Characters.Text
 End Property
 
-Public Property Let Text(ByVal VnewValue As String)
-    pText = VnewValue
+Public Property Let Text(ByVal vNewValue As String)
+    pText = vNewValue
     pShpLineItem.TextFrame.Characters.Text = pText
 End Property
 
@@ -89,8 +89,8 @@ Public Property Get Name() As String
     Name = pShpLineItem.Name
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
-    pName = VnewValue
+Public Property Let Name(ByVal vNewValue As String)
+    pName = vNewValue
     pShpLineItem.Name = pName
 End Property
 
@@ -99,8 +99,8 @@ Public Property Get Menu() As ClsUIMenu
     Set Menu = pMenu
 End Property
 
-Public Property Let Menu(ByVal VnewValue As ClsUIMenu)
-    Set pMenu = VnewValue
+Public Property Let Menu(ByVal vNewValue As ClsUIMenu)
+    Set pMenu = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -108,9 +108,9 @@ Public Property Get OnAction() As String
     OnAction = pShpLineItem.OnAction
 End Property
 
-Public Property Let OnAction(ByVal VnewValue As String)
-    pOnAction = VnewValue
-    pShpLineItem.OnAction = VnewValue
+Public Property Let OnAction(ByVal vNewValue As String)
+    pOnAction = vNewValue
+    pShpLineItem.OnAction = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -118,10 +118,10 @@ Public Property Get Visible() As Boolean
     Visible = pShpLineItem.Visible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
+Public Property Let Visible(ByVal vNewValue As Boolean)
     Dim DashObj As ClsUIDashObj
     
-    pVisible = VnewValue
+    pVisible = vNewValue
     
     pShpLineItem.Visible = pVisible
        
@@ -132,38 +132,38 @@ Public Property Get ShpLineItem() As Shape
     Set ShpLineItem = pShpLineItem
 End Property
 
-Public Property Let ShpLineItem(ByVal VnewValue As Shape)
-    Set pShpLineItem = VnewValue
+Public Property Let ShpLineItem(ByVal vNewValue As Shape)
+    Set pShpLineItem = vNewValue
 End Property
 
-Public Property Let Style(VnewValue As TypeStyle)
-    pStyle = VnewValue
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
     
     With pShpLineItem.Fill
         .TwoColorGradient msoGradientHorizontal, 1
-        .ForeColor.RGB = VnewValue.Fill1
-        .BackColor.RGB = VnewValue.Fill2
+        .ForeColor.RGB = vNewValue.Fill1
+        .BackColor.RGB = vNewValue.Fill2
     End With
     
     With pShpLineItem.Line
-        .ForeColor.RGB = VnewValue.BorderColour
-        .Weight = VnewValue.BorderWidth
+        .ForeColor.RGB = vNewValue.BorderColour
+        .Weight = vNewValue.BorderWidth
         If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
     End With
     
     With pShpLineItem.TextFrame
-        .Characters.Font.Bold = VnewValue.FontBold
-        .Characters.Font.Name = VnewValue.FontStyle
-        .Characters.Font.Color = VnewValue.FontColour
-        .Characters.Font.Size = VnewValue.FontSize
-        If VnewValue.FontXJust <> 0 Then .HorizontalAlignment = VnewValue.FontXJust
+        .Characters.Font.Bold = vNewValue.FontBold
+        .Characters.Font.Name = vNewValue.FontStyle
+        .Characters.Font.Color = vNewValue.FontColour
+        .Characters.Font.Size = vNewValue.FontSize
+        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
     End With
     
     With pShpLineItem.Shadow
-        If VnewValue.Shadow = 0 Then
+        If vNewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
-            .Type = VnewValue.Shadow
+            .Type = vNewValue.Shadow
             .Visible = msoCTrue
         End If
     End With

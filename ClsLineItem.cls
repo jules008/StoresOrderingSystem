@@ -47,8 +47,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -56,8 +56,8 @@ Public Property Get LineItemNo() As Integer
     LineItemNo = pLineItemNo
 End Property
 
-Public Property Let LineItemNo(ByVal VnewValue As Integer)
-    pLineItemNo = VnewValue
+Public Property Let LineItemNo(ByVal vNewValue As Integer)
+    pLineItemNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -65,8 +65,8 @@ Public Property Get Asset() As ClsAsset
     Set Asset = pAsset
 End Property
 
-Public Property Let Asset(ByVal VnewValue As ClsAsset)
-    Set pAsset = VnewValue
+Public Property Let Asset(ByVal vNewValue As ClsAsset)
+    Set pAsset = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -74,8 +74,8 @@ Public Property Get LossReport() As ClsLossReport
     Set LossReport = pLossReport
 End Property
 
-Public Property Let LossReport(ByVal VnewValue As ClsLossReport)
-    Set pLossReport = VnewValue
+Public Property Let LossReport(ByVal vNewValue As ClsLossReport)
+    Set pLossReport = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -83,8 +83,8 @@ Public Property Get Quantity() As Integer
     Quantity = pQuantity
 End Property
 
-Public Property Let Quantity(ByVal VnewValue As Integer)
-    pQuantity = VnewValue
+Public Property Let Quantity(ByVal vNewValue As Integer)
+    pQuantity = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -92,8 +92,8 @@ Public Property Get ReqReason() As EnumReqReason
     ReqReason = pReqReason
 End Property
 
-Public Property Let ReqReason(ByVal VnewValue As EnumReqReason)
-    pReqReason = VnewValue
+Public Property Let ReqReason(ByVal vNewValue As EnumReqReason)
+    pReqReason = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -101,8 +101,8 @@ Public Property Get ReturnReqd() As Boolean
     ReturnReqd = pReturnReqd
 End Property
 
-Public Property Let ReturnReqd(ByVal VnewValue As Boolean)
-    pReturnReqd = VnewValue
+Public Property Let ReturnReqd(ByVal vNewValue As Boolean)
+    pReturnReqd = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -110,8 +110,8 @@ Public Property Get ForStation() As ClsStation
     Set ForStation = pForStation
 End Property
 
-Public Property Let ForStation(ByVal VnewValue As ClsStation)
-    Set pForStation = VnewValue
+Public Property Let ForStation(ByVal vNewValue As ClsStation)
+    Set pForStation = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -119,8 +119,8 @@ Public Property Get ForVehicle() As ClsVehicle
     Set ForVehicle = pForVehicle
 End Property
 
-Public Property Let ForVehicle(ByVal VnewValue As ClsVehicle)
-    Set pForVehicle = VnewValue
+Public Property Let ForVehicle(ByVal vNewValue As ClsVehicle)
+    Set pForVehicle = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -128,8 +128,8 @@ Public Property Get ForPerson() As ClsPerson
     Set ForPerson = pForPerson
 End Property
 
-Public Property Let ForPerson(ByVal VnewValue As ClsPerson)
-    Set pForPerson = VnewValue
+Public Property Let ForPerson(ByVal vNewValue As ClsPerson)
+    Set pForPerson = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -137,8 +137,8 @@ Public Property Get Status() As EnumLineItemStatus
     Status = pStatus
 End Property
 
-Public Property Let Status(ByVal VnewValue As EnumLineItemStatus)
-    pStatus = VnewValue
+Public Property Let Status(ByVal vNewValue As EnumLineItemStatus)
+    pStatus = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -146,8 +146,8 @@ Public Property Get itemsReturned() As Boolean
     itemsReturned = pitemsReturned
 End Property
 
-Public Property Let itemsReturned(ByVal VnewValue As Boolean)
-    pitemsReturned = VnewValue
+Public Property Let itemsReturned(ByVal vNewValue As Boolean)
+    pitemsReturned = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -155,8 +155,8 @@ Public Property Get ItemsDelivered() As Boolean
     ItemsDelivered = pItemsDelivered
 End Property
 
-Public Property Let ItemsDelivered(ByVal VnewValue As Boolean)
-    pItemsDelivered = VnewValue
+Public Property Let ItemsDelivered(ByVal vNewValue As Boolean)
+    pItemsDelivered = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -164,8 +164,8 @@ Public Property Get ItemsIssued() As Boolean
     ItemsIssued = pItemsIssued
 End Property
 
-Public Property Let ItemsIssued(ByVal VnewValue As Boolean)
-    pItemsIssued = VnewValue
+Public Property Let ItemsIssued(ByVal vNewValue As Boolean)
+    pItemsIssued = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -173,8 +173,8 @@ Public Property Get OnHoldReason() As String
     OnHoldReason = pOnHoldReason
 End Property
 
-Public Property Let OnHoldReason(ByVal VnewValue As String)
-    pOnHoldReason = VnewValue
+Public Property Let OnHoldReason(ByVal vNewValue As String)
+    pOnHoldReason = vNewValue
 End Property
 
 '---------------------------------------------------------------

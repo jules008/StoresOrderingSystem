@@ -39,10 +39,10 @@ Public Property Get Top() As Integer
     Top = pShpMenuItem.Top
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
+Public Property Let Top(ByVal vNewValue As Integer)
     Dim ParentOffset As Integer
     
-    pTop = VnewValue
+    pTop = vNewValue
     
     If Not Parent Is Nothing Then ParentOffset = Parent.Top
     
@@ -54,10 +54,10 @@ Public Property Get Left() As Integer
     Left = pShpMenuItem.Left
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
+Public Property Let Left(ByVal vNewValue As Integer)
     Dim ParentOffset As Integer
     
-    pLeft = VnewValue
+    pLeft = vNewValue
     
     If Not Parent Is Nothing Then ParentOffset = Parent.Left
     
@@ -69,8 +69,8 @@ Public Property Get Height() As Integer
     Height = pShpMenuItem.Height
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
-    pHeight = VnewValue
+Public Property Let Height(ByVal vNewValue As Integer)
+    pHeight = vNewValue
     pShpMenuItem.Height = pHeight
 End Property
 
@@ -79,8 +79,8 @@ Public Property Get Width() As Integer
     Width = pShpMenuItem.Width
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
-    pWidth = VnewValue
+Public Property Let Width(ByVal vNewValue As Integer)
+    pWidth = vNewValue
     pShpMenuItem.Width = pWidth
 End Property
 
@@ -89,8 +89,8 @@ Public Property Get Name() As String
     Name = pShpMenuItem.Name
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
-    pName = VnewValue
+Public Property Let Name(ByVal vNewValue As String)
+    pName = vNewValue
     pShpMenuItem.Name = pName
 End Property
 
@@ -99,8 +99,8 @@ Public Property Get Text() As String
     Text = pShpMenuItem.TextFrame.Characters.Caption
 End Property
 
-Public Property Let Text(ByVal VnewValue As String)
-    pText = VnewValue
+Public Property Let Text(ByVal vNewValue As String)
+    pText = vNewValue
     pShpMenuItem.TextFrame.Characters.Caption = pText
 End Property
 
@@ -109,8 +109,8 @@ Public Property Get Icon() As Shape
     Set Icon = pIcon
 End Property
 
-Public Property Let Icon(ByVal VnewValue As Shape)
-    Set pIcon = VnewValue
+Public Property Let Icon(ByVal vNewValue As Shape)
+    Set pIcon = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -118,8 +118,8 @@ Public Property Get SelectStyle() As TypeStyle
     SelectStyle = pSelectStyle
 End Property
 
-Public Property Let SelectStyle(VnewValue As TypeStyle)
-    pSelectStyle = VnewValue
+Public Property Let SelectStyle(vNewValue As TypeStyle)
+    pSelectStyle = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -127,8 +127,8 @@ Public Property Get UnSelectStyle() As TypeStyle
     UnSelectStyle = pUnSelectStyle
 End Property
 
-Public Property Let UnSelectStyle(VnewValue As TypeStyle)
-    pUnSelectStyle = VnewValue
+Public Property Let UnSelectStyle(vNewValue As TypeStyle)
+    pUnSelectStyle = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -136,8 +136,8 @@ Public Property Get ShpMenuItem() As Shape
     Set ShpMenuItem = pShpMenuItem
 End Property
 
-Public Property Let ShpMenuItem(ByVal VnewValue As Shape)
-    Set pShpMenuItem = VnewValue
+Public Property Let ShpMenuItem(ByVal vNewValue As Shape)
+    Set pShpMenuItem = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -145,10 +145,10 @@ Public Property Get Selected() As Boolean
     Selected = pSelected
 End Property
 
-Public Property Let Selected(ByVal VnewValue As Boolean)
+Public Property Let Selected(ByVal vNewValue As Boolean)
     Dim Style As TypeStyle
     
-    pSelected = VnewValue
+    pSelected = vNewValue
         
     If pSelected Then
         Style = pSelectStyle
@@ -192,10 +192,10 @@ Public Property Get Visible() As Boolean
     Visible = pVisible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
-    pVisible = VnewValue
-    pShpMenuItem.Visible = VnewValue
-    If Not pIcon Is Nothing Then pIcon.Visible = VnewValue
+Public Property Let Visible(ByVal vNewValue As Boolean)
+    pVisible = vNewValue
+    pShpMenuItem.Visible = vNewValue
+    If Not pIcon Is Nothing Then pIcon.Visible = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -203,8 +203,8 @@ Public Property Get OnAction() As String
     OnAction = pShpMenuItem.OnAction
 End Property
 
-Public Property Let OnAction(ByVal VnewValue As String)
-    pShpMenuItem.OnAction = VnewValue
+Public Property Let OnAction(ByVal vNewValue As String)
+    pShpMenuItem.OnAction = vNewValue
 End Property
 
 ' ===============================================================

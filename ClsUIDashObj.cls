@@ -124,7 +124,7 @@ End Property
 
 Public Property Let Visible(ByVal vNewValue As Boolean)
     pVisible = vNewValue
-    If Not pShpDashObj Is Nothing Then pShpDashObj.Visible = VnewValue
+    If Not pShpDashObj Is Nothing Then pShpDashObj.Visible = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -132,7 +132,7 @@ Public Property Get EnumObjType() As EnumObjType
     EnumObjType = pEnumObjType
 End Property
 
-Public Property Let EnumObjType(ByVal VnewValue As EnumObjType)
+Public Property Let EnumObjType(ByVal vNewValue As EnumObjType)
     pEnumObjType = vNewValue
 End Property
 
@@ -141,34 +141,34 @@ Public Property Get Style() As TypeStyle
     Style = pStyle
 End Property
 
-Public Property Let Style(VnewValue As TypeStyle)
-    pStyle = VnewValue
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
     
     With pShpDashObj.Fill
         .TwoColorGradient msoGradientHorizontal, 1
-        .ForeColor.RGB = VnewValue.Fill1
-        .BackColor.RGB = VnewValue.Fill2
+        .ForeColor.RGB = vNewValue.Fill1
+        .BackColor.RGB = vNewValue.Fill2
     End With
     
     With pShpDashObj.Line
-        .ForeColor.RGB = VnewValue.BorderColour
-        .Weight = VnewValue.BorderWidth
+        .ForeColor.RGB = vNewValue.BorderColour
+        .Weight = vNewValue.BorderWidth
         If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
     End With
     
     With pShpDashObj.TextFrame
-        .Characters.Font.Bold = VnewValue.FontBold
-        .Characters.Font.Name = VnewValue.FontStyle
-        .Characters.Font.Color = VnewValue.FontColour
-        .Characters.Font.Size = VnewValue.FontSize
-        If VnewValue.FontXJust <> 0 Then .HorizontalAlignment = VnewValue.FontXJust
+        .Characters.Font.Bold = vNewValue.FontBold
+        .Characters.Font.Name = vNewValue.FontStyle
+        .Characters.Font.Color = vNewValue.FontColour
+        .Characters.Font.Size = vNewValue.FontSize
+        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
     End With
     
     With pShpDashObj.Shadow
-        If VnewValue.Shadow = 0 Then
+        If vNewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
-            .Type = VnewValue.Shadow
+            .Type = vNewValue.Shadow
             .Visible = msoCTrue
         End If
     End With

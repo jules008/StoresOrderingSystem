@@ -47,8 +47,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -56,8 +56,8 @@ Public Property Get CrewNo() As String
     CrewNo = pCrewNo
 End Property
 
-Public Property Let CrewNo(ByVal VnewValue As String)
-    pCrewNo = VnewValue
+Public Property Let CrewNo(ByVal vNewValue As String)
+    pCrewNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -65,8 +65,8 @@ Public Property Get Forename() As String
     Forename = pForename
 End Property
 
-Public Property Let Forename(ByVal VnewValue As String)
-    pForename = VnewValue
+Public Property Let Forename(ByVal vNewValue As String)
+    pForename = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -74,8 +74,8 @@ Public Property Get Surname() As String
     Surname = pSurname
 End Property
 
-Public Property Let Surname(ByVal VnewValue As String)
-    pSurname = VnewValue
+Public Property Let Surname(ByVal vNewValue As String)
+    pSurname = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -83,8 +83,8 @@ Public Property Get UserName() As String
     UserName = pUsername
 End Property
 
-Public Property Let UserName(ByVal VnewValue As String)
-    pUsername = VnewValue
+Public Property Let UserName(ByVal vNewValue As String)
+    pUsername = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -92,8 +92,8 @@ Public Property Get RankGrade() As String
     RankGrade = pRankGrade
 End Property
 
-Public Property Let RankGrade(ByVal VnewValue As String)
-    pRankGrade = VnewValue
+Public Property Let RankGrade(ByVal vNewValue As String)
+    pRankGrade = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -101,8 +101,8 @@ Public Property Get Watch() As String
     Watch = pWatch
 End Property
 
-Public Property Let Watch(ByVal VnewValue As String)
-    pWatch = VnewValue
+Public Property Let Watch(ByVal vNewValue As String)
+    pWatch = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -110,8 +110,8 @@ Public Property Get MailAlert() As Boolean
     MailAlert = pMailAlert
 End Property
 
-Public Property Let MailAlert(ByVal VnewValue As Boolean)
-    pMailAlert = VnewValue
+Public Property Let MailAlert(ByVal vNewValue As Boolean)
+    pMailAlert = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -119,8 +119,8 @@ Public Property Get Role() As String
     Role = pRole
 End Property
 
-Public Property Let Role(ByVal VnewValue As String)
-    pRole = VnewValue
+Public Property Let Role(ByVal vNewValue As String)
+    pRole = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -128,8 +128,8 @@ Public Property Get AccessLvl() As EnumAccessLvl
     AccessLvl = pAccessLvl
 End Property
 
-Public Property Let AccessLvl(ByVal VnewValue As EnumAccessLvl)
-    pAccessLvl = VnewValue
+Public Property Let AccessLvl(ByVal vNewValue As EnumAccessLvl)
+    pAccessLvl = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -137,8 +137,8 @@ Public Property Get Station() As ClsStation
     Set Station = pStation
 End Property
 
-Public Property Let Station(ByVal VnewValue As ClsStation)
-    Set pStation = VnewValue
+Public Property Let Station(ByVal vNewValue As ClsStation)
+    Set pStation = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -146,8 +146,8 @@ Public Property Get Vehicle() As ClsVehicle
     Set Vehicle = pVehicle
 End Property
 
-Public Property Let Vehicle(ByVal VnewValue As ClsVehicle)
-    Set pVehicle = VnewValue
+Public Property Let Vehicle(ByVal vNewValue As ClsVehicle)
+    Set pVehicle = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -155,8 +155,8 @@ Public Property Get MessageRead() As Boolean
    MessageRead = pMessageRead
 End Property
 
-Public Property Let MessageRead(ByVal VnewValue As Boolean)
-    pMessageRead = VnewValue
+Public Property Let MessageRead(ByVal vNewValue As Boolean)
+    pMessageRead = vNewValue
 End Property
 
 '---------------------------------------------------------------

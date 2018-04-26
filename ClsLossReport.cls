@@ -41,8 +41,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -50,8 +50,8 @@ Public Property Get LossReportNo() As Integer
     LossReportNo = pLossReportNo
 End Property
 
-Public Property Let LossReportNo(ByVal VnewValue As Integer)
-    pLossReportNo = VnewValue
+Public Property Let LossReportNo(ByVal vNewValue As Integer)
+    pLossReportNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -59,8 +59,8 @@ Public Property Get ReportDate() As Date
     ReportDate = pReportDate
 End Property
 
-Public Property Let ReportDate(ByVal VnewValue As Date)
-    pReportDate = VnewValue
+Public Property Let ReportDate(ByVal vNewValue As Date)
+    pReportDate = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -68,8 +68,8 @@ Public Property Get Theft() As Boolean
     Theft = pTheft
 End Property
 
-Public Property Let Theft(ByVal VnewValue As Boolean)
-    pTheft = VnewValue
+Public Property Let Theft(ByVal vNewValue As Boolean)
+    pTheft = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -77,8 +77,8 @@ Public Property Get ActionsTaken() As String
     ActionsTaken = pActionsTaken
 End Property
 
-Public Property Let ActionsTaken(ByVal VnewValue As String)
-    pActionsTaken = VnewValue
+Public Property Let ActionsTaken(ByVal vNewValue As String)
+    pActionsTaken = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -86,8 +86,8 @@ Public Property Get AdditInfo() As String
     AdditInfo = pAdditInfo
 End Property
 
-Public Property Let AdditInfo(ByVal VnewValue As String)
-    pAdditInfo = VnewValue
+Public Property Let AdditInfo(ByVal vNewValue As String)
+    pAdditInfo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -95,8 +95,8 @@ Public Property Get ReportingOfficer() As ClsPerson
     Set ReportingOfficer = pReportingOfficer
 End Property
 
-Public Property Let ReportingOfficer(ByVal VnewValue As ClsPerson)
-    Set pReportingOfficer = VnewValue
+Public Property Let ReportingOfficer(ByVal vNewValue As ClsPerson)
+    Set pReportingOfficer = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -104,8 +104,8 @@ Public Property Get HQAction() As String
     HQAction = pHQAction
 End Property
 
-Public Property Let HQAction(ByVal VnewValue As String)
-    pHQAction = VnewValue
+Public Property Let HQAction(ByVal vNewValue As String)
+    pHQAction = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -113,8 +113,8 @@ Public Property Get OpsSupportAction() As String
     OpsSupportAction = pOpsSupportAction
 End Property
 
-Public Property Let OpsSupportAction(ByVal VnewValue As String)
-    pOpsSupportAction = VnewValue
+Public Property Let OpsSupportAction(ByVal vNewValue As String)
+    pOpsSupportAction = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -122,8 +122,8 @@ Public Property Get IncNo() As String
     IncNo = pIncNo
 End Property
 
-Public Property Let IncNo(ByVal VnewValue As String)
-    pIncNo = VnewValue
+Public Property Let IncNo(ByVal vNewValue As String)
+    pIncNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -131,8 +131,8 @@ Public Property Get Status() As EnumLossRepStatus
     Status = pStatus
 End Property
 
-Public Property Let Status(ByVal VnewValue As EnumLossRepStatus)
-    pStatus = VnewValue
+Public Property Let Status(ByVal vNewValue As EnumLossRepStatus)
+    pStatus = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -140,8 +140,8 @@ Public Property Get Authorised() As Boolean
     Authorised = pAuthorised
 End Property
 
-Public Property Let Authorised(ByVal VnewValue As Boolean)
-    pAuthorised = VnewValue
+Public Property Let Authorised(ByVal vNewValue As Boolean)
+    pAuthorised = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -149,8 +149,8 @@ Public Property Get Rejected() As Boolean
     Rejected = pRejected
 End Property
 
-Public Property Let Rejected(ByVal VnewValue As Boolean)
-    pRejected = VnewValue
+Public Property Let Rejected(ByVal vNewValue As Boolean)
+    pRejected = vNewValue
 End Property
 
 '---------------------------------------------------------------

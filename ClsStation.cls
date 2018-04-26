@@ -33,8 +33,8 @@ Public Property Get StationID() As EnumStationID
     StationID = pStationID
 End Property
 
-Public Property Let StationID(ByVal VnewValue As EnumStationID)
-    pStationID = VnewValue
+Public Property Let StationID(ByVal vNewValue As EnumStationID)
+    pStationID = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -42,8 +42,8 @@ Public Property Get StationNo() As String
     StationNo = pStationNo
 End Property
 
-Public Property Let StationNo(ByVal VnewValue As String)
-    pStationNo = VnewValue
+Public Property Let StationNo(ByVal vNewValue As String)
+    pStationNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -51,8 +51,8 @@ Public Property Get Name() As String
     Name = pName
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
-    pName = VnewValue
+Public Property Let Name(ByVal vNewValue As String)
+    pName = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -60,8 +60,8 @@ Public Property Get Address() As String
     Address = pAddress
 End Property
 
-Public Property Let Address(ByVal VnewValue As String)
-    pAddress = VnewValue
+Public Property Let Address(ByVal vNewValue As String)
+    pAddress = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -69,8 +69,8 @@ Public Property Get StationType() As EnumStnType
     StationType = pStationType
 End Property
 
-Public Property Let StationType(ByVal VnewValue As EnumStnType)
-    pStationType = VnewValue
+Public Property Let StationType(ByVal vNewValue As EnumStnType)
+    pStationType = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -78,8 +78,8 @@ Public Property Get Vehicles() As ClsVehicles
     Set Vehicles = pVehicles
 End Property
 
-Public Property Let Vehicles(ByVal VnewValue As ClsVehicles)
-    Set pVehicles = VnewValue
+Public Property Let Vehicles(ByVal vNewValue As ClsVehicles)
+    Set pVehicles = vNewValue
 End Property
 
 '---------------------------------------------------------------

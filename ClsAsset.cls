@@ -61,8 +61,8 @@ Public Property Get AssetNo() As Integer
     AssetNo = pAssetNo
 End Property
 
-Public Property Let AssetNo(ByVal VnewValue As Integer)
-    pAssetNo = VnewValue
+Public Property Let AssetNo(ByVal vNewValue As Integer)
+    pAssetNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -70,8 +70,8 @@ Public Property Get Brand() As String
     Brand = pBrand
 End Property
 
-Public Property Let Brand(ByVal VnewValue As String)
-    pBrand = VnewValue
+Public Property Let Brand(ByVal vNewValue As String)
+    pBrand = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -79,8 +79,8 @@ Public Property Get Description() As String
     Description = pDescription
 End Property
 
-Public Property Let Description(ByVal VnewValue As String)
-    pDescription = VnewValue
+Public Property Let Description(ByVal vNewValue As String)
+    pDescription = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -88,8 +88,8 @@ Public Property Get cost() As Single
     cost = pCost
 End Property
 
-Public Property Let cost(ByVal VnewValue As Single)
-    pCost = VnewValue
+Public Property Let cost(ByVal vNewValue As Single)
+    pCost = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -97,8 +97,8 @@ Public Property Get QtyInStock() As Integer
     QtyInStock = pQtyInStock
 End Property
 
-Public Property Let QtyInStock(ByVal VnewValue As Integer)
-    pQtyInStock = VnewValue
+Public Property Let QtyInStock(ByVal vNewValue As Integer)
+    pQtyInStock = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -106,8 +106,8 @@ Public Property Get Category1() As String
     Category1 = pCategory1
 End Property
 
-Public Property Let Category1(ByVal VnewValue As String)
-    pCategory1 = VnewValue
+Public Property Let Category1(ByVal vNewValue As String)
+    pCategory1 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -115,8 +115,8 @@ Public Property Get Category2() As String
     Category2 = pCategory2
 End Property
 
-Public Property Let Category2(ByVal VnewValue As String)
-    pCategory2 = VnewValue
+Public Property Let Category2(ByVal vNewValue As String)
+    pCategory2 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -124,8 +124,8 @@ Public Property Get Category3() As String
     Category3 = pCategory3
 End Property
 
-Public Property Let Category3(ByVal VnewValue As String)
-    pCategory3 = VnewValue
+Public Property Let Category3(ByVal vNewValue As String)
+    pCategory3 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -133,8 +133,8 @@ Public Property Get Sizing() As String
     Sizing = pSizing
 End Property
 
-Public Property Let Sizing(ByVal VnewValue As String)
-    pSizing = VnewValue
+Public Property Let Sizing(ByVal vNewValue As String)
+    pSizing = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -142,8 +142,8 @@ Public Property Get Size1() As String
     Size1 = pSize1
 End Property
 
-Public Property Let Size1(ByVal VnewValue As String)
-    pSize1 = VnewValue
+Public Property Let Size1(ByVal vNewValue As String)
+    pSize1 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -151,8 +151,8 @@ Public Property Get Size2() As String
     Size2 = pSize2
 End Property
 
-Public Property Let Size2(ByVal VnewValue As String)
-    pSize2 = VnewValue
+Public Property Let Size2(ByVal vNewValue As String)
+    pSize2 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -160,8 +160,8 @@ Public Property Get PurchaseUnit() As String
     PurchaseUnit = pPurchaseUnit
 End Property
 
-Public Property Let PurchaseUnit(ByVal VnewValue As String)
-    pPurchaseUnit = VnewValue
+Public Property Let PurchaseUnit(ByVal vNewValue As String)
+    pPurchaseUnit = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -169,8 +169,8 @@ Public Property Get MinAmount() As Integer
     MinAmount = pMinAmount
 End Property
 
-Public Property Let MinAmount(ByVal VnewValue As Integer)
-    pMinAmount = VnewValue
+Public Property Let MinAmount(ByVal vNewValue As Integer)
+    pMinAmount = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -178,8 +178,8 @@ Public Property Get MaxAmount() As Integer
     MaxAmount = pMaxAmount
 End Property
 
-Public Property Let MaxAmount(ByVal VnewValue As Integer)
-    pMaxAmount = VnewValue
+Public Property Let MaxAmount(ByVal vNewValue As Integer)
+    pMaxAmount = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -187,8 +187,8 @@ Public Property Get OrderLevel() As Integer
     OrderLevel = pOrderLevel
 End Property
 
-Public Property Let OrderLevel(ByVal VnewValue As Integer)
-    pOrderLevel = VnewValue
+Public Property Let OrderLevel(ByVal vNewValue As Integer)
+    pOrderLevel = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -196,8 +196,8 @@ Public Property Get LeadTime() As Integer
     LeadTime = pLeadTime
 End Property
 
-Public Property Let LeadTime(ByVal VnewValue As Integer)
-    pLeadTime = VnewValue
+Public Property Let LeadTime(ByVal vNewValue As Integer)
+    pLeadTime = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -217,8 +217,8 @@ Public Property Get Status() As EnumAssetStatus
     Status = pStatus
 End Property
 
-Public Property Let Status(ByVal VnewValue As EnumAssetStatus)
-    pStatus = VnewValue
+Public Property Let Status(ByVal vNewValue As EnumAssetStatus)
+    pStatus = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -226,8 +226,8 @@ Public Property Get Supplier1() As String
     Supplier1 = pSupplier1
 End Property
 
-Public Property Let Supplier1(ByVal VnewValue As String)
-    pSupplier1 = VnewValue
+Public Property Let Supplier1(ByVal vNewValue As String)
+    pSupplier1 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -235,8 +235,8 @@ Public Property Get Supplier2() As String
     Supplier2 = pSupplier2
 End Property
 
-Public Property Let Supplier2(ByVal VnewValue As String)
-    pSupplier2 = VnewValue
+Public Property Let Supplier2(ByVal vNewValue As String)
+    pSupplier2 = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -244,8 +244,8 @@ Public Property Get Keywords() As String
     Keywords = pKeywords
 End Property
 
-Public Property Let Keywords(ByVal VnewValue As String)
-    pKeywords = VnewValue
+Public Property Let Keywords(ByVal vNewValue As String)
+    pKeywords = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -253,8 +253,8 @@ Public Property Get AllowedOrderReasons() As String
     AllowedOrderReasons = pAllowedOrderReasons
 End Property
 
-Public Property Let AllowedOrderReasons(ByVal VnewValue As String)
-    pAllowedOrderReasons = VnewValue
+Public Property Let AllowedOrderReasons(ByVal vNewValue As String)
+    pAllowedOrderReasons = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -262,8 +262,8 @@ Public Property Get AllocationType() As EnumAllocationType
     AllocationType = pAllocationType
 End Property
 
-Public Property Let AllocationType(ByVal VnewValue As EnumAllocationType)
-    pAllocationType = VnewValue
+Public Property Let AllocationType(ByVal vNewValue As EnumAllocationType)
+    pAllocationType = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -271,8 +271,8 @@ Public Property Get Location() As String
     Location = pLocation
 End Property
 
-Public Property Let Location(ByVal VnewValue As String)
-    pLocation = VnewValue
+Public Property Let Location(ByVal vNewValue As String)
+    pLocation = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -280,8 +280,8 @@ Public Property Get AdditInfo() As String
     AdditInfo = pAdditInfo
 End Property
 
-Public Property Let AdditInfo(ByVal VnewValue As String)
-    pAdditInfo = VnewValue
+Public Property Let AdditInfo(ByVal vNewValue As String)
+    pAdditInfo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -289,8 +289,8 @@ Public Property Get NoOrderMessage() As String
     NoOrderMessage = pNoOrderMessage
 End Property
 
-Public Property Let NoOrderMessage(ByVal VnewValue As String)
-    pNoOrderMessage = VnewValue
+Public Property Let NoOrderMessage(ByVal vNewValue As String)
+    pNoOrderMessage = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -298,8 +298,8 @@ Public Property Get HideFromView() As Boolean
     HideFromView = pHideFromView
 End Property
 
-Public Property Let HideFromView(ByVal VnewValue As Boolean)
-    pHideFromView = VnewValue
+Public Property Let HideFromView(ByVal vNewValue As Boolean)
+    pHideFromView = vNewValue
 End Property
 
 '---------------------------------------------------------------

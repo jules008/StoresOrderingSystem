@@ -35,8 +35,8 @@ Public Property Get Deleted() As Date
     Deleted = pDeleted
 End Property
 
-Public Property Let Deleted(ByVal VnewValue As Date)
-    pDeleted = VnewValue
+Public Property Let Deleted(ByVal vNewValue As Date)
+    pDeleted = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -44,8 +44,8 @@ Public Property Get DeliveryNo() As Integer
     DeliveryNo = pDeliveryNo
 End Property
 
-Public Property Let DeliveryNo(ByVal VnewValue As Integer)
-    pDeliveryNo = VnewValue
+Public Property Let DeliveryNo(ByVal vNewValue As Integer)
+    pDeliveryNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -53,8 +53,8 @@ Public Property Get Supplier() As ClsSupplier
     Set Supplier = pSupplier
 End Property
 
-Public Property Let Supplier(ByVal VnewValue As ClsSupplier)
-    Set pSupplier = VnewValue
+Public Property Let Supplier(ByVal vNewValue As ClsSupplier)
+    Set pSupplier = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -62,8 +62,8 @@ Public Property Get DeliveryDate() As Date
     DeliveryDate = pDeliveryDate
 End Property
 
-Public Property Let DeliveryDate(ByVal VnewValue As Date)
-    pDeliveryDate = VnewValue
+Public Property Let DeliveryDate(ByVal vNewValue As Date)
+    pDeliveryDate = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -71,8 +71,8 @@ Public Property Get Asset() As ClsAsset
     Set Asset = pAsset
 End Property
 
-Public Property Let Asset(ByVal VnewValue As ClsAsset)
-    Set pAsset = VnewValue
+Public Property Let Asset(ByVal vNewValue As ClsAsset)
+    Set pAsset = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -80,8 +80,8 @@ Public Property Get Quantity() As Integer
     Quantity = pQuantity
 End Property
 
-Public Property Let Quantity(ByVal VnewValue As Integer)
-    pQuantity = VnewValue
+Public Property Let Quantity(ByVal vNewValue As Integer)
+    pQuantity = vNewValue
 End Property
 
 '---------------------------------------------------------------

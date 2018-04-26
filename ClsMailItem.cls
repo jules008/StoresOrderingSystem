@@ -34,8 +34,8 @@ Public Property Get EmailNo() As Integer
     EmailNo = pEmailNo
 End Property
 
-Public Property Let EmailNo(ByVal VnewValue As Integer)
-    pEmailNo = VnewValue
+Public Property Let EmailNo(ByVal vNewValue As Integer)
+    pEmailNo = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -43,8 +43,8 @@ Public Property Get CrewNo() As String
     CrewNo = pCrewNo
 End Property
 
-Public Property Let CrewNo(ByVal VnewValue As String)
-    pCrewNo = VnewValue
+Public Property Let CrewNo(ByVal vNewValue As String)
+    pCrewNo = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -52,8 +52,8 @@ Public Property Get MailTo() As String
     MailTo = pMailTo
 End Property
 
-Public Property Let MailTo(ByVal VnewValue As String)
-    pMailTo = VnewValue
+Public Property Let MailTo(ByVal vNewValue As String)
+    pMailTo = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -61,8 +61,8 @@ Public Property Get MailFrom() As String
     MailFrom = pMailFrom
 End Property
 
-Public Property Let MailFrom(ByVal VnewValue As String)
-    pMailFrom = VnewValue
+Public Property Let MailFrom(ByVal vNewValue As String)
+    pMailFrom = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -70,8 +70,8 @@ Public Property Get CC() As String
     CC = pCC
 End Property
 
-Public Property Let CC(ByVal VnewValue As String)
-    pCC = VnewValue
+Public Property Let CC(ByVal vNewValue As String)
+    pCC = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -79,8 +79,8 @@ Public Property Get Subject() As String
     Subject = pSubject
 End Property
 
-Public Property Let Subject(ByVal VnewValue As String)
-    pSubject = VnewValue
+Public Property Let Subject(ByVal vNewValue As String)
+    pSubject = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -88,8 +88,8 @@ Public Property Get Body() As String
     Body = pBody
 End Property
 
-Public Property Let Body(ByVal VnewValue As String)
-    pBody = VnewValue
+Public Property Let Body(ByVal vNewValue As String)
+    pBody = vNewValue
 End Property
 
 '----------------------------------------------------------
@@ -97,8 +97,8 @@ Public Property Get timeSent() As Date
     timeSent = ptimeSent
 End Property
 
-Public Property Let timeSent(ByVal VnewValue As Date)
-    ptimeSent = VnewValue
+Public Property Let timeSent(ByVal vNewValue As Date)
+    ptimeSent = vNewValue
 End Property
 
 '===============================================================

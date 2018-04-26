@@ -39,9 +39,9 @@ Public Property Get Top() As Integer
     Top = pTop
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
+Public Property Let Top(ByVal vNewValue As Integer)
 
-    pTop = VnewValue + Parent.Top
+    pTop = vNewValue + Parent.Top
     pShpFrame.Top = pTop
 End Property
 
@@ -50,8 +50,8 @@ Public Property Get Left() As Integer
     Left = pShpFrame.Left
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
-    pLeft = VnewValue
+Public Property Let Left(ByVal vNewValue As Integer)
+    pLeft = vNewValue
     pShpFrame.Left = pLeft
 End Property
 
@@ -60,8 +60,8 @@ Public Property Get Height() As Integer
     Height = pShpFrame.Height
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
-    pHeight = VnewValue
+Public Property Let Height(ByVal vNewValue As Integer)
+    pHeight = vNewValue
     pShpFrame.Height = pHeight
 End Property
 
@@ -70,8 +70,8 @@ Public Property Get Width() As Integer
     Width = pShpFrame.Width
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
-    pWidth = VnewValue
+Public Property Let Width(ByVal vNewValue As Integer)
+    pWidth = vNewValue
     pShpFrame.Width = pWidth
 End Property
 
@@ -80,8 +80,8 @@ Public Property Get Name() As String
     Name = pShpFrame.Name
 End Property
 
-Public Property Let Name(ByVal VnewValue As String)
-    pName = VnewValue
+Public Property Let Name(ByVal vNewValue As String)
+    pName = vNewValue
     pShpFrame.Name = pName
 End Property
 
@@ -90,8 +90,8 @@ Public Property Get DashObs() As ClsUIDashObjs
     Set DashObs = pDashObjs
 End Property
 
-Public Property Let DashObs(ByVal VnewValue As ClsUIDashObjs)
-    Set pDashObjs = VnewValue
+Public Property Let DashObs(ByVal vNewValue As ClsUIDashObjs)
+    Set pDashObjs = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -99,8 +99,8 @@ Public Property Get Menu() As ClsUIMenu
     Set Menu = pMenu
 End Property
 
-Public Property Let Menu(ByVal VnewValue As ClsUIMenu)
-    Set pMenu = VnewValue
+Public Property Let Menu(ByVal vNewValue As ClsUIMenu)
+    Set pMenu = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -108,8 +108,8 @@ Public Property Get EnableHeader() As Boolean
     EnableHeader = pEnableHeader
 End Property
 
-Public Property Let EnableHeader(ByVal VnewValue As Boolean)
-    pEnableHeader = VnewValue
+Public Property Let EnableHeader(ByVal vNewValue As Boolean)
+    pEnableHeader = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -117,8 +117,8 @@ Public Property Get Header() As ClsUIHeader
     Set Header = pHeader
 End Property
 
-Public Property Let Header(ByVal VnewValue As ClsUIHeader)
-    Set pHeader = VnewValue
+Public Property Let Header(ByVal vNewValue As ClsUIHeader)
+    Set pHeader = vNewValue
     pHeader.SetParent ObjPtr(Me)
 End Property
 
@@ -127,8 +127,8 @@ Public Property Get LineItems() As ClsUILineitems
     Set LineItems = pLineItems
 End Property
 
-Public Property Let LineItems(ByVal VnewValue As ClsUILineitems)
-    Set pLineItems = VnewValue
+Public Property Let LineItems(ByVal vNewValue As ClsUILineitems)
+    Set pLineItems = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -136,10 +136,10 @@ Public Property Get Visible() As Boolean
     Visible = pShpFrame.Visible
 End Property
 
-Public Property Let Visible(ByVal VnewValue As Boolean)
+Public Property Let Visible(ByVal vNewValue As Boolean)
     Dim DashObj As ClsUIDashObj
     
-    pVisible = VnewValue
+    pVisible = vNewValue
     
     pShpFrame.Visible = pVisible
     
@@ -158,8 +158,8 @@ Public Property Get ShpFrame() As Shape
     Set ShpFrame = pShpFrame
 End Property
 
-Public Property Let ShpFrame(ByVal VnewValue As Shape)
-    Set pShpFrame = VnewValue
+Public Property Let ShpFrame(ByVal vNewValue As Shape)
+    Set pShpFrame = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -178,34 +178,34 @@ Public Property Get Style() As TypeStyle
     Style = pStyle
 End Property
 
-Public Property Let Style(VnewValue As TypeStyle)
-    pStyle = VnewValue
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
     
     With pShpFrame.Fill
         .TwoColorGradient msoGradientHorizontal, 1
-        .ForeColor.RGB = VnewValue.Fill1
-        .BackColor.RGB = VnewValue.Fill2
+        .ForeColor.RGB = vNewValue.Fill1
+        .BackColor.RGB = vNewValue.Fill2
     End With
     
     With pShpFrame.Line
-        .ForeColor.RGB = VnewValue.BorderColour
-        .Weight = VnewValue.BorderWidth
+        .ForeColor.RGB = vNewValue.BorderColour
+        .Weight = vNewValue.BorderWidth
         If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
     End With
     
     With pShpFrame.TextFrame
-        .Characters.Font.Bold = VnewValue.FontBold
-        .Characters.Font.Name = VnewValue.FontStyle
-        .Characters.Font.Color = VnewValue.FontColour
-        .Characters.Font.Size = VnewValue.FontSize
-        If VnewValue.FontXJust <> 0 Then .HorizontalAlignment = VnewValue.FontXJust
+        .Characters.Font.Bold = vNewValue.FontBold
+        .Characters.Font.Name = vNewValue.FontStyle
+        .Characters.Font.Color = vNewValue.FontColour
+        .Characters.Font.Size = vNewValue.FontSize
+        If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
     End With
     
     With pShpFrame.Shadow
-        If VnewValue.Shadow = 0 Then
+        If vNewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
-            .Type = VnewValue.Shadow
+            .Type = vNewValue.Shadow
             .Visible = msoCTrue
         End If
     End With

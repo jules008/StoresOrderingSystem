@@ -43,8 +43,8 @@ Public Property Get NoColumns() As Integer
     NoColumns = pNoColumns
 End Property
 
-Public Property Let NoColumns(ByVal VnewValue As Integer)
-    pNoColumns = VnewValue
+Public Property Let NoColumns(ByVal vNewValue As Integer)
+    pNoColumns = vNewValue
     ReDim pColumns(0 To NoColumns - 1)
 End Property
 
@@ -53,11 +53,11 @@ Public Property Get ColumnWidth(i As Integer) As Integer
     ColumnWidth = pColumns(i)
 End Property
 
-Public Property Let Columns(VnewValue As String)
+Public Property Let Columns(vNewValue As String)
     Dim i As Integer
     Dim ColArray() As String
     
-    ColArray() = Split(VnewValue, ":")
+    ColArray() = Split(vNewValue, ":")
     
     For i = 0 To pNoColumns - 1
         pColumns(i) = CInt(ColArray(i))
@@ -69,8 +69,8 @@ Public Property Get Top() As Integer
     Top = pTop - Parent.Top
 End Property
 
-Public Property Let Top(ByVal VnewValue As Integer)
-    pTop = VnewValue + Parent.Top
+Public Property Let Top(ByVal vNewValue As Integer)
+    pTop = vNewValue + Parent.Top
 End Property
 
 '---------------------------------------------------------------
@@ -78,8 +78,8 @@ Public Property Get Left() As Integer
     Left = pLeft
 End Property
 
-Public Property Let Left(ByVal VnewValue As Integer)
-    pLeft = VnewValue + Parent.Left
+Public Property Let Left(ByVal vNewValue As Integer)
+    pLeft = vNewValue + Parent.Left
 End Property
 
 '---------------------------------------------------------------
@@ -87,8 +87,8 @@ Public Property Get Height() As Integer
     Height = pHeight
 End Property
 
-Public Property Let Height(ByVal VnewValue As Integer)
-    pHeight = VnewValue
+Public Property Let Height(ByVal vNewValue As Integer)
+    pHeight = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -96,8 +96,8 @@ Public Property Get Width() As Integer
     Width = pWidth
 End Property
 
-Public Property Let Width(ByVal VnewValue As Integer)
-    pWidth = VnewValue
+Public Property Let Width(ByVal vNewValue As Integer)
+    pWidth = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -105,8 +105,8 @@ Public Property Get RowOffset() As Integer
     RowOffset = pRowOffset
 End Property
 
-Public Property Let RowOffset(ByVal VnewValue As Integer)
-    pRowOffset = VnewValue
+Public Property Let RowOffset(ByVal vNewValue As Integer)
+    pRowOffset = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -114,8 +114,8 @@ Public Property Get Style() As TypeStyle
     Style = pStyle
 End Property
 
-Public Property Let Style(VnewValue As TypeStyle)
-    pStyle = VnewValue
+Public Property Let Style(vNewValue As TypeStyle)
+    pStyle = vNewValue
 End Property
 
 '---------------------------------------------------------------
