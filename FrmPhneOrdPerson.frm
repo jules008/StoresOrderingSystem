@@ -110,7 +110,7 @@ Private Function PopulateForm() As Boolean
     On Error GoTo ErrorHandler
     
     CrewNo = Lineitem.ForPerson.CrewNo
-    
+    Order.PhoneOrder = True
     BtnPrev.Enabled = False
     LblAllocation = "Who are you raising the Order on behalf of?"
     
