@@ -224,64 +224,40 @@ Public Sub UpdateDBScript()
     Dim Fld As DAO.Field
     
     DBConnect
-        
+    
+    On Error GoTo error
+    
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,393" Then
-        MsgBox "Database needs to be upgraded to v1,393 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,394" Then
+        MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    MsgBox "Import tables TblVehicle and TblVehicleType"
+    'delete old backup tables
+    DB.Execute "DROP TABLE TblAssetOLD"
+    DB.Execute "DROP TABLE TblVehicleOLD"
+    DB.Execute "DROP TABLE TblVehicleTypeOLD"
     
-    'Table changes
+    'back up Station table
+    DB.Execute "SELECT * INTO TblSationOLD FROM TblStation"
     
-    ' delete old vehicle table and add new
-    DB.Execute "SELECT * INTO TblVehicleOLD FROM TblVehicle"
-    DB.Execute "DROP TABLE TblVehicle"
-    DB.Execute "SELECT * INTO TblVehicle FROM TblVehicleNEW"
-    DB.Execute "DROP TABLE TblVehicleNEW"
+    'Add active column to station table
+    DB.Execute "ALTER TABLE TblStation ADD COLUMN StnActive yesno"
     
-    ' delete old vehicleType table and add new
-    DB.Execute "SELECT * INTO TblVehicleTypeOLD FROM TblVehicleType"
-    DB.Execute "DROP TABLE TblVehicleType"
-    DB.Execute "SELECT * INTO TblVehicleType FROM TblVehicleTypeNEW"
-    DB.Execute "DROP TABLE TblVehicleTypeNEW"
-    
-    'clear new issue flag
-    
-    DB.Execute "SELECT * INTO TblAssetOLD FROM TblAsset"
-    Set RstTable = SQLQuery("TblAsset")
-    
-    i = 1
-    With RstTable
-        Do While Not .EOF
-            Debug.Print !AssetNo
-            Binary = !AllowedOrderReasons
-            
-            If Len(Binary) <> 13 Then
-                Binary = Left(Binary, 13)
-                Debug.Print "Length corrected on Asset " & !AssetNo
-            End If
-            
-            Binary = Left(Binary, 12) & "0"
-            
-            .Edit
-            !AllowedOrderReasons = Binary
-            .Update
-            .MoveNext
-            i = i + 1
-        Loop
-    
-    End With
-    
+    'set all stations except S39 to active
+    DB.Execute "UPDATE TblStation SET StnActive = True WHERE StationNo <> 'EC39'"
+    DB.Execute "UPDATE TblStation SET StnActive = True WHERE Division IS NULL"
+    DB.Execute "INSERT INTO TblStation VALUES (50, 'EC31', 'Sleaford Accom. Pods', 'Church Ln, Sleaford NG34, UK', '1', 'South',-1)"
+    DB.Execute "UPDATE TblStation SET StationType = '1' WHERE StationNo  = 'EC31'"
+    DB.Execute "UPDATE TblStation SET Address = 'Eastgate, Sleaford, NG34 7EE' WHERE StationNo = 'EC31'"
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v1,394"
+        .Fields(0) = "v1,395"
         .Update
     End With
     
@@ -292,7 +268,11 @@ Public Sub UpdateDBScript()
     Set RstTable = Nothing
     Set TableDef = Nothing
     Set Fld = Nothing
-    
+Exit Sub
+error:
+    MsgBox Err.Number & " - " & Err.Description
+    Stop
+    Resume
 End Sub
               
 ' ===============================================================
@@ -311,32 +291,28 @@ Public Sub UpdateDBScriptUndo()
     
     Set RstTable = SQLQuery("TblDBVersion")
 
-    If RstTable.Fields(0) <> "v1,394" Then
-        MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,395" Then
+        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
-       
-    'Undo Vehicle update
-    DB.Execute "SELECT * INTO TblVehicleNEW FROM TblVehicle"
-    DB.Execute "DROP TABLE TblVehicle"
-    DB.Execute "SELECT * INTO TblVehicle FROM TblVehicleOLD"
-    DB.Execute "DROP TABLE TblVehicleOLD"
     
-    DB.Execute "SELECT * INTO TblVehicleTypeNEW FROM TblVehicleType"
-    DB.Execute "DROP TABLE TblVehicleType"
-    DB.Execute "SELECT * INTO TblVehicleType FROM TblVehicleTypeOLD"
-    DB.Execute "DROP TABLE TblVehicleTypeOLD"
-     
-    Set RstTable = SQLQuery("TblDBVersion")
+    'add dummy tables
+    DB.Execute "CREATE TABLE TblAssetOLD"
+    DB.Execute "CREATE TABLE TblVehicleOLD"
+    DB.Execute "CREATE TABLE TblVehicleTypeOLD"
+    
+    'Restore station table
+    DB.Execute "DROP TABLE TblStation"
+    DB.Execute "SELECT * INTO TblStation FROM TblSationOLD"
+    
+    'delete back up Station table
+    DB.Execute "DROP TABLE TblSationOLD"
 
-    'undo new issue update
-    DB.Execute "DROP TABLE TblAsset"
-    DB.Execute "SELECT * INTO TblAsset FROM TblAssetOLD"
-    DB.Execute "DROP TABLE TblAssetOLD"
     
+    'version update
     With RstTable
         .Edit
-        .Fields(0) = "v1,393"
+        .Fields(0) = "v1,394"
         .Update
     End With
     
@@ -402,19 +378,15 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Resized screens for laptop use" _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Bug Fix - Hidden Assets" _
+                    & Chr(13) & " - Removed Station 39 from system" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Resized screens for laptop use - pop up forms were too big for laptop screens, so " _
-                    & Chr(13) & "they have been resized" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Bug Fix - Hidden Assets - Had ANOTHER go at fixing the hidden assets bug.  Hopefully fixed now" _
+                    & Chr(13) & "- Removed Sleaford temporary station from the system.  All Wholetime and RDS orders " _
+                    & Chr(13) & "will revert back to S31" _
                     & Chr(13) & ""
         .Update
     End With

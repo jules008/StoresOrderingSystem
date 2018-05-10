@@ -18,8 +18,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Bug fix when using using Prev Button
 ' v0,3 - Clean up if user cancels order
 ' v0,4 - Bug fix - phone order not filling in ForStation
+' v0,5 - Only show active stations
 '---------------------------------------------------------------
-' Date - 15 Jun 17
+' Date - 10 May 18
 '===============================================================
 Option Explicit
 
@@ -426,10 +427,12 @@ Private Function FormInitialise() As Boolean
         .Visible = True
         i = 0
         For Each Station In Stations
-            .AddItem
-            .List(i, 0) = Station.StationNo
-            .List(i, 1) = Station.Name
-            i = i + 1
+            If Station.StnActive Then
+                .AddItem
+                .List(i, 0) = Station.StationNo
+                .List(i, 1) = Station.Name
+                i = i + 1
+            End If
         Next
     End With
     

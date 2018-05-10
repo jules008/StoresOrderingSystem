@@ -26,8 +26,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Process Guest Accounts
 ' v0,5 - Bug fix for Guest Account processing
 ' v0,6 - Added buttons for Email Alerts and reports
+' v0,7 - Only show active stations
 '---------------------------------------------------------------
-' Date - 22 Nov 17
+' Date - 10 May 18
 '===============================================================
 Option Explicit
 
@@ -852,7 +853,7 @@ Restart:
     
     With CmoStation
         For i = 1 To Stations.Count
-            .AddItem Stations(i).Name
+            If Stations(i).StnActive Then .AddItem Stations(i).Name
         Next
     End With
     

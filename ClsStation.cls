@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsStation
 ' v0,0 - Initial Version
+' V0,1 - Add Station Active Field
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 10 May 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,6 +27,7 @@ Private pStationNo As String
 Private pName As String
 Private pAddress As String
 Private pStationType As EnumStnType
+Private pStnActive As Boolean
 Private pVehicles As ClsVehicles
 
 '---------------------------------------------------------------
@@ -74,6 +76,15 @@ Public Property Let StationType(ByVal vNewValue As EnumStnType)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get StnActive() As Boolean
+    StnActive = pStnActive
+End Property
+
+Public Property Let StnActive(ByVal vNewValue As Boolean)
+    pStnActive = vNewValue
+End Property
+
+'---------------------------------------------------------------
 Public Property Get Vehicles() As ClsVehicles
     Set Vehicles = pVehicles
 End Property
@@ -98,7 +109,8 @@ Public Sub DBGet(Index As Integer)
             If Not IsNull(!Name) Then pName = !Name
             If Not IsNull(!Address) Then pAddress = !Address
             If Not IsNull(!StationType) Then pStationType = !StationType
-            
+            If Not IsNull(!StnActive) Then pStnActive = !StnActive
+
             pVehicles.DeleteCollection
             pVehicles.GetCollection (StationID)
         End If
