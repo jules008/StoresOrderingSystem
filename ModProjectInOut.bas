@@ -13,7 +13,7 @@ Public Sub ExportModules()
     SourceBookName = ActiveWorkbook.Name
     Set SourceBook = Application.Workbooks(SourceBookName)
     
-    If Dir(EXPORT_FILE_PATH & "*.*") = "" Then
+    If Dir(EXPORT_FILE_PATH & "*.*") <> "" Then
         Kill EXPORT_FILE_PATH & "*.*"
     End If
     
@@ -123,13 +123,15 @@ Public Sub ExportDBTables()
     Dim FieldType As String
     Dim TableExport As TableDef
     Dim ExportFldr As String
-        
+    
+        Initialise
+    
     For Each TableExport In DB.TableDefs
         If Not (TableExport.Name Like "MSys*" Or TableExport.Name Like "~*") Then
             
             'debug.print TableExport.Name
             
-            PrintFilePath = EXPORTFILEPATH & TableExport.Name & ".txt"
+            PrintFilePath = EXPORT_FILE_PATH & TableExport.Name & ".txt"
         
             iFile = FreeFile()
             

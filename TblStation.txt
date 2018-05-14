@@ -4,3 +4,4 @@ Name,  dbText
 Address,  dbText
 StationType,  dbText
 Division,  dbText
+StnActive,  dbBoolean
