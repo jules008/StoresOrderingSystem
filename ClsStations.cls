@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsStations
 ' v0,0 - Initial Version
+' v0,1 - Sort Get Station by StationNo
 '---------------------------------------------------------------
-' Date - 04 Mar 17
+' Date - 14 May 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -81,7 +82,7 @@ Public Sub GetCollection()
     Dim Station As ClsStation
     Dim i As Integer
 
-    Set RstStation = ModDatabase.SQLQuery("SELECT * FROM TblStation ORDER BY StationID ASC")
+    Set RstStation = ModDatabase.SQLQuery("SELECT * FROM TblStation ORDER BY StationNo ASC")
     With RstStation
         If .RecordCount > 0 Then
             .MoveFirst

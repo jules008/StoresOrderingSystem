@@ -44,6 +44,8 @@ Public Sub ExportModules()
         End If
    
     Next VBModule
+
+    ExportDBTables
     
     ThisWorkbook.SaveAs EXPORT_FILE_PATH & "\" & PROJECT_FILE_NAME, 51
     

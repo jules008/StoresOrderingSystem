@@ -248,10 +248,14 @@ Public Sub UpdateDBScript()
     
     'set all stations except S39 to active
     DB.Execute "UPDATE TblStation SET StnActive = True WHERE StationNo <> 'EC39'"
-    DB.Execute "UPDATE TblStation SET StnActive = True WHERE Division IS NULL"
+    DB.Execute "UPDATE TblStation SET StnActive = True WHERE Division IS NULL OR Division = ''"
     DB.Execute "INSERT INTO TblStation VALUES (50, 'EC31', 'Sleaford Accom. Pods', 'Church Ln, Sleaford NG34, UK', '1', 'South',-1)"
     DB.Execute "UPDATE TblStation SET StationType = '1' WHERE StationNo  = 'EC31'"
     DB.Execute "UPDATE TblStation SET Address = 'Eastgate, Sleaford, NG34 7EE' WHERE StationNo = 'EC31'"
+    
+    'Set null station no to Non-Ops
+    DB.Execute "UPDATE TblStation SET StationNo = 'Non-Ops' WHERE StationNo IS NULL OR StationNo = ''"
+    
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
@@ -378,12 +382,16 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
+                    & Chr(13) & "Phone Order Fix" _
+                    & Chr(13) & "" _
                     & Chr(13) & " - Removed Station 39 from system" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
+                    & Chr(13) & "" _
+                    & Chr(13) & "Phone Order Fix - Rewritten phone order functionality to fix persistent problems" _
                     & Chr(13) & "" _
                     & Chr(13) & "- Removed Sleaford temporary station from the system.  All Wholetime and RDS orders " _
                     & Chr(13) & "will revert back to S31" _
