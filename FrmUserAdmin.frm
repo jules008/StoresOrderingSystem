@@ -253,7 +253,7 @@ Private Sub BtnUpdate_Click()
                 .Role = TxtRole
                 .Surname = TxtSurname
                 .RankGrade = TxtRankGrade
-                .Station.DBGet CmoStation.ListIndex
+                .Station.DBGet CmoStation.List(CmoStation.ListIndex, 0)
                 .Watch = TxtWatch
                 .UserName = TxtUsername
                 .DBSave
