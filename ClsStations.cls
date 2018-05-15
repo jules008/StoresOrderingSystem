@@ -82,7 +82,7 @@ Public Sub GetCollection()
     Dim Station As ClsStation
     Dim i As Integer
 
-    Set RstStation = ModDatabase.SQLQuery("SELECT * FROM TblStation ORDER BY StationNo ASC")
+    Set RstStation = ModDatabase.SQLQuery("SELECT * FROM TblStation ORDER BY Name ASC")
     With RstStation
         If .RecordCount > 0 Then
             .MoveFirst

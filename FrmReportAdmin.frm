@@ -588,8 +588,8 @@ Private Function PopulateForm() As Boolean
         Do While Not .EOF
             If !ToCC = "To" Then
                 LstTo.AddItem
-                Debug.Print !UserName
-                Debug.Print !CrewNo
+                'debug.print !UserName
+                'debug.print !CrewNo
                 
                 LstTo.List(LstTo.ListCount - 1, 0) = !CrewNo
                 LstTo.List(LstTo.ListCount - 1, 1) = !UserName

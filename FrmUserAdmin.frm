@@ -27,8 +27,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Bug fix for Guest Account processing
 ' v0,6 - Added buttons for Email Alerts and reports
 ' v0,7 - Only show active stations
+' v0,8 - Fix Selected station bug
 '---------------------------------------------------------------
-' Date - 10 May 18
+' Date - 15 May 18
 '===============================================================
 Option Explicit
 
@@ -252,17 +253,18 @@ Private Sub BtnUpdate_Click()
                 .Role = TxtRole
                 .Surname = TxtSurname
                 .RankGrade = TxtRankGrade
-                .Station.DBGet CmoStation.ListIndex
+                .Station.DBGet CmoStation.List(CmoStation.ListIndex, 0)
+                
+                Debug.Print .Station.StationID, .Station.Name
+                
                 .Watch = TxtWatch
                 .UserName = TxtUsername
                 .DBSave
             End With
-            MsgBox "User updated successfully.  If any change have been made " _
-                    & "to your own profile, please restart the system for these changes " _
-                     & "to take effect", vbInformation, APP_NAME
             
             If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
 
+            If Not Initialise Then Err.Raise HANDLED_ERROR
     End Select
 Exit Sub
 
@@ -278,6 +280,7 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Sub
+
 
 ' ===============================================================
 ' LstAccessList_Click
@@ -768,7 +771,7 @@ Private Function RefreshUserDetails() As Boolean
             TxtCrewNo = .CrewNo
             TxtForeName = .Forename
             CmoAccessLvl.ListIndex = .AccessLvl
-            CmoStation.ListIndex = .Station.StationID
+            CmoStation.Text = .Station.Name
             TxtRankGrade = .RankGrade
             TxtRole = .Role
             TxtWatch = .Watch
@@ -824,6 +827,7 @@ End Sub
 Private Function FormInitialise() As Boolean
     Dim RstAccessLevels As Recordset
     Dim i As Integer
+    Dim StnInd As Integer
     
     Const StrPROCEDURE As String = "FormInitialise()"
 
@@ -851,9 +855,18 @@ Restart:
         .List(0, 1) = "Name"
     End With
     
+    i = 0
     With CmoStation
-        For i = 1 To Stations.Count
-            If Stations(i).StnActive Then .AddItem Stations(i).Name
+        For StnInd = 1 To Stations.Count
+            If Stations(StnInd).StnActive Then
+                .AddItem
+                .List(i, 0) = Stations(StnInd).StationID
+                .List(i, 1) = Stations(StnInd).Name
+                i = i + 1
+                'debug.print StnInd, Stations(StnInd).StationID, Stations(StnInd).Name
+            Else
+                'debug.print StnInd
+            End If
         Next
     End With
     

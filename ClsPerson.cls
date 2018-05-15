@@ -14,8 +14,9 @@ Attribute VB_Exposed = False
 ' v0,2 - Make Username read/write
 ' v0,3 - Added Message Read Flag
 ' v0,41 - Log on and Log Off from DB
+' v0,5 - Fixed bug preventing Alford being selected
 '---------------------------------------------------------------
-' Date - 14 Nov 17
+' Date - 15 May 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -237,7 +238,7 @@ Public Sub DBSave()
         !MailAlert = pMailAlert
         !MessageRead = pMessageRead
         If pAccessLvl <> 0 Then !AccessLvl = pAccessLvl
-        If pStation.StationID <> 0 Then !StationID = pStation.StationID
+        !StationID = pStation.StationID
         .Update
 
     End With
