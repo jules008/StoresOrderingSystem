@@ -253,18 +253,17 @@ Private Sub BtnUpdate_Click()
                 .Role = TxtRole
                 .Surname = TxtSurname
                 .RankGrade = TxtRankGrade
-                .Station.DBGet CmoStation.List(CmoStation.ListIndex, 0)
-                
-                Debug.Print .Station.StationID, .Station.Name
-                
+                .Station.DBGet CmoStation.ListIndex
                 .Watch = TxtWatch
                 .UserName = TxtUsername
                 .DBSave
             End With
+            MsgBox "User updated successfully.  If any change have been made " _
+                    & "to your own profile, please restart the system for these changes " _
+                     & "to take effect", vbInformation, APP_NAME
             
             If Not ShtLists.RefreshNameList Then Err.Raise HANDLED_ERROR
 
-            If Not Initialise Then Err.Raise HANDLED_ERROR
     End Select
 Exit Sub
 
@@ -280,7 +279,6 @@ ErrorHandler:
         Resume ErrorExit
     End If
 End Sub
-
 
 ' ===============================================================
 ' LstAccessList_Click
