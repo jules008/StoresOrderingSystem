@@ -11,8 +11,9 @@ Attribute VB_Name = "ModReports"
 ' v0,7 - Added query for Report 3
 ' v0,81 - Schedule email reports
 ' v0,93 - Added Email Reports
+' v0,10 - Changed CFS query to restrick items
 '---------------------------------------------------------------
-' Date - 30 Nov 17
+' Date - 23 Jun 18
 '===============================================================
 
 Option Explicit
@@ -444,7 +445,8 @@ Private Function CFS_emailQuery() As Recordset
                     & "TblAsset "
                     
     StrWhere = "WHERE " _
-                    & "TblAsset.Category3 = 'CFS Consumables'"
+                    & "TblAsset.Category3 = 'CFS Consumables' " _
+                    & "AND TblAsset.Report = True"
                     
     Set RstCFSStock = ModDatabase.SQLQuery(StrSelect & StrFrom & StrWhere & StrOrderBy)
   

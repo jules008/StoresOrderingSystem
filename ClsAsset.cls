@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Temporary disable Asset DBsave
 ' v0,6 - Re-enabled Asset DBSave
 ' v0,7 - Added HideFromView property
+' v0,8 - Added Field Report
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 23 Jun 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -55,6 +56,7 @@ Private pLocation As String
 Private pAdditInfo As String
 Private pNoOrderMessage As String
 Private pHideFromView As Boolean
+Private pReport As Boolean
 
 '---------------------------------------------------------------
 Public Property Get AssetNo() As Integer
@@ -303,6 +305,15 @@ Public Property Let HideFromView(ByVal vNewValue As Boolean)
 End Property
 
 '---------------------------------------------------------------
+Public Property Get Report() As Boolean
+    Report = pReport
+End Property
+
+Public Property Let Report(ByVal vNewValue As Boolean)
+    pReport = vNewValue
+End Property
+
+'---------------------------------------------------------------
 ' ===============================================================
 ' Method DBGet
 ' Gets class from Database
@@ -338,6 +349,7 @@ Public Sub DBGet(AssetNo As Integer)
             If Not IsNull(!AdditInfo) Then pAdditInfo = Trim(!AdditInfo)
             If Not IsNull(!NoOrderMessage) Then pNoOrderMessage = Trim(!NoOrderMessage) Else pNoOrderMessage = ""
             If Not IsNull(!HideFromView) Then pHideFromView = !HideFromView
+            If Not IsNull(!Report) Then pReport = !Report
 '            pSupplier1.DBGet
 '            pSupplier2.DBGet
         End If
@@ -403,6 +415,7 @@ Public Sub DBSave(Optional OWAssetNo As Integer)
         !AdditInfo = pAdditInfo
         !NoOrderMessage = pNoOrderMessage
         !HideFromView = pHideFromView
+        !Report = pReport
         .Update
 
     End With

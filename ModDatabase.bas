@@ -12,7 +12,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,8 - Show logged on users
 ' v0,9 - Test DB Ver before roll back
 '---------------------------------------------------------------
-' Date - 28 Feb 18
+' Date - 23 Jun 18
 '===============================================================
 
 Option Explicit
@@ -230,38 +230,44 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,394" Then
-        MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,395" Then
+        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'delete old backup tables
-    DB.Execute "DROP TABLE TblAssetOLD"
-    DB.Execute "DROP TABLE TblVehicleOLD"
-    DB.Execute "DROP TABLE TblVehicleTypeOLD"
+    DB.Execute "DROP TABLE TblStationOLD"
     
-    'back up Station table
-    DB.Execute "SELECT * INTO TblSationOLD FROM TblStation"
+    'back up Asset table
+    DB.Execute "SELECT * INTO TblAssetOLD FROM TblAsset"
     
-    'Add active column to station table
-    DB.Execute "ALTER TABLE TblStation ADD COLUMN StnActive yesno"
+    'Add Reportable column to asset table
+    DB.Execute "ALTER TABLE TblAsset ADD COLUMN Report yesno"
     
-    'set all stations except S39 to active
-    DB.Execute "UPDATE TblStation SET StnActive = True WHERE StationNo <> 'EC39'"
-    DB.Execute "UPDATE TblStation SET StnActive = True WHERE Division IS NULL OR Division = ''"
-    DB.Execute "INSERT INTO TblStation VALUES (50, 'EC31', 'Sleaford Accom. Pods', 'Church Ln, Sleaford NG34, UK', '1', 'South',-1)"
-    DB.Execute "UPDATE TblStation SET StationType = '1' WHERE StationNo  = 'EC31'"
-    DB.Execute "UPDATE TblStation SET Address = 'Eastgate, Sleaford, NG34 7EE' WHERE StationNo = 'EC31'"
-    
-    'Set null station no to Non-Ops
-    DB.Execute "UPDATE TblStation SET StationNo = 'Non-Ops' WHERE StationNo IS NULL OR StationNo = ''"
+    'Define which are reportable
+    DB.Execute "UPDATE TblAsset Set Report = True"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1384"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1385"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1386"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1389"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1390"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1391"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1393"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1398"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1401"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1402"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1404"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1406"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1407"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1409"
+    DB.Execute "UPDATE TblAsset SET Report = False WHERE AssetNo = 1411"
     
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v1,395"
+        .Fields(0) = "v1,396"
         .Update
     End With
     
@@ -295,28 +301,26 @@ Public Sub UpdateDBScriptUndo()
     
     Set RstTable = SQLQuery("TblDBVersion")
 
-    If RstTable.Fields(0) <> "v1,395" Then
-        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,396" Then
+        MsgBox "Database needs to be upgraded to v1,396 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
     'add dummy tables
-    DB.Execute "CREATE TABLE TblAssetOLD"
-    DB.Execute "CREATE TABLE TblVehicleOLD"
-    DB.Execute "CREATE TABLE TblVehicleTypeOLD"
+    DB.Execute "CREATE TABLE TblStationOLD"
     
     'Restore station table
-    DB.Execute "DROP TABLE TblStation"
-    DB.Execute "SELECT * INTO TblStation FROM TblSationOLD"
+    DB.Execute "DROP TABLE TblAsset"
+    DB.Execute "SELECT * INTO TblAsset FROM TblAssetOLD"
     
     'delete back up Station table
-    DB.Execute "DROP TABLE TblSationOLD"
+    DB.Execute "DROP TABLE TblAssetOld"
 
     
     'version update
     With RstTable
         .Edit
-        .Fields(0) = "v1,394"
+        .Fields(0) = "v1,395"
         .Update
     End With
     
@@ -382,19 +386,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Phone Order Fix" _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Removed Station 39 from system" _
+                    & Chr(13) & " - CFS Stock Report Changes" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Phone Order Fix - Rewritten phone order functionality to fix persistent problems" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Removed Sleaford temporary station from the system.  All Wholetime and RDS orders " _
-                    & Chr(13) & "will revert back to S31" _
+                    & Chr(13) & "- CFS Stock Report Changes - Restricted items that are reported on the weekly CFS Stock Report" _
                     & Chr(13) & ""
         .Update
     End With
