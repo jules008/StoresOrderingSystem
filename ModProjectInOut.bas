@@ -47,7 +47,9 @@ Public Sub ExportModules()
 
     ExportDBTables
     
+    Application.DisplayAlerts = False
     ThisWorkbook.SaveAs EXPORT_FILE_PATH & "\" & PROJECT_FILE_NAME, 51
+    Application.DisplayAlerts = True
     
     Set DlgOpen = Nothing
 

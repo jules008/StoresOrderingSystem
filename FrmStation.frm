@@ -19,8 +19,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Clean up if user cancels order
 ' v0,4 - Bug fix - phone order not filling in ForStation
 ' v0,5 - Only show active stations
+' v0,6 - Incorrect Delivery Station Fix
 '---------------------------------------------------------------
-' Date - 10 May 18
+' Date - 05 Oct 18
 '===============================================================
 Option Explicit
 
@@ -223,7 +224,9 @@ Private Sub BtnNext_Click()
                 If OptMe = True Then
                     Lineitem.ForStation = Lineitem.Parent.Requestor.Station
                 Else
-                    Lineitem.ForStation = Stations(CStr(LstStations.ListIndex))
+                    With LstStations
+                        Lineitem.ForStation = Stations(.List(.ListIndex, 0))
+                    End With
                 End If
                 
                 If Lineitem.ForStation Is Nothing Then Err.Raise HANDLED_ERROR
@@ -298,9 +301,6 @@ Private Sub LstStations_Click()
     
     On Error GoTo ErrorHandler
     
-    With LstStations
-        Lineitem.ForStation = Stations(.List(.ListIndex, 0))
-    End With
 
 Exit Sub
 
@@ -429,8 +429,9 @@ Private Function FormInitialise() As Boolean
         For Each Station In Stations
             If Station.StnActive Then
                 .AddItem
-                .List(i, 0) = Station.StationNo
-                .List(i, 1) = Station.Name
+                .List(i, 0) = Station.StationID
+                .List(i, 1) = Station.StationNo
+                .List(i, 2) = Station.Name
                 i = i + 1
             End If
         Next

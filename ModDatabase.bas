@@ -382,19 +382,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Phone Order Fix" _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Removed Station 39 from system" _
+                    & Chr(13) & " - Delivery Stn Fix" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Phone Order Fix - Rewritten phone order functionality to fix persistent problems" _
-                    & Chr(13) & "" _
-                    & Chr(13) & "- Removed Sleaford temporary station from the system.  All Wholetime and RDS orders " _
-                    & Chr(13) & "will revert back to S31" _
+                    & Chr(13) & "- Delivery Stn Fix - Fixed error that caused incorrect delivery station to be displayed" _
                     & Chr(13) & ""
         .Update
     End With
