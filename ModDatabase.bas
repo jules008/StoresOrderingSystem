@@ -12,7 +12,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,8 - Show logged on users
 ' v0,9 - Test DB Ver before roll back
 '---------------------------------------------------------------
-' Date - 28 Feb 18
+' Date - 13 Nov 18
 '===============================================================
 
 Option Explicit
@@ -382,14 +382,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Delivery Stn Fix" _
+                    & Chr(13) & " - Purchase Unit added to Print Order Form" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Delivery Stn Fix - Fixed error that caused incorrect delivery station to be displayed" _
+                    & Chr(13) & "- Purchase Unit added to Print Order Form - as it says on the tin, added purchase unit to order form as requested" _
                     & Chr(13) & ""
         .Update
     End With

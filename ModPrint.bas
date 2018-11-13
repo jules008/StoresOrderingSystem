@@ -15,8 +15,9 @@ Attribute VB_Name = "ModPrint"
 ' v0,11 - Added Return Required flag to Order List Printout
 ' v0,12 - change sys file path name
 ' v0,13 - Bug Fix - Extended RngOrders to include Returns col
+' v0,14 - Added Purchase Unit to Print Order Form
 '---------------------------------------------------------------
-' Date - 13 Mar 18
+' Date - 13 Nov 18
 '===============================================================
 
 Option Explicit
@@ -184,6 +185,8 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
     Dim StationName As String
     Dim StationID As String
     Dim DeliveryTo As String
+    Dim StrDesc As String
+    Dim StrPU As String
     Dim Lineitem As ClsLineItem
     Dim i As Integer
     
@@ -232,8 +235,10 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
                 
             End Select
                 
+            StrDesc = .LineItems(i + 1).Asset.Description
+            StrPU = .LineItems(i + 1).Asset.PurchaseUnit
             
-            RngItemsRefPnt.Offset(i, 0) = .LineItems(i + 1).Asset.Description
+            RngItemsRefPnt.Offset(i, 0) = StrDesc & " (" & StrPU & ")"
             RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Quantity
             RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Size1
             RngItemsRefPnt.Offset(i, 6) = .LineItems(i + 1).Asset.Size2
