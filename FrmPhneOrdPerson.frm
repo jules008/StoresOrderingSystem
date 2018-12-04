@@ -14,8 +14,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Check for Line Item no of 0 when closing form
 '---------------------------------------------------------------
-' Date - 26 Apr 18
+' Date - 04 Dec 18
 '===============================================================
 Option Explicit
 
@@ -79,7 +80,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not Lineitem Is Nothing Then Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    If Not Lineitem Is Nothing And Lineitem.LineItemNo <> 0 Then Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
 
     CancelOrder = True
 

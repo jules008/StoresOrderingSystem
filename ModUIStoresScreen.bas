@@ -512,8 +512,11 @@ Restart:
                 Else
                     If Not FrmDBOrder.ShowForm(Order) Then Err.Raise HANDLED_ERROR
                 End If
+            
+            Case EnumReturnStock
                 
-                
+                If Not BtnReturnStockSel Then Err.Raise HANDLED_ERROR
+                           
         End Select
     
 GracefulExit:
@@ -864,15 +867,15 @@ Exit Function
 
 ErrorHandler:
 
-'    If Err.Number >= 1000 And Err.Number <= 1500 Then
-'        If Err.Number = ACCESS_DENIED Then
-'            CustomErrorHandler (Err.Number)
-'            Resume gracefulexit
-'        Else
-'            CustomErrorHandler (Err.Number)
-'            Resume Restart
-'        End If
-'    End If
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = ACCESS_DENIED Then
+            CustomErrorHandler (Err.Number)
+            Resume GracefulExit
+        Else
+            CustomErrorHandler (Err.Number)
+            Resume Restart
+        End If
+    End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
@@ -898,7 +901,7 @@ Private Function BuildReturnStockBtn() As Boolean
         .Top = BTN_RETURN_STOCK_TOP
         .Width = BTN_RETURN_STOCK_WIDTH
         .Name = "BtnReturnStock"
-        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumRemoteOrder & ")'"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumReturnStock & ")'"
         .UnSelectStyle = GENERIC_BUTTON
         .Selected = False
         .Text = "Return Stock"
@@ -924,6 +927,58 @@ ErrorExit:
 Exit Function
 
 ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
+
+' ===============================================================
+' BtnReturnStockSel
+' Processes Return Stock Button press
+' ---------------------------------------------------------------
+Private Function BtnReturnStockSel() As Boolean
+    Const StrPROCEDURE As String = "BtnReturnStockSel()"
+
+    On Error GoTo ErrorHandler
+
+Restart:
+    
+    Application.StatusBar = ""
+
+    If CurrentUser Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
+        
+    If Not FrmStationRtn.ShowForm() Then Err.Raise HANDLED_ERROR
+
+    BtnReturnStockSel = True
+
+GracefulExit:
+
+Exit Function
+
+ErrorExit:
+
+    '***CleanUpCode***
+    BtnReturnStockSel = False
+
+Exit Function
+
+ErrorHandler:
+
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        If Err.Number = ACCESS_DENIED Then
+            CustomErrorHandler (Err.Number)
+            Resume GracefulExit
+        Else
+            CustomErrorHandler (Err.Number)
+            Resume Restart
+        End If
+    End If
+
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
