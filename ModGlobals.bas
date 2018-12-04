@@ -24,8 +24,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,19 - Added Release Notes frame
 ' v0,201 - Added EnumReportNo
 ' v0,21 - Added Report Settings Buton
+' v0,22 - Add Return Stock Button
 '---------------------------------------------------------------
-' Date - 13 Nov 18
+' Date - 04 Dec 18
 '===============================================================
 
 Option Explicit
@@ -126,6 +127,7 @@ Public BtnRemoteOrder As ClsUIMenuItem
 Public BtnSupplier As ClsUIMenuItem
 Public BtnManageData As ClsUIMenuItem
 Public BtnFindOrder As ClsUIMenuItem
+Public BtnReturnStock As ClsUIMenuItem
 
 ' ---------------------------------------------------------------
 ' Reports Screen
@@ -347,6 +349,7 @@ Enum EnumBtnNo
     EnumFindOrderBtn
     EnumReport3Btn
     EnumRptSettings
+    EnumReturnStock
 End Enum
 
 Enum EnumReportNo

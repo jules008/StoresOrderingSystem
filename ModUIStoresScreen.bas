@@ -18,8 +18,9 @@ Attribute VB_Name = "ModUIStoresScreen"
 ' v0,14 - Allow Stores level into Supplier Area
 ' v0,15 - Add missing PerformSettingsOff
 ' v0,16 - Seperate FrmPerson for remote order
+' v0,17 - Added Return Stock Button
 '---------------------------------------------------------------
-' Date - 26 Apr 18
+' Date - 04 Dec 18
 '===============================================================
 
 Option Explicit
@@ -410,6 +411,7 @@ Public Function BuildStoresScreen() As Boolean
     Set BtnSupplier = New ClsUIMenuItem
     Set BtnManageData = New ClsUIMenuItem
     Set BtnFindOrder = New ClsUIMenuItem
+    Set BtnReturnStock = New ClsUIMenuItem
     
     ModLibrary.PerfSettingsOn
     
@@ -421,6 +423,7 @@ Public Function BuildStoresScreen() As Boolean
     If Not BuildSupplierBtn Then Err.Raise HANDLED_ERROR
     If Not BuildManageDataBtn Then Err.Raise HANDLED_ERROR
     If Not BuildFindOrderBtn Then Err.Raise HANDLED_ERROR
+    If Not BuildReturnStockBtn Then Err.Raise HANDLED_ERROR
     
     If Not RefreshOrderList(False) Then Err.Raise HANDLED_ERROR
     
@@ -879,6 +882,52 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' BuildReturnStockBtn
+' Builds Return Stock Button
+' ---------------------------------------------------------------
+Private Function BuildReturnStockBtn() As Boolean
+    Const StrPROCEDURE As String = "BuildReturnStockBtn()"
+
+    On Error GoTo ErrorHandler
+
+    With BtnReturnStock
+        
+        .Height = BTN_RETURN_STOCK_HEIGHT
+        .Left = BTN_RETURN_STOCK_LEFT
+        .Top = BTN_RETURN_STOCK_TOP
+        .Width = BTN_RETURN_STOCK_WIDTH
+        .Name = "BtnReturnStock"
+        .OnAction = "'ModUIStoresScreen.ProcessBtnPress(" & EnumRemoteOrder & ")'"
+        .UnSelectStyle = GENERIC_BUTTON
+        .Selected = False
+        .Text = "Return Stock"
+        .Icon = ShtMain.Shapes("TEMPLATE - Return Stock").Duplicate
+        .Icon.Left = .Left + 10
+        .Icon.Top = .Top + 9
+        .Icon.Name = "Return Stock"
+        .Icon.Visible = msoCTrue
+    End With
+
+    MainScreen.Menu.AddItem BtnReturnStock
+
+    BuildReturnStockBtn = True
 
 
+Exit Function
 
+ErrorExit:
+
+    '***CleanUpCode***
+    BuildReturnStockBtn = False
+
+Exit Function
+
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function

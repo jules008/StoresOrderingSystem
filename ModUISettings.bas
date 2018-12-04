@@ -17,8 +17,9 @@ Attribute VB_Name = "ModUISettings"
 ' v0,13 - Added Report 3 button
 ' v0,14 - Added Release notes frame and text box style
 ' v0,15 - Added Report Settings Buton
+' v0,16 - Added Return Stock Button
 '---------------------------------------------------------------
-' Date - 30 Nov 17
+' Date - 04 Dec 18
 '===============================================================
 
 Option Explicit
@@ -171,6 +172,12 @@ Public Const BTN_FIND_ORDER_HEIGHT As Integer = 30
 Public Const BTN_FIND_ORDER_WIDTH As Integer = 175
 Public Const BTN_FIND_ORDER_LEFT As Integer = 850
 Public Const BTN_FIND_ORDER_TOP As Integer = 220
+
+
+Public Const BTN_RETURN_STOCK_HEIGHT As Integer = 30
+Public Const BTN_RETURN_STOCK_WIDTH As Integer = 175
+Public Const BTN_RETURN_STOCK_LEFT As Integer = 850
+Public Const BTN_RETURN_STOCK_TOP As Integer = 260
 
 Public Const ORDER_LINEITEM_HEIGHT As Integer = 15
 Public Const ORDER_LINEITEM_WIDTH As Integer = 550
