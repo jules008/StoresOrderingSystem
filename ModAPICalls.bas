@@ -17,7 +17,7 @@ Private Const StrMODULE As String = "ModAPICalls"
 ' Executes shell commands
 ' ---------------------------------------------------------------
 Public Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" ( _
-ByVal hwnd As Long, _
+ByVal hWnd As Long, _
 ByVal lpOperation As String, _
 ByVal lpFile As String, _
 ByVal lpParameters As String, _

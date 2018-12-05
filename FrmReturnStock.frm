@@ -1,10 +1,17 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmReturnStock 
-   ClientHeight    =   406
+   ClientHeight    =   7770
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   423
-
+   ClientWidth     =   8445
+   OleObjectBlob   =   "FrmReturnStock.frx":0000
+   StartUpPosition =   1  'CenterOwner
+End
+Attribute VB_Name = "FrmReturnStock"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 '---------------------------------------------------------------
@@ -83,7 +90,6 @@ Private Sub BtnReturn_Click()
             Case Is = FormOK
         
                 Hide
-                MsgBox "Select Asset Form"
                 Unload Me
                  
         End Select
@@ -678,4 +684,68 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' ProcessReturn
+' Creates a negative order to return stock to Stores
+' ---------------------------------------------------------------
+Private Function ProcessReturn() As Boolean
+    Dim RetOrder As ClsOrder
+    Dim RetLineItem As ClsLineItem
+    Dim Assets As ClsAssets
+    Dim AssetNo As Integer
+    
+    Const StrPROCEDURE As String = "ProcessReturn()"
+
+    On Error GoTo ErrorHandler
+
+    Set RetOrder = New ClsOrder
+    Set RetLineItem = New ClsLineItem
+    Set Assets = New ClsAssets
+    
+    If Assets = Nothing Then Err.Raise HANDLED_ERROR, , "No Asset Collection"
+    If LstAssets.ListIndex = -1 Then Err.Raise HANDLED_ERROR, , "No Asset Selected"
+    
+    AssetNo = Assets.FindAssetNo(LstAssets.List(.ListIndex))
+    Assets.GetCollection
+    
+    With RetLineItem
+        .Asset = Assets.FindItem(AssetNo)
+    End With
+    
+    With RetOrder
+        
+    
+    
+    End With
+
+
+
+    Set RetOrder = Nothing
+    Set RetLineItem = Nothing
+    Set Assets = Nothing
+    
+    ProcessReturn = True
+
+
+Exit Function
+
+ErrorExit:
+    
+    Set RetOrder = Nothing
+    Set RetLineItem = Nothing
+    Set Assets = Nothing
+    
+    '***CleanUpCode***
+    ProcessReturn = False
+
+Exit Function
+
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
