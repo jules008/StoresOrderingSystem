@@ -952,7 +952,7 @@ Restart:
     
     If CurrentUser.AccessLvl < StoresLvl_2 Then Err.Raise ACCESS_DENIED
         
-    If Not FrmStationRtn.ShowForm() Then Err.Raise HANDLED_ERROR
+    If Not FrmReturnStock.ShowForm() Then Err.Raise HANDLED_ERROR
 
     BtnReturnStockSel = True
 
