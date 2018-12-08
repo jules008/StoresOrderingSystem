@@ -541,9 +541,9 @@ Public Function RefreshMyOrderList() As Boolean
     ModLibrary.PerfSettingsOn
     
     With RightFrame
-        For Each Lineitem In .LineItems
-            .LineItems.RemoveItem Lineitem.Name
-            Lineitem.ShpLineItem.Delete
+        For Each Lineitem In .Lineitems
+            .Lineitems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineitem.Delete
             Set Lineitem = Nothing
         Next
 
@@ -556,7 +556,7 @@ Public Function RefreshMyOrderList() As Boolean
             .LineItems.Text 0, i, RowTitles(i), False
         Next
         
-        .LineItems.Style = GENERIC_LINEITEM
+        .Lineitems.Style = GENERIC_Lineitem
 
     End With
 
@@ -565,7 +565,7 @@ Public Function RefreshMyOrderList() As Boolean
     i = 1
     With RstOrder
         Do While Not .EOF
-            With RightFrame.LineItems
+            With RightFrame.Lineitems
                 If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
                 If Not IsNull(RstOrder!Order_Date) Then OrderDate = RstOrder!Order_Date Else OrderDate = ""
                 If Not IsNull(RstOrder!Assigned_To) Then AssignedTo = RstOrder!Assigned_To Else AssignedTo = ""
@@ -635,9 +635,9 @@ Public Function RefreshRecentOrderList() As Boolean
     ModLibrary.PerfSettingsOn
     
     With LeftFrame
-        For Each Lineitem In .LineItems
-            .LineItems.RemoveItem Lineitem.Name
-            Lineitem.ShpLineItem.Delete
+        For Each Lineitem In .Lineitems
+            .Lineitems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineitem.Delete
             Set Lineitem = Nothing
         Next
 
@@ -659,7 +659,7 @@ Public Function RefreshRecentOrderList() As Boolean
     i = 1
     With RstOrder
         Do While Not .EOF
-            With LeftFrame.LineItems
+            With LeftFrame.Lineitems
                 If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
                 If Not IsNull(RstOrder!Order_Date) Then OrderDate = RstOrder!Order_Date Else OrderDate = ""
                 If Not IsNull(RstOrder!Name) Then OrderedBy = RstOrder!Name Else OrderedBy = ""

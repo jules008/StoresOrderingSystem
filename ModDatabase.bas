@@ -382,14 +382,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Purchase Unit added to Print Order Form" _
+                    & Chr(13) & " - Added Return Stock Function" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "- Purchase Unit added to Print Order Form - as it says on the tin, added purchase unit to order form as requested" _
+                    & Chr(13) & "-  Added Return Stock Function - Adds a return stock button on the stores page to allow items to be returned and removed from station allocations" _
                     & Chr(13) & ""
         .Update
     End With
