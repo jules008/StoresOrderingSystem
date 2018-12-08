@@ -46,7 +46,7 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
@@ -54,10 +54,10 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     
     ResetForm
     
-    If LocLineItem Is Nothing Then
+    If LocLineitem Is Nothing Then
         Set Lineitem = New ClsLineItem
     Else
-        Set Lineitem = LocLineItem
+        Set Lineitem = LocLineitem
         TxtSearch = Lineitem.Asset.Description
     End If
     
@@ -100,7 +100,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 

@@ -41,7 +41,7 @@ Public Function Initialise(Optional MenuItem As Integer) As Boolean
     Set CurrentUser = New ClsPerson
     Set Vehicles = New ClsVehicles
     Set Stations = New ClsStations
-        
+    
     ShtMain.Unprotect
     
     Application.StatusBar = "Reading INI File....."

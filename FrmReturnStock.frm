@@ -1,9 +1,9 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} FrmReturnStock 
-   ClientHeight    =   7770
+   ClientHeight    =   8610
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   8445
+   ClientWidth     =   8505
    OleObjectBlob   =   "FrmReturnStock.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -20,6 +20,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Const StrMODULE As String = "FrmReturnStock"
+
+Dim RetOrder As ClsOrder
 
 ' ===============================================================
 ' ShowForm
@@ -66,7 +68,8 @@ End Function
 Private Function FormTerminate() As Boolean
 
     On Error Resume Next
-
+    
+    Set RetOrder = Nothing
     Unload Me
 
 End Function
@@ -88,7 +91,16 @@ Private Sub BtnReturn_Click()
                 Err.Raise HANDLED_ERROR
             
             Case Is = FormOK
-        
+                
+                With RetOrder
+                    .OrderDate = Now
+                    .Requestor = CurrentUser
+                    .Lineitems(1).Quantity = 0 - TxtQty
+                    .Lineitems(1).ReqReason = ItemReturn
+                    .DBSave
+                End With
+                
+                MsgBox "Return has been successfully processed", vbOKCancel + vbInformation, APP_NAME
                 Hide
                 Unload Me
                  
@@ -161,6 +173,153 @@ ErrorHandler:
 End Sub
 
 ' ===============================================================
+' LstFrom_Click
+' Adds either a person or vehicle to the order dependant on the allocation type
+' ---------------------------------------------------------------
+Private Sub LstFrom_click()
+    Dim AllocType As EnumAllocationType
+    Dim Person As ClsPerson
+    Dim Persons As clspersons
+    Dim Vehicle As ClsVehicle
+    Dim SelVehicleID As Integer
+    Dim SelPersonID As Integer
+    
+    Set Person = New ClsPerson
+    Set Persons = New clspersons
+    Set Vehicle = New ClsVehicle
+    
+    AllocType = RetOrder.Lineitems(1).Asset.AllocationType
+    
+    Select Case AllocType
+        Case Is = 0
+        
+            With LstFrom
+                SelPersonID = .List(.ListIndex, 1)
+                RetOrder.Lineitems(1).ForPerson.DBGet CStr(SelPersonID)
+            End With
+            
+        Case Is = 1
+        
+             With LstFrom
+                SelVehicleID = .List(.ListIndex, 0)
+                RetOrder.Lineitems(1).ForVehicle.DBGet CStr(SelVehicleID)
+           End With
+       
+    End Select
+
+    Set Persons = Nothing
+    Set Person = Nothing
+    Set Vehicle = Nothing
+End Sub
+
+' ===============================================================
+' LstStations_Click
+' When Station selected, show either vehicles or people depending on asset type
+' ---------------------------------------------------------------
+Private Sub LstStations_Click()
+    Dim ErrNo As Integer
+    Dim AssetType As EnumAllocationType
+    Dim Vehicle As ClsVehicle
+    Dim Persons As clspersons
+    Dim SelStation As String
+    Dim RstCrewMembers As Recordset
+    Dim i As Integer
+    
+    Const StrPROCEDURE As String = "LstStations_Click()"
+
+    On Error GoTo ErrorHandler
+
+Restart:
+    
+    If MainScreen Is Nothing Then Err.Raise SYSTEM_RESTART
+    
+    AssetType = RetOrder.Lineitems(1).Asset.AllocationType
+    
+    With LstStations
+        .BackColor = COLOUR_4
+        SelStation = .List(.ListIndex, 0)
+    End With
+    
+    Select Case AssetType
+        Case Is = 0
+            Set Persons = New clspersons
+            
+            Set RstCrewMembers = Persons.ReturnStationCrew(CInt(SelStation))
+            
+            LblFrom.Visible = True
+            LblFrom.Caption = "Select the Person that the item is being returned from"
+            
+             With LstFrom
+                .BackColor = COLOUR_3
+                .Enabled = True
+                .Clear
+                i = 0
+                
+                Do While Not RstCrewMembers.EOF
+                    .AddItem
+                    If Not IsNull(RstCrewMembers!CrewNo) Then .List(i, 1) = RstCrewMembers!CrewNo
+                    .List(i, 2) = RstCrewMembers!UserName
+                    RstCrewMembers.MoveNext
+                    i = i + 1
+                    
+                Loop
+                Set Persons = Nothing
+            End With
+       
+        Case Is = 1
+        
+            LblFrom.Visible = True
+            LblFrom.Caption = "Select the vehicle that the item is being returned from"
+            
+             With LstFrom
+                .BackColor = COLOUR_3
+                .Enabled = True
+                .Clear
+                i = 0
+                
+                For Each Vehicle In Vehicles
+                    If Vehicle.StationID = SelStation Then
+                        .AddItem
+                        .List(i, 0) = Vehicle.VehNo
+                        .List(i, 1) = Vehicle.CallSign
+                        .List(i, 2) = Vehicles.GetVehicleType(Vehicle.VehType)
+                        i = i + 1
+                    End If
+                Next
+            
+            End With
+        
+        Case Is = 2
+            
+            RetOrder.Lineitems(1).ForStation = Stations(SelStation)
+           
+    End Select
+
+GracefulExit:
+
+
+Exit Sub
+
+ErrorExit:
+    '***CleanUpCode***
+    Set Persons = Nothing
+Exit Sub
+
+ErrorHandler:
+    If Err.Number >= 1000 And Err.Number <= 1500 Then
+        ErrNo = Err.Number
+        CustomErrorHandler (Err.Number)
+        If ErrNo = SYSTEM_RESTART Then Resume Restart Else Resume GracefulExit
+    End If
+
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Sub
+' ===============================================================
 ' UserForm_Initialize
 ' Automatic initialise event that triggers custom Initialise
 ' ---------------------------------------------------------------
@@ -189,33 +348,30 @@ End Sub
 ' initialises controls on form at start up
 ' ---------------------------------------------------------------
 Private Function FormInitialise() As Boolean
-    Const StrPROCEDURE As String = "FormInitialise()"
-    
     Dim i As Integer
-    Dim Station As ClsStation
+    Dim Lineitem As ClsLineItem
+    
+    Const StrPROCEDURE As String = "FormInitialise()"
     
     On Error GoTo ErrorHandler
     
-    With LstStations
-        .Clear
-        .Visible = True
-        i = 0
-        For Each Station In Stations
-            If Station.StnActive Then
-                .AddItem
-                .List(i, 0) = Station.StationID
-                .List(i, 1) = Station.StationNo
-                .List(i, 2) = Station.Name
-                i = i + 1
-            End If
-        Next
-    End With
+    Set RetOrder = New ClsOrder
+    Set Lineitem = New ClsLineItem
+    
+    RetOrder.Lineitems.AddItem Lineitem
+    
+    LstFrom.Enabled = False
+    LstFrom.BackColor = COLOUR_9
+    LstStations.Enabled = False
+    LstStations.BackColor = COLOUR_9
+    LblFrom.Visible = False
+    LblStations.Visible = False
     
     If Not ClearSearch Then Err.Raise HANDLED_ERROR
 
     If Not ShtLists.RefreshAssetList Then Err.Raise HANDLED_ERROR
-
-    Set Station = Nothing
+    
+    Set Lineitem = Nothing
     
     FormInitialise = True
 
@@ -223,7 +379,7 @@ Exit Function
 
 ErrorExit:
     
-    Set Station = Nothing
+    Set Lineitem = Nothing
 
     FormTerminate
     Terminate
@@ -253,6 +409,8 @@ Private Function ValidateForm() As EnumFormValidation
         If .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
             
@@ -260,6 +418,8 @@ Private Function ValidateForm() As EnumFormValidation
         If .ListIndex = -1 Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
     
@@ -267,6 +427,8 @@ Private Function ValidateForm() As EnumFormValidation
         If .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
     
@@ -274,6 +436,8 @@ Private Function ValidateForm() As EnumFormValidation
         If .Visible = True And .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
     
@@ -281,16 +445,29 @@ Private Function ValidateForm() As EnumFormValidation
         If .Visible = True And .Value = "" Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
     
     With LstStations
-        If .ListIndex = -1 Then
+        If .ListIndex = -1 And .Enabled Then
             .BackColor = COLOUR_6
             ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
         End If
     End With
-                        
+    
+     With LstFrom
+        If .ListIndex = -1 And .Enabled Then
+            .BackColor = COLOUR_6
+            ValidateForm = ValidationError
+        Else
+            .BackColor = COLOUR_3
+        End If
+    End With
+                       
     If ValidateForm = ValidationError Then
         Err.Raise FORM_INPUT_EMPTY
     Else
@@ -497,15 +674,83 @@ Private Sub LstAssets_Click()
 
     LstAssets.BackColor = COLOUR_3
     
+    LblStations.Visible = True
+    LblFrom.Visible = False
+    LstFrom.Enabled = False
+    
+    With LstFrom
+        .Clear
+        .BackColor = COLOUR_9
+    End With
+    
     With LstAssets
         Me.TxtSearch.Value = .List(.ListIndex)
         
     End With
                 
-    If Not ItemChange Then Err.Raise HANDLED_ERROR
-                
+    If Not UpdateSizeLists Then Err.Raise HANDLED_ERROR
+    If Not GetAsset Then Err.Raise HANDLED_ERROR
+    
     TxtQty.SetFocus
 End Sub
+
+' ===============================================================
+' GetAsset
+' if all information completed, retrieves Asset and adds to order
+' ---------------------------------------------------------------
+Private Function GetAsset() As Boolean
+    Dim LocAsset As ClsAsset
+    Dim Assets As ClsAssets
+    Dim AssetAvail As Boolean
+    Dim AssetType As EnumAllocationType
+    
+    Const StrPROCEDURE As String = "GetAsset()"
+
+    On Error GoTo ErrorHandler
+    
+    Set Assets = New ClsAssets
+    Set LocAsset = New ClsAsset
+    
+    If Not CmoSize1.Visible And Not CmoSize2.Visible Then AssetAvail = True
+    If CmoSize2.Visible And CmoSize2.ListIndex <> -1 Then AssetAvail = True
+    If CmoSize1.Visible And CmoSize1.ListIndex <> -1 And CmoSize2.Visible And CmoSize2.ListIndex <> -1 Then AssetAvail = True
+    If CmoSize1.Visible And Not CmoSize2.Visible Then AssetAvail = True
+    
+    Debug.Print "Asset Avail = " & AssetAvail
+    
+    If AssetAvail Then
+        LocAsset.DBGet (Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2))
+        RetOrder.Lineitems(1).Asset = LocAsset
+        AssetType = LocAsset.AllocationType
+        
+        If Not ShowStations Then Err.Raise HANDLED_ERROR
+
+
+    End If
+
+    GetAsset = True
+    Set LocAsset = Nothing
+    Set Assets = Nothing
+
+Exit Function
+
+ErrorExit:
+
+    '***CleanUpCode***
+    Set LocAsset = Nothing
+    GetAsset = False
+    Set Assets = Nothing
+
+Exit Function
+
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function
 
 ' ===============================================================
 ' CmoSize1_Change
@@ -537,6 +782,8 @@ Private Sub CmoSize1_Change()
             CmoSize2.AddItem StrSize2Arry(i)
         Next
     End If
+    
+    If Not GetAsset Then Err.Raise HANDLED_ERROR
 
     Set Assets = Nothing
 Exit Sub
@@ -572,6 +819,8 @@ Private Sub CmoSize2_Change()
     
     CmoSize2.BackColor = COLOUR_3
     
+    If Not GetAsset Then Err.Raise HANDLED_ERROR
+
     Set Assets = Nothing
 
 Exit Sub
@@ -593,18 +842,17 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, True) Then
 End Sub
 
 ' ===============================================================
-' ItemChange
+' UpdateSizeLists
 ' Event when item changes
 ' ---------------------------------------------------------------
-Private Function ItemChange() As Boolean
-    Dim LocAsset As ClsAsset
+Private Function UpdateSizeLists() As Boolean
     Dim AssetNo As Integer
     Dim Assets As ClsAssets
     Dim StrSize1Arry() As String
     Dim StrSize2Arry() As String
     Dim i As Integer
     
-    Const StrPROCEDURE As String = "ItemChange()"
+    Const StrPROCEDURE As String = "UpdateSizeLists()"
 
     On Error GoTo ErrorHandler
         
@@ -614,7 +862,6 @@ Private Function ItemChange() As Boolean
         
         Set Assets = New ClsAssets
         
-        Set LocAsset = New ClsAsset
         StrSize1Arry() = Assets.GetSizeLists(TxtSearch, 1)
         StrSize2Arry() = Assets.GetSizeLists(TxtSearch, 2, CmoSize1)
         
@@ -644,13 +891,9 @@ Private Function ItemChange() As Boolean
             Next
         End If
         
-        LocAsset.DBGet (Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2))
-        
-        Set LocAsset = Nothing
-        Set Assets = Nothing
     End If
     
-    ItemChange = True
+    UpdateSizeLists = True
     
 GracefulExit:
 
@@ -658,10 +901,7 @@ Exit Function
 
 ErrorExit:
 
-    ItemChange = False
-    
-    Set LocAsset = Nothing
-    Set Assets = Nothing
+    UpdateSizeLists = False
     
     FormTerminate
     Terminate
@@ -690,7 +930,7 @@ End Function
 ' ---------------------------------------------------------------
 Private Function ProcessReturn() As Boolean
     Dim RetOrder As ClsOrder
-    Dim RetLineItem As ClsLineItem
+    Dim RetLineitem As ClsLineItem
     Dim Assets As ClsAssets
     Dim AssetNo As Integer
     
@@ -698,17 +938,7 @@ Private Function ProcessReturn() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Set RetOrder = New ClsOrder
-    Set RetLineItem = New ClsLineItem
-    Set Assets = New ClsAssets
-    
-    If Assets = Nothing Then Err.Raise HANDLED_ERROR, , "No Asset Collection"
-    If LstAssets.ListIndex = -1 Then Err.Raise HANDLED_ERROR, , "No Asset Selected"
-    
-    AssetNo = Assets.FindAssetNo(LstAssets.List(.ListIndex))
-    Assets.GetCollection
-    
-    With RetLineItem
+    With RetLineitem
         .Asset = Assets.FindItem(AssetNo)
     End With
     
@@ -721,7 +951,7 @@ Private Function ProcessReturn() As Boolean
 
 
     Set RetOrder = Nothing
-    Set RetLineItem = Nothing
+    Set RetLineitem = Nothing
     Set Assets = Nothing
     
     ProcessReturn = True
@@ -732,7 +962,7 @@ Exit Function
 ErrorExit:
     
     Set RetOrder = Nothing
-    Set RetLineItem = Nothing
+    Set RetLineitem = Nothing
     Set Assets = Nothing
     
     '***CleanUpCode***
@@ -749,3 +979,51 @@ ErrorHandler:
     End If
 End Function
 
+' ===============================================================
+' ShowStations
+' Fills out list of Stations, Vehicles or People
+' ---------------------------------------------------------------
+Private Function ShowStations() As Boolean
+    Dim Station As ClsStation
+    Dim Vehicle As ClsVehicle
+    Dim i As Integer
+    
+    Const StrPROCEDURE As String = "ShowStations()"
+
+    On Error GoTo ErrorHandler
+
+     With LstStations
+        .BackColor = COLOUR_3
+        .Enabled = True
+        .Clear
+        i = 0
+        For Each Station In Stations
+            If Station.StnActive Then
+                .AddItem
+                .List(i, 0) = Station.StationID
+                .List(i, 1) = Station.StationNo
+                .List(i, 2) = Station.Name
+                i = i + 1
+            End If
+        Next
+    End With
+    
+    ShowStations = True
+
+Exit Function
+
+ErrorExit:
+
+    '***CleanUpCode***
+    ShowStations = False
+
+Exit Function
+
+ErrorHandler:
+    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
+        Stop
+        Resume
+    Else
+        Resume ErrorExit
+    End If
+End Function

@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsVehicles
 ' v0,0 - Initial Version
+' v0,1 - Added GetVehicleType 
 '---------------------------------------------------------------
-' Date - 01 Mar 17
+' Date - 08 Dec 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -140,6 +141,21 @@ Public Function GetVehicleTypes() As Recordset
     Set GetVehicleTypes = RstVehTypes
     
     Set RstVehTypes = Nothing
+    
+End Function
+
+' ===============================================================
+' Method GetVehicleType
+' Returns a single vehicle type as a string
+'---------------------------------------------------------------
+Public Function GetVehicleType(VehTypeNo) As String
+    Dim RstVehType As Recordset
+    
+    Set RstVehType = ModDatabase.SQLQuery("SELECT VehicleType FROM TblVehicleType WHERE VehicleTypeNo = " & VehTypeNo)
+    
+    GetVehicleType = RstVehType.Fields(0)
+    
+    Set RstVehType = Nothing
     
 End Function
 

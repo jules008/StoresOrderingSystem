@@ -37,13 +37,13 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If LocLineItem Is Nothing Then
+    If LocLineitem Is Nothing Then
         Set Lineitem = New ClsLineItem
         
         With Lineitem
@@ -52,7 +52,7 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
         
         BtnPrev.Enabled = False
     Else
-        Set Lineitem = LocLineItem
+        Set Lineitem = LocLineitem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -234,7 +234,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 
@@ -1041,7 +1041,7 @@ Private Function SelectNextForm() As Boolean
     
     Select Case Lineitem.Asset.AllocationType
         Case Is = Person
-            If Not FrmPerson.ShowForm(LocLineItem:=Lineitem) Then Err.Raise HANDLED_ERROR
+            If Not FrmPerson.ShowForm(LocLineitem:=Lineitem) Then Err.Raise HANDLED_ERROR
             Unload Me
         Case Is = Vehicle
             If Not FrmVehicle.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR

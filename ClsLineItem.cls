@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '===============================================================
-' Class ClsLineItem
+' Class ClsLineitem
 ' v0,0 - Initial Version
 ' v0,1 - Save Asset with Line item
 ' v0,2 - Force Null if allocation type is not station
@@ -21,12 +21,12 @@ Attribute VB_Exposed = False
 ' DBGet - Gets class from Database
 ' DBSave - Saves class to Database
 ' DBDelete(Optional FullDelete As Boolean) - Marks record as deleted or fully deletes
-' ReturnLineItemStatus - Returns string value from enumLineItemStatus
+' ReturnLineitemStatus - Returns string value from enumLineitemStatus
 '===============================================================
 
 Option Explicit
 Private pDeleted As Date
-Private pLineItemNo As Integer
+Private pLineitemNo As Integer
 Private pAsset As ClsAsset
 Private pLossReport As ClsLossReport
 Private pQuantity As Integer
@@ -35,7 +35,7 @@ Private pReturnReqd As Boolean
 Private pForStation As ClsStation
 Private pForVehicle As ClsVehicle
 Private pForPerson As ClsPerson
-Private pStatus As EnumLineItemStatus
+Private pStatus As EnumLineitemStatus
 Private pitemsReturned As Boolean
 Private pItemsDelivered As Boolean
 Private pItemsIssued As Boolean
@@ -52,12 +52,12 @@ Public Property Let Deleted(ByVal vNewValue As Date)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get LineItemNo() As Integer
-    LineItemNo = pLineItemNo
+Public Property Get LineitemNo() As Integer
+    LineitemNo = pLineitemNo
 End Property
 
-Public Property Let LineItemNo(ByVal vNewValue As Integer)
-    pLineItemNo = vNewValue
+Public Property Let LineitemNo(ByVal vNewValue As Integer)
+    pLineitemNo = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -133,11 +133,11 @@ Public Property Let ForPerson(ByVal vNewValue As ClsPerson)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get Status() As EnumLineItemStatus
+Public Property Get Status() As EnumLineitemStatus
     Status = pStatus
 End Property
 
-Public Property Let Status(ByVal vNewValue As EnumLineItemStatus)
+Public Property Let Status(ByVal vNewValue As EnumLineitemStatus)
     pStatus = vNewValue
 End Property
 
@@ -193,13 +193,13 @@ End Function
 ' Gets class from Database
 '---------------------------------------------------------------
 Public Sub DBGet()
-    Dim RstLineItem As Recordset
+    Dim RstLineitem As Recordset
 
-    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo & " AND Deleted IS NULL")
-    With RstLineItem
+    Set RstLineitem = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE LineitemNo = " & pLineitemNo & " AND Deleted IS NULL")
+    With RstLineitem
         If .RecordCount > 0 Then
             If Not IsNull(!Deleted) Then pDeleted = !Deleted
-            If Not IsNull(!LineItemNo) Then pLineItemNo = !LineItemNo
+            If Not IsNull(!LineitemNo) Then pLineitemNo = !LineitemNo
             If Not IsNull(!Quantity) Then pQuantity = !Quantity
             If Not IsNull(!ReqReason) Then pReqReason = !ReqReason
             If Not IsNull(!ReturnReqd) Then pReturnReqd = !ReturnReqd
@@ -216,7 +216,7 @@ Public Sub DBGet()
             If !AssetID <> 0 Then pAsset.DBGet !AssetID
         End If
     End With
-Set RstLineItem = Nothing
+Set RstLineitem = Nothing
 End Sub
 
 ' ===============================================================
@@ -224,12 +224,12 @@ End Sub
 ' Saves class to Database
 '---------------------------------------------------------------
 Public Sub DBSave()
-    Dim RstLineItem As Recordset
+    Dim RstLineitem As Recordset
     Dim RstMaxNo As Recordset
     Dim LastNo As Integer
 
-    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo)
-    Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(LineItemNo) FROM TblLineItem ")
+    Set RstLineitem = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE LineitemNo = " & pLineitemNo)
+    Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(LineitemNo) FROM TblLineitem ")
 
     If RstMaxNo.Fields(0).Value <> 0 Then
         LastNo = RstMaxNo.Fields(0).Value
@@ -237,10 +237,10 @@ Public Sub DBSave()
         LastNo = 0
     End If
 
-    With RstLineItem
+    With RstLineitem
         If .RecordCount = 0 Then
             .AddNew
-            pLineItemNo = LastNo + 1
+            pLineitemNo = LastNo + 1
         Else
             .Edit
         End If
@@ -248,7 +248,7 @@ Public Sub DBSave()
         If pLossReport.LossReportNo <> 0 Then pLossReport.DBSave
         
         If Not Parent Is Nothing Then !OrderNo = Parent.OrderNo
-        !LineItemNo = pLineItemNo
+        !LineitemNo = pLineitemNo
         !AssetID = pAsset.AssetNo
         !LossReportID = pLossReport.LossReportNo
         !Quantity = pQuantity
@@ -272,7 +272,7 @@ Public Sub DBSave()
         pAsset.DBSave
         
     End With
-    Set RstLineItem = Nothing
+    Set RstLineitem = Nothing
     Set RstMaxNo = Nothing
 End Sub
 
@@ -281,12 +281,12 @@ End Sub
 ' Marks record as deleted or fully deletes
 '---------------------------------------------------------------
 Public Sub DBDelete(Optional FullDelete As Boolean)
-    Dim RstLineItem As Recordset
+    Dim RstLineitem As Recordset
     
     Dim i As Integer
 
-    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE LineItemNo = " & pLineItemNo & " AND Deleted IS NULL")
-    With RstLineItem
+    Set RstLineitem = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE LineitemNo = " & pLineitemNo & " AND Deleted IS NULL")
+    With RstLineitem
         For i = .RecordCount To 1 Step -1
             If FullDelete Then
                 .Delete
@@ -301,25 +301,25 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
         Next
     End With
 
-    Set RstLineItem = Nothing
+    Set RstLineitem = Nothing
 End Sub
 
 ' ===============================================================
-' ReturnLineItemStatus
-' Returns string value from enumLineItemStatus
+' ReturnLineitemStatus
+' Returns string value from enumLineitemStatus
 ' ---------------------------------------------------------------
-Public Function ReturnLineItemStatus() As String
-    Const StrPROCEDURE As String = "ReturnLineItemStatus()"
-    Dim RstLineItemStatus As Recordset
+Public Function ReturnLineitemStatus() As String
+    Const StrPROCEDURE As String = "ReturnLineitemStatus()"
+    Dim RstLineitemStatus As Recordset
     
-    Set RstLineItemStatus = ModDatabase.SQLQuery("SELECT LineItemStatus FROM TblLineItemStatus WHERE LineItemStatusNo = " & pStatus)
+    Set RstLineitemStatus = ModDatabase.SQLQuery("SELECT LineitemStatus FROM TblLineitemStatus WHERE LineitemStatusNo = " & pStatus)
     
-    With RstLineItemStatus
-        If .RecordCount > 0 Then ReturnLineItemStatus = !LineItemStatus
+    With RstLineitemStatus
+        If .RecordCount > 0 Then ReturnLineitemStatus = !LineitemStatus
     
     End With
     
-    Set RstLineItemStatus = Nothing
+    Set RstLineitemStatus = Nothing
 
 End Function
 

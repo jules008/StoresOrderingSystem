@@ -60,7 +60,7 @@ Public Function Terminate() As Boolean
     If Not Stations Is Nothing Then Set Stations = Nothing
     If Not CurrentUser Is Nothing Then Set CurrentUser = Nothing
     If Not Vehicles Is Nothing Then Set Vehicles = Nothing
-
+    
     ModDatabase.DBTerminate
     DeleteAllShapes
 

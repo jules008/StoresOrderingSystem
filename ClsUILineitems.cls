@@ -8,10 +8,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '===============================================================
-' Class LINEITEMs
+' Class Lineitems
 ' v0,0 - Initial Version
 ' v0,1 - Bug fix to Width Property
-' v0,2 - Add option to disable OnAction for LineItem
+' v0,2 - Add option to disable OnAction for Lineitem
 ' v0,3 - OnAction now passed as a parameter
 '---------------------------------------------------------------
 ' Date - 12 May 17
@@ -22,14 +22,14 @@ Attribute VB_Exposed = False
 ' AddItem - Add item to Collection
 ' RemoveItem - Deletes item from collection
 ' ItemCount - Returns number of items in collection
-' ReOrder - re-orders the shapes so that the LineItems sit on top of the screen
+' ReOrder - re-orders the shapes so that the Lineitems sit on top of the screen
 ' Text - Adds text to the line item
 '===============================================================
 
 Option Explicit
 Private pNoColumns As Integer
 Private pColumns() As Integer
-Private PUILineItems As Collection
+Private PUILineitems As Collection
 Private pTop As Integer
 Private pLeft As Integer
 Private pHeight As Integer
@@ -131,7 +131,7 @@ End Function
 
 Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = PUILineItems.[_NewEnum]
+    Set NewEnum = PUILineitems.[_NewEnum]
 End Function
 
 ' ===============================================================
@@ -142,7 +142,7 @@ End Function
 Public Function FindItem(Name As Variant) As ClsUILineitem
 Attribute FindItem.VB_UserMemId = 0
     On Error Resume Next
-    Set FindItem = PUILineItems.Item(Name)
+    Set FindItem = PUILineitems.Item(Name)
 End Function
 
 ' ===============================================================
@@ -150,9 +150,9 @@ End Function
 ' Add item to Collection
 '---------------------------------------------------------------
 
-Public Sub AddItem(UILineItem As ClsUILineitem)
-    UILineItem.SetParent ObjPtr(Me)
-    PUILineItems.Add UILineItem, Key:=CStr(UILineItem.Name)
+Public Sub AddItem(UILineitem As ClsUILineitem)
+    UILineitem.SetParent ObjPtr(Me)
+    PUILineitems.Add UILineitem, Key:=CStr(UILineitem.Name)
 End Sub
 
 ' ===============================================================
@@ -161,7 +161,7 @@ End Sub
 '---------------------------------------------------------------
 
 Public Sub RemoveItem(Name As Variant)
-    PUILineItems.Remove Name
+    PUILineitems.Remove Name
 End Sub
 
 ' ===============================================================
@@ -170,7 +170,7 @@ End Sub
 '---------------------------------------------------------------
 
 Public Function Count() As Integer
-    Count = PUILineItems.Count
+    Count = PUILineitems.Count
 End Function
 
 ' ===============================================================
@@ -179,7 +179,7 @@ End Function
 '---------------------------------------------------------------
 Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Optional OnAction As String)
     Dim DashObj As ClsUIDashObj
-    Dim UILineItem As ClsUILineitem
+    Dim UILineitem As ClsUILineitem
     Dim LeftOffset As Integer
     Dim i As Integer
     
@@ -188,9 +188,9 @@ Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Optional OnA
         i = i + 1
     Loop
     
-    Set UILineItem = New ClsUILineitem
+    Set UILineitem = New ClsUILineitem
     
-    With UILineItem
+    With UILineitem
         .Style = pStyle
         .Left = pLeft + LeftOffset
         .Width = pColumns(Col)
@@ -199,18 +199,18 @@ Public Sub Text(Row As Integer, Col As Integer, ItemText As String, Optional OnA
         .Text = ItemText
         .OnAction = OnAction
     End With
-    Me.AddItem UILineItem
+    Me.AddItem UILineitem
 End Sub
 
 ' ===============================================================
 ' Method ReOrder
-' re-orders the shapes so that the LineItems sit on top of the screen
+' re-orders the shapes so that the Lineitems sit on top of the screen
 '---------------------------------------------------------------
 Public Sub ReOrder()
     Dim Lineitem As ClsUILineitem
         
-    For Each Lineitem In PUILineItems
-        Lineitem.ShpLineItem.ZOrder msoBringToFront
+    For Each Lineitem In PUILineitems
+        Lineitem.ShpLineitem.ZOrder msoBringToFront
         Lineitem.ReOrder
     Next
     
@@ -230,14 +230,14 @@ End Function
 
 ' ===============================================================
 Private Sub Class_Initialize()
-    Set PUILineItems = New Collection
+    Set PUILineitems = New Collection
 
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
     
-    Set PUILineItems = Nothing
+    Set PUILineitems = Nothing
 
 End Sub
 

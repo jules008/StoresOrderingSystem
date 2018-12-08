@@ -157,14 +157,14 @@ End Sub
 ' ---------------------------------------------------------------
 Private Function ShowGuestAccounts() As Boolean
     Dim RstGuests As Recordset
-    Dim Persons As ClsPersons
+    Dim Persons As clspersons
     Dim i As Integer
     
     Const StrPROCEDURE As String = "ShowGuestAccounts()"
 
     On Error GoTo ErrorHandler
 
-    Set Persons = New ClsPersons
+    Set Persons = New clspersons
     
     Set RstGuests = Persons.GetGuestAccts
 

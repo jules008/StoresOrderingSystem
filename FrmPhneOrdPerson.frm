@@ -80,7 +80,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not Lineitem Is Nothing And Lineitem.LineItemNo <> 0 Then Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    If Not Lineitem Is Nothing And Lineitem.LineitemNo <> 0 Then Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 

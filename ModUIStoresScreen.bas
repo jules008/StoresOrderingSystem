@@ -323,7 +323,7 @@ End Function
 Public Function BuildStoresFrame1() As Boolean
     Dim CommentBox As ClsUIDashObj
     Dim CommentBtn As ClsUIMenuItem
-    Dim UILineItem As ClsUILineitem
+    Dim UILineitem As ClsUILineitem
     Dim i As Integer
     
     Const StrPROCEDURE As String = "BuildStoresFrame1()"
@@ -372,14 +372,14 @@ Public Function BuildStoresFrame1() As Boolean
     
     StoresFrame1.ReOrder
     
-    Set UILineItem = Nothing
+    Set UILineitem = Nothing
     
     BuildStoresFrame1 = True
 
 Exit Function
 
 ErrorExit:
-    Set UILineItem = Nothing
+    Set UILineitem = Nothing
 
     
     BuildStoresFrame1 = False
@@ -696,9 +696,9 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     ModLibrary.PerfSettingsOn
     
     With StoresFrame1
-        For Each Lineitem In .LineItems
-            .LineItems.RemoveItem Lineitem.Name
-            Lineitem.ShpLineItem.Delete
+        For Each Lineitem In .Lineitems
+            .Lineitems.RemoveItem Lineitem.Name
+            Lineitem.ShpLineitem.Delete
             Set Lineitem = Nothing
         Next
         
@@ -730,7 +730,7 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
     i = 1
     With RstOrder
         Do While Not .EOF
-            With StoresFrame1.LineItems
+            With StoresFrame1.Lineitems
                 If Not IsNull(RstOrder!Order_No) Then OrderNo = RstOrder!Order_No Else OrderNo = 0
                 If Not IsNull(RstOrder!Order_Age) Then OrderAge = RstOrder!Order_Age Else OrderAge = 0
                 If Not IsNull(RstOrder!No_of_Items) Then NoOfItems = RstOrder!No_of_Items Else NoOfItems = ""

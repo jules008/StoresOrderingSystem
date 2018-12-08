@@ -24,7 +24,7 @@ Attribute VB_Exposed = False
 ' v0,4 - Fix Error 287 by opening Outlook if it is closed
 ' v0,5 - Added checks before removing line items
 ' v0,6 - 287 issue, tried different Outlook detector
-' v0,7 - Do not save order if no lineitems
+' v0,7 - Do not save order if no Lineitems
 ' v0,81 - Centralised the mail messages
 '---------------------------------------------------------------
 ' Date - 19 Dec 17
@@ -106,9 +106,9 @@ Private Function PopulateForm() As Boolean
         .Clear
         
         i = 0
-        For Each Lineitem In Order.LineItems
+        For Each Lineitem In Order.Lineitems
             .AddItem
-            .List(i, 0) = Lineitem.LineItemNo
+            .List(i, 0) = Lineitem.LineitemNo
             .List(i, 1) = i + 1
             .List(i, 2) = Lineitem.Asset.Description
             .List(i, 3) = Lineitem.Quantity
@@ -174,7 +174,7 @@ Private Sub BtnCatSearch_Click()
     
     Lineitem.DBSave
     
-    Order.LineItems.AddItem Lineitem
+    Order.Lineitems.AddItem Lineitem
     
     If Not FrmCatSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 
@@ -251,15 +251,15 @@ End Sub
 Private Sub BtnEditItem_Click()
     Const StrPROCEDURE As String = "BtnEditItem_Click()"
 
-    Dim LineItemNo As Integer
+    Dim LineitemNo As Integer
     
     On Error GoTo ErrorHandler
     
     With LstItems
         If .ListIndex <> -1 Then
-            LineItemNo = .List(.ListIndex, 0)
+            LineitemNo = .List(.ListIndex, 0)
             
-            If Not FrmCatSearch.ShowForm(Order.LineItems(CStr(LineItemNo))) Then Err.Raise HANDLED_ERROR
+            If Not FrmCatSearch.ShowForm(Order.Lineitems(CStr(LineitemNo))) Then Err.Raise HANDLED_ERROR
         End If
     End With
 
@@ -309,12 +309,12 @@ ErrorHandler:   If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
 End Sub
 ' ===============================================================
 ' BtnRemove_Click
-' Removes selected lineitem
+' Removes selected Lineitem
 ' ---------------------------------------------------------------
 Private Sub BtnRemove_Click()
     Const StrPROCEDURE As String = "BtnRemove_Click()"
     
-    Dim LineItemNo As Integer
+    Dim LineitemNo As Integer
     
     On Error GoTo ErrorHandler
 
@@ -322,11 +322,11 @@ Private Sub BtnRemove_Click()
     If LstItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
 
     With LstItems
-        LineItemNo = .List(.ListIndex, 0)
+        LineitemNo = .List(.ListIndex, 0)
         
         With Order
-            .LineItems(CStr(LineItemNo)).DBDelete True
-            .LineItems.RemoveItem CStr(LineItemNo)
+            .Lineitems(CStr(LineitemNo)).DBDelete True
+            .Lineitems.RemoveItem CStr(LineitemNo)
         End With
         
         .RemoveItem (.ListIndex)
@@ -367,18 +367,18 @@ Private Sub BtnRemoveAll_Click()
     Const StrPROCEDURE As String = "BtnRemoveAll_Click()"
     
     Dim i As Integer
-    Dim LineItemNo As Integer
+    Dim LineitemNo As Integer
     
     On Error GoTo ErrorHandler
 
     With LstItems
         For i = (.ListCount - 1) To 0 Step -1
         
-            LineItemNo = .List(i, 0)
+            LineitemNo = .List(i, 0)
             
             With Order
-                .LineItems(CStr(LineItemNo)).DBDelete
-                .LineItems.RemoveItem CStr(LineItemNo)
+                .Lineitems(CStr(LineitemNo)).DBDelete
+                .Lineitems.RemoveItem CStr(LineitemNo)
             End With
             .RemoveItem i
         Next
@@ -411,7 +411,7 @@ Private Sub BtnSubmit_Click()
 
     If Order Is Nothing Then Err.Raise NO_ORDER, Description:="System failure, no Order"
     
-    If Order.OrderNo = 0 And Order.LineItems.Count <> 0 Then
+    If Order.OrderNo = 0 And Order.Lineitems.Count <> 0 Then
         Order.DBSave
         TxtOrderNo = Order.OrderNo
                 
@@ -456,7 +456,7 @@ Private Sub BtnTextSearch_Click()
     Set Lineitem = New ClsLineItem
     Lineitem.DBSave
     
-    Order.LineItems.AddItem Lineitem
+    Order.Lineitems.AddItem Lineitem
     
     If Not FrmTextSearch.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
 
@@ -593,11 +593,11 @@ If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
     End If
 End Function
 ' ===============================================================
-' AddLineItem
-' Adds lineitem to active order
+' AddLineitem
+' Adds Lineitem to active order
 ' ---------------------------------------------------------------
-Public Function AddLineItem(Lineitem As ClsLineItem) As Boolean
-    Const StrPROCEDURE As String = "AddLineItem()"
+Public Function AddLineitem(Lineitem As ClsLineItem) As Boolean
+    Const StrPROCEDURE As String = "AddLineitem()"
 
     On Error GoTo ErrorHandler
 
@@ -607,13 +607,13 @@ Public Function AddLineItem(Lineitem As ClsLineItem) As Boolean
     
     If Not PopulateForm Then Err.Raise HANDLED_ERROR
     
-    AddLineItem = True
+    AddLineitem = True
 
 Exit Function
 
 ErrorExit:
 
-    AddLineItem = False
+    AddLineitem = False
 
 Exit Function
 

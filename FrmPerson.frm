@@ -22,9 +22,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Phone Order Bug Fix
 ' v0,5 - Clean up if user cancels form
 ' v0,6 - Bug fix - not filling in ForPerson
-' v0,7 - Bug fix - reference lineitem parent not order
-' v0,8 - Test to see if LineItem exists before cleaning up
-' v0,9 - Set LineItem on start up
+' v0,7 - Bug fix - reference Lineitem parent not order
+' v0,8 - Test to see if Lineitem exists before cleaning up
+' v0,9 - Set Lineitem on start up
 ' v0.10 - Fix Phone Order Bug
 '---------------------------------------------------------------
 ' Date - 26 Apr 18
@@ -40,7 +40,7 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
@@ -48,8 +48,8 @@ Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
     
     If Order Is Nothing Then Set Order = New ClsOrder
     
-    If Not LocLineItem Is Nothing Then
-        Set Lineitem = LocLineItem
+    If Not LocLineitem Is Nothing Then
+        Set Lineitem = LocLineitem
     Else
         Set Lineitem = New ClsLineItem
     End If
@@ -96,7 +96,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    If Not Lineitem Is Nothing Then Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    If Not Lineitem Is Nothing Then Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 

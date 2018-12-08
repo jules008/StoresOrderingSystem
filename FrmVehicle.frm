@@ -34,16 +34,16 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If LocLineItem Is Nothing Then
-        Err.Raise NO_LINE_ITEM, Description:="No LineItem Passed to ShowForm Function"
+    If LocLineitem Is Nothing Then
+        Err.Raise NO_LINE_ITEM, Description:="No Lineitem Passed to ShowForm Function"
     Else
-        Set Lineitem = LocLineItem
+        Set Lineitem = LocLineitem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     Show
@@ -83,7 +83,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 
@@ -235,7 +235,7 @@ Private Sub BtnNext_Click()
             
             Case Is = FormOK
 
-                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
+                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No Lineitem Available"
                                 
                 If Lineitem.ForVehicle Is Nothing Then Err.Raise NO_VEHICLE_SELECTED
                 
@@ -442,7 +442,7 @@ Private Sub LstVehicles_Click()
                 
                 .AddItem
                 .List(i, 0) = RstVehTypes!VehicleType
-                .List(i, 1) = RstVehTypes!VehicleTypeNo
+                .List(i, 1) = RstVehTypes!VehicleTypEno
                 RstVehTypes.MoveNext
                 i = i + 1
             Loop

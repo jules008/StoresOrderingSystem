@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '===============================================================
-' Class ClsUiLineItem
+' Class ClsUiLineitem
 ' v0,0 - Initial Version
 ' v0,1 - Remove dashobjs
 '---------------------------------------------------------------
@@ -30,68 +30,68 @@ Private pStyle As TypeStyle
 Private pName As String
 Private pMenu As ClsUIMenu
 Private pOnAction As String
-Private pShpLineItem As Shape
+Private pShpLineitem As Shape
 Private pVisible As Boolean
 Private pParent As Long
 
 '---------------------------------------------------------------
 Public Property Get Top() As Integer
-    Top = pShpLineItem.Top
+    Top = pShpLineitem.Top
 End Property
 
 Public Property Let Top(ByVal vNewValue As Integer)
     pTop = vNewValue
-    pShpLineItem.Top = pTop
+    pShpLineitem.Top = pTop
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Left() As Integer
-    Left = pShpLineItem.Left
+    Left = pShpLineitem.Left
 End Property
 
 Public Property Let Left(ByVal vNewValue As Integer)
     pLeft = vNewValue
-    pShpLineItem.Left = pLeft
+    pShpLineitem.Left = pLeft
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Height() As Integer
-    Height = pShpLineItem.Height
+    Height = pShpLineitem.Height
 End Property
 
 Public Property Let Height(ByVal vNewValue As Integer)
     pHeight = vNewValue
-    pShpLineItem.Height = pHeight
+    pShpLineitem.Height = pHeight
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Width() As Integer
-    Width = pShpLineItem.Width
+    Width = pShpLineitem.Width
 End Property
 
 Public Property Let Width(ByVal vNewValue As Integer)
     pWidth = vNewValue
-    pShpLineItem.Width = pWidth
+    pShpLineitem.Width = pWidth
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Text() As String
-    Text = pShpLineItem.TextFrame.Characters.Text
+    Text = pShpLineitem.TextFrame.Characters.Text
 End Property
 
 Public Property Let Text(ByVal vNewValue As String)
     pText = vNewValue
-    pShpLineItem.TextFrame.Characters.Text = pText
+    pShpLineitem.TextFrame.Characters.Text = pText
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Name() As String
-    Name = pShpLineItem.Name
+    Name = pShpLineitem.Name
 End Property
 
 Public Property Let Name(ByVal vNewValue As String)
     pName = vNewValue
-    pShpLineItem.Name = pName
+    pShpLineitem.Name = pName
 End Property
 
 '---------------------------------------------------------------
@@ -105,17 +105,17 @@ End Property
 
 '---------------------------------------------------------------
 Public Property Get OnAction() As String
-    OnAction = pShpLineItem.OnAction
+    OnAction = pShpLineitem.OnAction
 End Property
 
 Public Property Let OnAction(ByVal vNewValue As String)
     pOnAction = vNewValue
-    pShpLineItem.OnAction = vNewValue
+    pShpLineitem.OnAction = vNewValue
 End Property
 
 '---------------------------------------------------------------
 Public Property Get Visible() As Boolean
-    Visible = pShpLineItem.Visible
+    Visible = pShpLineitem.Visible
 End Property
 
 Public Property Let Visible(ByVal vNewValue As Boolean)
@@ -123,35 +123,35 @@ Public Property Let Visible(ByVal vNewValue As Boolean)
     
     pVisible = vNewValue
     
-    pShpLineItem.Visible = pVisible
+    pShpLineitem.Visible = pVisible
        
 End Property
 
 '---------------------------------------------------------------
-Public Property Get ShpLineItem() As Shape
-    Set ShpLineItem = pShpLineItem
+Public Property Get ShpLineitem() As Shape
+    Set ShpLineitem = pShpLineitem
 End Property
 
-Public Property Let ShpLineItem(ByVal vNewValue As Shape)
-    Set pShpLineItem = vNewValue
+Public Property Let ShpLineitem(ByVal vNewValue As Shape)
+    Set pShpLineitem = vNewValue
 End Property
 
 Public Property Let Style(vNewValue As TypeStyle)
     pStyle = vNewValue
     
-    With pShpLineItem.Fill
+    With pShpLineitem.Fill
         .TwoColorGradient msoGradientHorizontal, 1
         .ForeColor.RGB = vNewValue.Fill1
         .BackColor.RGB = vNewValue.Fill2
     End With
     
-    With pShpLineItem.Line
+    With pShpLineitem.Line
         .ForeColor.RGB = vNewValue.BorderColour
         .Weight = vNewValue.BorderWidth
         If .Weight = 0 Then .Visible = msoFalse Else .Visible = msoCTrue
     End With
     
-    With pShpLineItem.TextFrame
+    With pShpLineitem.TextFrame
         .Characters.Font.Bold = vNewValue.FontBold
         .Characters.Font.Name = vNewValue.FontStyle
         .Characters.Font.Color = vNewValue.FontColour
@@ -159,7 +159,7 @@ Public Property Let Style(vNewValue As TypeStyle)
         If vNewValue.FontXJust <> 0 Then .HorizontalAlignment = vNewValue.FontXJust
     End With
     
-    With pShpLineItem.Shadow
+    With pShpLineitem.Shadow
         If vNewValue.Shadow = 0 Then
             .Visible = msoFalse
         Else
@@ -183,12 +183,12 @@ End Function
 
 ' ===============================================================
 ' Method ReOrder
-' re-orders the shapes so that the LineItems sit on top of the screen
+' re-orders the shapes so that the Lineitems sit on top of the screen
 '---------------------------------------------------------------
 Public Sub ReOrder()
     Dim DashObj As ClsUIDashObj
     
-    pShpLineItem.ZOrder msoBringToFront
+    pShpLineitem.ZOrder msoBringToFront
     
     pMenu.ReOrder
 End Sub
@@ -208,7 +208,7 @@ End Function
 ' ===============================================================
 Private Sub Class_Initialize()
 
-    Set pShpLineItem = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 0, 0, 10, 10)
+    Set pShpLineitem = ShtMain.Shapes.AddTextbox(msoTextOrientationHorizontal, 0, 0, 10, 10)
 End Sub
 
 '---------------------------------------------------------------

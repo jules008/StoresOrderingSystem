@@ -101,7 +101,7 @@ Public Function GetOpenOrders() As Recordset
     
     Set RstOrder = ModDatabase.SQLQuery("SELECT " _
                                         & "TblOrder.OrderNo AS Order_No, " _
-                                        & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "Count(TblLineitem.LineitemNo) AS No_of_Items, " _
                                         & "DateDiff('d', TblOrder.OrderDate, Now()) as [Order_Age], " _
                                         & "TblPerson.Username AS ReqBy, " _
                                         & "TblStation.Name AS Station, " _
@@ -113,7 +113,7 @@ Public Function GetOpenOrders() As Recordset
                                         & "INNER JOIN TblStation ON TblStation.StationID = TblPerson.StationID) " _
                                         & "INNER JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                         & "LEFT JOIN TblPerson TblPerson1 ON TblPerson1.CrewNo = TblOrder.AssignedToID) " _
-                                        & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
+                                        & "LEFT JOIN TblLineitem ON TblLineitem.OrderNo = TblOrder.OrderNo " _
                                         & "WHERE TblOrder.Status < 4 " _
                                         & "GROUP BY " _
                                         & "TblOrder.OrderNo, " _
@@ -142,7 +142,7 @@ Public Function GetClosedOrders() As Recordset
     
     Set RstOrder = ModDatabase.SQLQuery("SELECT " _
                                         & "TblOrder.OrderNo AS Order_No, " _
-                                        & "Count(TblLineItem.LineItemNo) AS No_of_Items, " _
+                                        & "Count(TblLineitem.LineitemNo) AS No_of_Items, " _
                                         & "DateDiff('d', TblOrder.OrderDate, Now()) as [Order_Age], " _
                                         & "TblPerson.Username AS ReqBy, " _
                                         & "TblStation.Name AS Station, " _
@@ -154,7 +154,7 @@ Public Function GetClosedOrders() As Recordset
                                         & "INNER JOIN TblStation ON TblStation.StationID = TblPerson.StationID) " _
                                         & "INNER JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                         & "LEFT JOIN TblPerson TblPerson1 ON TblPerson1.CrewNo = TblOrder.AssignedToID) " _
-                                        & "LEFT JOIN TblLineItem ON TblLineItem.OrderNo = TblOrder.OrderNo " _
+                                        & "LEFT JOIN TblLineitem ON TblLineitem.OrderNo = TblOrder.OrderNo " _
                                         & "WHERE " _
                                         & "TblOrder.Status = 4 " _
                                         & "AND DateDiff('d', TblOrder.OrderDate, Now()) < 14 " _
@@ -215,7 +215,7 @@ Public Function MyOrders() As Recordset
                                           & "TblOrderStatus.OrderStatus AS Status " _
                                         & "From " _
                                           & "((TblOrder " _
-                                          & "LEFT JOIN TblLineItem ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                                          & "LEFT JOIN TblLineitem ON TblOrder.OrderNo = TblLineitem.OrderNo) " _
                                           & "LEFT JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                           & "LEFT JOIN TblPerson ON TblOrder.AssignedToID = TblPerson.CrewNo " _
                                         & "WHERE " _
@@ -252,7 +252,7 @@ Public Function RecentOrders() As Recordset
                                           & "TblOrderStatus.OrderStatus AS Status " _
                                         & "From " _
                                           & "((TblOrder " _
-                                          & "LEFT JOIN TblLineItem ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
+                                          & "LEFT JOIN TblLineitem ON TblOrder.OrderNo = TblLineitem.OrderNo) " _
                                           & "LEFT JOIN TblOrderStatus ON TblOrder.Status = TblOrderStatus.OrderStatusNo) " _
                                           & "LEFT JOIN TblPerson ON TblOrder.RequestorID = TblPerson.CrewNo " _
                                         & "WHERE " _

@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 ' v0,4 - Changed DBGet to stop updating pOrderNo
 ' v0,5 - DBGet now returns deleted orders as well
 ' v0,6 - Added Order Note and Printed Date
-' v0,7 - Cascade delete to lineitems and remove delete from DBsave filter
+' v0,7 - Cascade delete to Lineitems and remove delete from DBsave filter
 '---------------------------------------------------------------
 ' Date - 02 Oct 17
 '===============================================================
@@ -35,7 +35,7 @@ Private pDeleted As Date
 Private pOrderNo As Integer
 Private pRequestor As ClsPerson
 Private pAssignedTo As ClsPerson
-Private pLineItems As ClsLineItems
+Private pLineitems As ClsLineItems
 Private pAuthorisedBy As ClsPerson
 Private pOrderDate As Date
 Private pStatus As EnumOrderStatus
@@ -81,12 +81,12 @@ Public Property Let AssignedTo(ByVal vNewValue As ClsPerson)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get LineItems() As ClsLineItems
-    Set LineItems = pLineItems
+Public Property Get Lineitems() As ClsLineItems
+    Set Lineitems = pLineitems
 End Property
 
-Public Property Let LineItems(ByVal vNewValue As ClsLineItems)
-    Set pLineItems = vNewValue
+Public Property Let Lineitems(ByVal vNewValue As ClsLineItems)
+    Set pLineitems = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -164,7 +164,7 @@ Public Sub DBGet(OrderNo As Integer)
             If Not IsNull(!AssignedToID) Then pAssignedTo.DBGet !AssignedToID
             If Not IsNull(!AuthorisedByID) Then pAuthorisedBy.DBGet !AuthorisedByID
 
-            pLineItems.GetCollection
+            pLineitems.GetCollection
         End If
     End With
 Set RstOrder = Nothing
@@ -207,7 +207,7 @@ Public Sub DBSave()
         !Status = pStatus
         .Update
         
-        For Each Lineitem In pLineItems
+        For Each Lineitem In pLineitems
             Lineitem.DBSave
         Next
 
@@ -233,14 +233,14 @@ Public Sub DBDelete(Optional FullDelete As Boolean)
             If FullDelete Then
                 .Delete
                 .MoveNext
-                For Each Lineitem In pLineItems
+                For Each Lineitem In pLineitems
                     Lineitem.DBDelete True
                 Next
             Else
                 .Edit
                 !Deleted = Now
                 .Update
-                For Each Lineitem In pLineItems
+                For Each Lineitem In pLineitems
                     Lineitem.DBDelete
                 Next
 
@@ -293,19 +293,19 @@ End Function
 Private Sub Class_Initialize()
     Set pRequestor = New ClsPerson
     Set pAssignedTo = New ClsPerson
-    Set pLineItems = New ClsLineItems
+    Set pLineitems = New ClsLineItems
     Set pAuthorisedBy = New ClsPerson
 
-    pLineItems.SetParent ObjPtr(Me)
+    pLineitems.SetParent ObjPtr(Me)
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
-    pLineItems.SetParent 0
+    pLineitems.SetParent 0
     
     Set pRequestor = Nothing
     Set pAssignedTo = Nothing
-    Set pLineItems = Nothing
+    Set pLineitems = Nothing
     Set pAuthorisedBy = Nothing
 
 End Sub

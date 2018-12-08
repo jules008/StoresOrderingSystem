@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - change GetMailAlertUsers
 ' v0,2 - Return guest accounts function
+' v0,3 - Added ReturnStationCrew
 '---------------------------------------------------------------
-' Date - 09 May 17
+' Date - 08 Dec 18
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -170,6 +171,19 @@ Public Function ReturnUserName(CrewNo As String) As String
     With RstPerson
         If .RecordCount > 0 Then ReturnUserName = .Fields(0)
     End With
+End Function
+
+' ===============================================================
+' Method ReturnStationCrew
+' Returns details of crew members at a given station
+'---------------------------------------------------------------
+Public Function ReturnStationCrew(StationID As Integer) As Recordset
+    Dim RstStationCrew As Recordset
+    Dim i As Integer
+
+    Set RstStationCrew = ModDatabase.SQLQuery("SELECT CrewNo, Username FROM TblPerson WHERE StationID= " & StationID)
+    
+    Set ReturnStationCrew = RstStationCrew
 End Function
 
 ' ===============================================================

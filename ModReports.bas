@@ -121,29 +121,29 @@ Public Function Report1Query() As Recordset
                     & "TblAsset.Category3 AS [Category 3], " _
                     & "TblAsset.Size1 AS [Size 1], " _
                     & "TblAsset.Size2 AS [Size 2], " _
-                    & "TblLineItem.Quantity AS Quantity, " _
+                    & "TblLineitem.Quantity AS Quantity, " _
                     & "TblPerson.Username AS [For Person], " _
                     & "TblStation.Name AS [For Station], " _
                     & "TblVehicle.VehReg AS [For Vehicle], " _
                     & "TblStation1.Name AS [Vehicle Station], " _
                     & "TblReqReason.ReqReason AS [Request Reason], " _
-                    & "TblAsset.Cost * TblLineItem.Quantity AS [Total Cost] "
+                    & "TblAsset.Cost * TblLineitem.Quantity AS [Total Cost] "
                     
     StrFrom = "FROM " _
-                    & "(((((((TblLineItem " _
-                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                    & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
-                    & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID) " _
-                    & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
-                    & "LEFT JOIN TblReqReason ON TblLineItem.ReqReason = TblReqReason.ReqReasonNo) " _
+                    & "(((((((TblLineitem " _
+                    & "LEFT JOIN TblAsset ON TblLineitem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblPerson ON TblLineitem.ForPersonID = TblPerson.CrewNo) " _
+                    & "LEFT JOIN TblStation ON TblLineitem.ForStationID = TblStation.StationID) " _
+                    & "LEFT JOIN TblVehicle ON TblLineitem.ForVehicleID = TblVehicle.VehNo) " _
+                    & "LEFT JOIN TblReqReason ON TblLineitem.ReqReason = TblReqReason.ReqReasonNo) " _
                     & "LEFT JOIN TblStation TblStation1 ON TblVehicle.StationID = TblStation1.StationID) " _
-                    & "LEFT JOIN TblOrder ON TblLineItem.OrderNo = TblOrder.OrderNo) " _
+                    & "LEFT JOIN TblOrder ON TblLineitem.OrderNo = TblOrder.OrderNo) " _
                     & "LEFT JOIN TblPerson TblPerson1 ON TblOrder.RequestorID = TblPerson1.CrewNo "
                     
     StrWhere = "WHERE " _
                     & "TblAsset.AssetNo IS NOT NULL " _
                     & "AND TblOrder.Deleted IS NULL " _
-                    & "AND TblLineItem.Deleted IS NULL " _
+                    & "AND TblLineitem.Deleted IS NULL " _
                     & "AND TblOrder.OrderNo IS NOT NULL " _
                     & "AND TblOrder.OrderNo <> 0 "
                     
@@ -248,21 +248,21 @@ Public Function Report3Query() As Recordset
                     & "TblOrder.OrderNo AS [Order No], " _
                     & "TblOrder.OrderDate AS [Date], " _
                     & "TblAsset.Description, " _
-                    & "TblLineItem.Quantity, " _
-                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblLineitem.Quantity, " _
+                    & "TblLineitem.Quantity * TblAsset.Cost AS [Total Cost], " _
                     & "TblStation.StationNo AS [Station No], " _
                     & "TblStation.Name AS [Station Name], " _
                     & "TblStation.Division "
                     
     StrFrom = "FROM " _
-                    & "((TblLineItem " _
-                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
-                    & "LEFT JOIN TblStation ON TblLineItem.ForStationID = TblStation.StationID "
+                    & "((TblLineitem " _
+                    & "LEFT JOIN TblAsset ON TblLineitem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineitem.OrderNo) " _
+                    & "LEFT JOIN TblStation ON TblLineitem.ForStationID = TblStation.StationID "
     
     StrWhere = "WHERE " _
-                    & "TblLineItem.ReturnReqd = YES AND " _
-                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblLineitem.ReturnReqd = YES AND " _
+                    & "TblLineitem.itemsReturned = NO AND " _
                     & "TblAsset.AllocationType = 2 "
                     
     StrSQL1 = StrSelect & StrFrom & StrWhere & StrOrderBy
@@ -273,22 +273,22 @@ Public Function Report3Query() As Recordset
                     & "TblOrder.OrderNo AS [Order No], " _
                     & "TblOrder.OrderDate AS [Date], " _
                     & "TblAsset.Description, " _
-                    & "TblLineItem.Quantity, " _
-                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblLineitem.Quantity, " _
+                    & "TblLineitem.Quantity * TblAsset.Cost AS [Total Cost], " _
                     & "TblStation.StationNo AS [Station No], " _
                     & "TblStation.Name AS [Station Name], " _
                     & "TblStation.Division "
                     
     StrFrom = "FROM " _
-                    & "(((TblLineItem " _
-                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
-                    & "LEFT JOIN TblVehicle ON TblLineItem.ForVehicleID = TblVehicle.VehNo) " _
+                    & "(((TblLineitem " _
+                    & "LEFT JOIN TblAsset ON TblLineitem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineitem.OrderNo) " _
+                    & "LEFT JOIN TblVehicle ON TblLineitem.ForVehicleID = TblVehicle.VehNo) " _
                     & "LEFT JOIN TblStation ON TblVehicle.StationID = TblStation.StationID "
                      
     StrWhere = "WHERE " _
-                    & "TblLineItem.ReturnReqd = YES AND " _
-                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblLineitem.ReturnReqd = YES AND " _
+                    & "TblLineitem.itemsReturned = NO AND " _
                     & "TblAsset.AllocationType = 1 AND " _
                     & "TblOrder.OrderDate IS NOT NULL AND " _
                     & "TblStation.StationNo IS NOT NULL "
@@ -301,22 +301,22 @@ Public Function Report3Query() As Recordset
                     & "TblOrder.OrderNo AS [Order No], " _
                     & "TblOrder.OrderDate AS [Date], " _
                     & "TblAsset.Description, " _
-                    & "TblLineItem.Quantity, " _
-                    & "TblLineItem.Quantity * TblAsset.Cost AS [Total Cost], " _
+                    & "TblLineitem.Quantity, " _
+                    & "TblLineitem.Quantity * TblAsset.Cost AS [Total Cost], " _
                     & "TblStation.StationNo AS [Station No], " _
                     & "TblStation.Name AS [Station Name], " _
                     & "TblStation.Division "
                     
     StrFrom = "FROM " _
-                    & "(((TblLineItem " _
-                    & "LEFT JOIN TblAsset ON TblLineItem.AssetID = TblAsset.AssetNo) " _
-                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineItem.OrderNo) " _
-                    & "LEFT JOIN TblPerson ON TblLineItem.ForPersonID = TblPerson.CrewNo) " _
+                    & "(((TblLineitem " _
+                    & "LEFT JOIN TblAsset ON TblLineitem.AssetID = TblAsset.AssetNo) " _
+                    & "LEFT JOIN TblOrder ON TblOrder.OrderNo = TblLineitem.OrderNo) " _
+                    & "LEFT JOIN TblPerson ON TblLineitem.ForPersonID = TblPerson.CrewNo) " _
                     & "LEFT JOIN TblStation ON TblPerson.StationID = TblStation.StationID "
                     
     StrWhere = "WHERE " _
-                    & "TblLineItem.ReturnReqd = YES AND " _
-                    & "TblLineItem.itemsReturned = NO AND " _
+                    & "TblLineitem.ReturnReqd = YES AND " _
+                    & "TblLineitem.itemsReturned = NO AND " _
                     & "TblAsset.AllocationType = 0 AND " _
                     & "TblOrder.OrderDate IS NOT NULL "
     

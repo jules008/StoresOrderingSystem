@@ -459,7 +459,7 @@ End Function
 ' ---------------------------------------------------------------
 Public Function ResetScreen() As Boolean
     Dim Frame As ClsUIFrame
-    Dim UILineItem As ClsUILineitem
+    Dim UILineitem As ClsUILineitem
     Dim DashObj As ClsUIDashObj
     Dim MenuItem As ClsUIMenuItem
     
@@ -478,11 +478,11 @@ Public Function ResetScreen() As Boolean
                 Set DashObj = Nothing
             Next
             
-            For Each UILineItem In Frame.LineItems
-'                Debug.Print UILineItem.Name
-                Frame.LineItems.RemoveItem UILineItem.Name
-                UILineItem.ShpLineItem.Delete
-                Set UILineItem = Nothing
+            For Each UILineitem In Frame.Lineitems
+'                Debug.Print UILineitem.Name
+                Frame.Lineitems.RemoveItem UILineitem.Name
+                UILineitem.ShpLineitem.Delete
+                Set UILineitem = Nothing
             Next
             
             For Each MenuItem In Frame.Menu

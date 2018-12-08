@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 '===============================================================
-' Class ClsLineItems
+' Class ClsLineitems
 ' v0,0 - Initial Version
-' v0,1 - Clean up unfinished lineitems when closing class
+' v0,1 - Clean up unfinished Lineitems when closing class
 ' v0,2 - Em Fix - disable clean up
 '---------------------------------------------------------------
 ' Date - 03 Oct 17
@@ -26,7 +26,7 @@ Attribute VB_Exposed = False
 '===============================================================
 
 Option Explicit
-Private pLineItems As Collection
+Private pLineitems As Collection
 Private pParent As Long
 
 '---------------------------------------------------------------
@@ -42,7 +42,7 @@ End Function
 
 Public Function NewEnum() As IUnknown
 Attribute NewEnum.VB_UserMemId = -4
-    Set NewEnum = pLineItems.[_NewEnum]
+    Set NewEnum = pLineitems.[_NewEnum]
 End Function
 
 ' ===============================================================
@@ -50,10 +50,10 @@ End Function
 ' Finds Item from index
 '---------------------------------------------------------------
 
-Public Function FindItem(LineItemNo As Variant) As ClsLineItem
+Public Function FindItem(LineitemNo As Variant) As ClsLineItem
 Attribute FindItem.VB_UserMemId = 0
     On Error Resume Next
-    Set FindItem = pLineItems(LineItemNo)
+    Set FindItem = pLineitems(LineitemNo)
 End Function
 
 ' ===============================================================
@@ -63,7 +63,7 @@ End Function
 
 Public Sub AddItem(Lineitem As ClsLineItem)
     Lineitem.SetParent ObjPtr(Me.Parent)
-    pLineItems.Add Lineitem, Key:=CStr(Lineitem.LineItemNo)
+    pLineitems.Add Lineitem, Key:=CStr(Lineitem.LineitemNo)
 End Sub
 
 ' ===============================================================
@@ -71,8 +71,8 @@ End Sub
 ' Deletes item from collection
 '---------------------------------------------------------------
 
-Public Sub RemoveItem(LineItemNo As Variant)
-    pLineItems.Remove LineItemNo
+Public Sub RemoveItem(LineitemNo As Variant)
+    pLineitems.Remove LineitemNo
 End Sub
 
 ' ===============================================================
@@ -81,7 +81,7 @@ End Sub
 '---------------------------------------------------------------
 
 Public Function Count() As Integer
-    Count = pLineItems.Count
+    Count = pLineitems.Count
 End Function
 
 ' ===============================================================
@@ -90,25 +90,25 @@ End Function
 '---------------------------------------------------------------
 
 Public Sub GetCollection()
-    Dim RstLineItem As Recordset
+    Dim RstLineitem As Recordset
     Dim Lineitem As ClsLineItem
     Dim i As Integer
 
-    Set RstLineItem = ModDatabase.SQLQuery("SELECT * FROM TblLineItem WHERE OrderNo = " & Parent.OrderNo _
+    Set RstLineitem = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE OrderNo = " & Parent.OrderNo _
                                             & " AND deleted IS NULL")
-    With RstLineItem
+    With RstLineitem
         If .RecordCount > 0 Then
             .MoveFirst
             Do While Not .EOF
                 Set Lineitem = New ClsLineItem
-                Lineitem.LineItemNo = !LineItemNo
+                Lineitem.LineitemNo = !LineitemNo
                 Lineitem.DBGet
                 Me.AddItem Lineitem
                 .MoveNext
             Loop
         End If
     End With
-    Set RstLineItem = Nothing
+    Set RstLineitem = Nothing
 End Sub
 
 ' ===============================================================
@@ -118,25 +118,25 @@ End Sub
 
 Public Sub DeleteCollection()
     Dim Lineitem As ClsLineItem
-    For Each Lineitem In pLineItems
-        pLineItems.Remove CStr(Lineitem.LineItemNo)
+    For Each Lineitem In pLineitems
+        pLineitems.Remove CStr(Lineitem.LineitemNo)
         Lineitem.DBDelete
     Next
 End Sub
 
 ' ===============================================================
 ' Method Cleanup
-' Cleans up incomplete LineItems
+' Cleans up incomplete Lineitems
 '---------------------------------------------------------------
 Public Sub CleanUp()
-    Dim RstLineItems As Recordset
+    Dim RstLineitems As Recordset
 
-    Set RstLineItems = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE OrderNo = 0 OR OrderNo IS NULL")
+    Set RstLineitems = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE OrderNo = 0 OR OrderNo IS NULL")
     
-    With RstLineItems
+    With RstLineitems
         If .RecordCount > 0 Then
             Do While Not .EOF
-'                Debug.Print !LineItemNo
+'                Debug.Print !LineitemNo
                 .Delete
                 .MoveNext
             Loop
@@ -158,14 +158,14 @@ End Function
 
 ' ===============================================================
 Private Sub Class_Initialize()
-    Set pLineItems = New Collection
+    Set pLineitems = New Collection
 
 End Sub
 
 '---------------------------------------------------------------
 Private Sub Class_Terminate()
     'CleanUp
-    Set pLineItems = Nothing
+    Set pLineitems = Nothing
 
 End Sub
 

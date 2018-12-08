@@ -224,7 +224,7 @@ End Sub
 
 ' ===============================================================
 ' BtnRemove_Click
-' Removes selected lineitem
+' Removes selected Lineitem
 ' ---------------------------------------------------------------
 Private Sub BtnRemove_Click()
     Dim ItemNo As Integer

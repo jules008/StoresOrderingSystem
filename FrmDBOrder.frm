@@ -114,9 +114,9 @@ Private Function PopulateForm() As Boolean
         .Clear
         
         i = 0
-        For Each Lineitem In Order.LineItems
+        For Each Lineitem In Order.Lineitems
             .AddItem
-            .List(i, 0) = Lineitem.LineItemNo
+            .List(i, 0) = Lineitem.LineitemNo
             .List(i, 1) = i + 1
             .List(i, 2) = Lineitem.Asset.Description
             .List(i, 3) = Lineitem.Quantity
@@ -124,7 +124,7 @@ Private Function PopulateForm() As Boolean
             .List(i, 5) = Lineitem.Asset.Size2
             If Lineitem.ReturnReqd = True Then .List(i, 6) = "Yes" Else .List(i, 6) = "No"
             If Lineitem.LossReport.LossReportNo <> 0 Then .List(i, 7) = "Yes" Else .List(i, 6) = "No"
-            .List(i, 8) = Lineitem.ReturnLineItemStatus
+            .List(i, 8) = Lineitem.ReturnLineitemStatus
             i = i + 1
         Next
     End With
@@ -365,11 +365,11 @@ Private Sub BtnDeleteItem_Click()
     
     If Response <> 6 Then Exit Sub
     
-    Set Lineitem = Order.LineItems(LstItems.ListIndex + 1)
+    Set Lineitem = Order.Lineitems(LstItems.ListIndex + 1)
 
-    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Lineitem available"
     
-    Lineitem.Parent.LineItems.RemoveItem CStr(Lineitem.LineItemNo)
+    Lineitem.Parent.Lineitems.RemoveItem CStr(Lineitem.LineitemNo)
     
     Lineitem.DBDelete
     
@@ -405,13 +405,13 @@ ErrorHandler:
     End If
 End Sub
 ' ===============================================================
-' BtnLineItem_Click
+' BtnLineitem_Click
 ' opens the selected line item
 ' ---------------------------------------------------------------
-Private Sub BtnLineItem_Click()
+Private Sub BtnLineitem_Click()
     Dim Lineitem As ClsLineItem
     
-    Const StrPROCEDURE As String = "BtnLineItem_Click()"
+    Const StrPROCEDURE As String = "BtnLineitem_Click()"
         
     On Error GoTo ErrorHandler
 
@@ -419,9 +419,9 @@ Private Sub BtnLineItem_Click()
     
     If LstItems.ListIndex = -1 Then Err.Raise NO_ITEM_SELECTED
     
-    Set Lineitem = Order.LineItems(LstItems.ListIndex + 1)
+    Set Lineitem = Order.Lineitems(LstItems.ListIndex + 1)
 
-    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Lineitem available"
     
     If Not FrmDBLineItem.ShowForm(Lineitem) Then Err.Raise HANDLED_ERROR
     
@@ -661,10 +661,10 @@ Private Function ProcessStatus() As Boolean
 
     Set Lineitem = New ClsLineItem
     
-    NoTotal = Order.LineItems.Count
+    NoTotal = Order.Lineitems.Count
     
     If Order.Status <> OrderClosed And Order.Status <> OrderDeleted Then
-        For Each Lineitem In Order.LineItems
+        For Each Lineitem In Order.Lineitems
             With Lineitem
                 Select Case .Status
                     Case Is = LineComplete

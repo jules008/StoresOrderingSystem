@@ -29,7 +29,7 @@ Private pDashObjs As ClsUIDashObjs
 Private pMenu As ClsUIMenu
 Private pEnableHeader As Boolean
 Private pHeader As ClsUIHeader
-Private pLineItems As ClsUILineitems
+Private pLineitems As ClsUILineitems
 Private pShpFrame As Shape
 Private pVisible As Boolean
 Private pParent As Long
@@ -123,12 +123,12 @@ Public Property Let Header(ByVal vNewValue As ClsUIHeader)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get LineItems() As ClsUILineitems
-    Set LineItems = pLineItems
+Public Property Get Lineitems() As ClsUILineitems
+    Set Lineitems = pLineitems
 End Property
 
-Public Property Let LineItems(ByVal vNewValue As ClsUILineitems)
-    Set pLineItems = vNewValue
+Public Property Let Lineitems(ByVal vNewValue As ClsUILineitems)
+    Set pLineitems = vNewValue
 End Property
 
 '---------------------------------------------------------------
@@ -217,7 +217,7 @@ End Property
 '---------------------------------------------------------------
 Public Sub ReOrder()
     Dim DashObj As ClsUIDashObj
-    Dim UILineItem As ClsUILineitem
+    Dim UILineitem As ClsUILineitem
     
     pShpFrame.ZOrder msoBringToFront
     pHeader.ReOrder
@@ -226,8 +226,8 @@ Public Sub ReOrder()
         DashObj.ShpDashObj.ZOrder msoBringToFront
     Next
     
-    For Each UILineItem In pLineItems
-        UILineItem.ShpLineItem.ZOrder msoBringToFront
+    For Each UILineitem In pLineitems
+        UILineitem.ShpLineitem.ZOrder msoBringToFront
     Next
     pMenu.ReOrder
 End Sub
@@ -250,14 +250,14 @@ Private Sub Class_Initialize()
     Set pHeader = New ClsUIHeader
     Set pDashObjs = New ClsUIDashObjs
     
-    Set pLineItems = New ClsUILineitems
+    Set pLineitems = New ClsUILineitems
 
     Set pShpFrame = ActiveSheet.Shapes.AddShape(msoShapeRectangle, 0, 0, 10, 10)
     
     pMenu.SetParent ObjPtr(Me)
     pHeader.SetParent ObjPtr(Me)
     pDashObjs.SetParent ObjPtr(Me)
-    pLineItems.SetParent ObjPtr(Me)
+    pLineitems.SetParent ObjPtr(Me)
 End Sub
 
 '---------------------------------------------------------------
@@ -265,12 +265,12 @@ Private Sub Class_Terminate()
     pDashObjs.SetParent 0
     pMenu.SetParent 0
     pHeader.SetParent 0
-    pLineItems.SetParent 0
+    pLineitems.SetParent 0
     
     Set pDashObjs = Nothing
     Set pMenu = Nothing
     Set pHeader = Nothing
-    Set pLineItems = Nothing
+    Set pLineitems = Nothing
 
 End Sub
 

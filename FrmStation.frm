@@ -33,16 +33,16 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If LocLineItem Is Nothing Then
+    If LocLineitem Is Nothing Then
         Err.Raise NO_LINE_ITEM, Description:="No Line Item Passed to ShowForm Function"
     Else
-        Set Lineitem = LocLineItem
+        Set Lineitem = LocLineitem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -142,7 +142,7 @@ Private Function CancelOrder() As Boolean
 
     On Error GoTo ErrorHandler
 
-    Lineitem.Parent.LineItems.RemoveItem (CStr(Lineitem.LineItemNo))
+    Lineitem.Parent.Lineitems.RemoveItem (CStr(Lineitem.LineitemNo))
 
     CancelOrder = True
 
@@ -219,7 +219,7 @@ Private Sub BtnNext_Click()
             
             Case Is = FormOK
         
-                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No LineItem Available"
+                If Lineitem Is Nothing Then Err.Raise SYSTEM_FAILURE, Description:="No Lineitem Available"
                 
                 If OptMe = True Then
                     Lineitem.ForStation = Lineitem.Parent.Requestor.Station

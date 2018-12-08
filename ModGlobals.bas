@@ -25,8 +25,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,201 - Added EnumReportNo
 ' v0,21 - Added Report Settings Buton
 ' v0,22 - Add Return Stock Button
+' v0,23 - Added Return Allocation Type
 '---------------------------------------------------------------
-' Date - 04 Dec 18
+' Date - 08 Dec 18
 '===============================================================
 
 Option Explicit
@@ -195,6 +196,7 @@ Enum EnumReqReason
     DamagedOther = 4
     Malfunction = 5
     NewIssue = 6
+    ItemReturn = 7
 End Enum
 
 Enum EnumStationID
@@ -317,7 +319,7 @@ Enum EnumSrchType
     CategorySearch = 2
 End Enum
 
-Enum EnumLineItemStatus
+Enum EnumLineitemStatus
     LineOpen = 0
     LineOnHold = 1
     LineIssued = 2

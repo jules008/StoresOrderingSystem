@@ -26,7 +26,7 @@ Attribute VB_Exposed = False
 '===============================================================
 Option Explicit
 
-Private Const StrMODULE As String = "FrmDBLineItem"
+Private Const StrMODULE As String = "FrmDBLineitem"
 
 Private Lineitem As ClsLineItem
 
@@ -34,16 +34,16 @@ Private Lineitem As ClsLineItem
 ' ShowForm
 ' Initial entry point to form
 ' ---------------------------------------------------------------
-Public Function ShowForm(Optional LocLineItem As ClsLineItem) As Boolean
+Public Function ShowForm(Optional LocLineitem As ClsLineItem) As Boolean
     
     Const StrPROCEDURE As String = "ShowForm()"
     
     On Error GoTo ErrorHandler
     
-    If LocLineItem Is Nothing Then
-        Err.Raise NO_LINE_ITEM, Description:="LineItem unavailable"
+    If LocLineitem Is Nothing Then
+        Err.Raise NO_LINE_ITEM, Description:="Lineitem unavailable"
     Else
-        Set Lineitem = LocLineItem
+        Set Lineitem = LocLineitem
         If Not PopulateForm Then Err.Raise HANDLED_ERROR
     End If
     
@@ -92,7 +92,7 @@ Private Function PopulateForm() As Boolean
         TxtOnHoldReason = .OnHoldReason
         ChkReturned = .itemsReturned
         ChkIssued = .ItemsIssued
-        TxtLineItemNo = .LineItemNo
+        TxtLineItemNo = .LineitemNo
         TxtOrderDate = Format(.Parent.OrderDate, "dd/mm/yyyy")
         TxtOrderNo = .Parent.OrderNo
         TxtQuantity = .Quantity
@@ -255,13 +255,13 @@ End Sub
 ' Shows the asset details
 ' ---------------------------------------------------------------
 Private Sub BtnAsset_Click()
-    Dim LineItemNo As Integer
+    Dim LineitemNo As Integer
     
     Const StrPROCEDURE As String = "BtnAsset_Click()"
         
     On Error GoTo ErrorHandler
     
-    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem available"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Lineitem available"
     
     If Lineitem.Asset Is Nothing Then Err.Raise NO_ASSET_ON_ORDER, Description:="No asset on Order"
     
@@ -315,7 +315,7 @@ Private Sub BtnIssue_Click()
 
     On Error GoTo ErrorHandler
 
-    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No LineItem loaded"
+    If Lineitem Is Nothing Then Err.Raise NO_LINE_ITEM, Description:="No Lineitem loaded"
     
     With Lineitem
         .Status = LineIssued
@@ -371,7 +371,7 @@ Private Sub BtnNext_Click()
     
     FrmDBOrder.LstItems.ListIndex = IndexNo
     
-    If Not ShowForm(Lineitem.Parent.LineItems(IndexNo + 1)) Then Err.Raise HANDLED_ERROR
+    If Not ShowForm(Lineitem.Parent.Lineitems(IndexNo + 1)) Then Err.Raise HANDLED_ERROR
 
     
 Exit Sub
@@ -419,7 +419,7 @@ Private Sub BtnPrev_Click()
     
     FrmDBOrder.LstItems.ListIndex = IndexNo - 2
     
-    If Not ShowForm(Lineitem.Parent.LineItems(IndexNo - 1)) Then Err.Raise HANDLED_ERROR
+    If Not ShowForm(Lineitem.Parent.Lineitems(IndexNo - 1)) Then Err.Raise HANDLED_ERROR
 
     
 Exit Sub
@@ -440,7 +440,7 @@ End Sub
 
 ' ===============================================================
 ' BtnPutOnHold_Click
-' Puts lineitem on hold
+' Puts Lineitem on hold
 ' ---------------------------------------------------------------
 Private Sub BtnPutOnHold_Click()
     Const StrPROCEDURE As String = "BtnPutOnHold_Click()"

@@ -89,13 +89,13 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
     On Error GoTo ErrorHandler
 
     With Order
-        Select Case .LineItems(i + 1).Asset.AllocationType
+        Select Case .Lineitems(i + 1).Asset.AllocationType
             Case Person
-                DeliveryTo = .LineItems(i + 1).ForPerson.Station.Name & " (" & .LineItems(i + 1).ForPerson.UserName & ")"
+                DeliveryTo = .Lineitems(i + 1).ForPerson.Station.Name & " (" & .Lineitems(i + 1).ForPerson.UserName & ")"
                 
             Case Vehicle
-                VehReg = .LineItems(i + 1).ForVehicle.VehReg
-                StationID = .LineItems(i + 1).ForVehicle.StationID
+                VehReg = .Lineitems(i + 1).ForVehicle.VehReg
+                StationID = .Lineitems(i + 1).ForVehicle.StationID
                 
                 If StationID <> "" Then
                     StationName = Stations(StationID).Name
@@ -106,7 +106,7 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
                 DeliveryTo = StationName & " (" & VehReg & ")"
     
             Case Station
-                DeliveryTo = .LineItems(i + 1).ForStation.Name
+                DeliveryTo = .Lineitems(i + 1).ForStation.Name
             
         End Select
     
@@ -123,7 +123,7 @@ Public Function PrintOrderReceipt(Order As ClsOrder) As Boolean
             Print #iFile, "Station: " & .Requestor.Station.Name
             Print #iFile,
                         
-            For Each Lineitem In .LineItems
+            For Each Lineitem In .Lineitems
                 With Lineitem
                     Print #iFile,
                     Print #iFile, "---------------------------------------------------"
@@ -212,15 +212,15 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
         RngReqBy = .Requestor.UserName
         RngStation = .Requestor.Station.Name
         
-        For i = 0 To .LineItems.Count - 1
+        For i = 0 To .Lineitems.Count - 1
 
-            Select Case .LineItems(i + 1).Asset.AllocationType
+            Select Case .Lineitems(i + 1).Asset.AllocationType
                 Case Person
-                    DeliveryTo = .LineItems(i + 1).ForPerson.Station.Name & " (" & .LineItems(i + 1).ForPerson.UserName & ")"
+                    DeliveryTo = .Lineitems(i + 1).ForPerson.Station.Name & " (" & .Lineitems(i + 1).ForPerson.UserName & ")"
                     
                 Case Vehicle
-                    VehReg = .LineItems(i + 1).ForVehicle.VehReg
-                    StationID = .LineItems(i + 1).ForVehicle.StationID
+                    VehReg = .Lineitems(i + 1).ForVehicle.VehReg
+                    StationID = .Lineitems(i + 1).ForVehicle.StationID
                     
                     If StationID <> "" Then
                         StationName = Stations(StationID).Name
@@ -231,21 +231,21 @@ Public Function PrintOrderList(Order As ClsOrder, PrintOrder As Boolean) As Bool
                     DeliveryTo = StationName & " (" & VehReg & ")"
         
                 Case Station
-                    DeliveryTo = .LineItems(i + 1).ForStation.Name
+                    DeliveryTo = .Lineitems(i + 1).ForStation.Name
                 
             End Select
                 
-            StrDesc = .LineItems(i + 1).Asset.Description
-            StrPU = .LineItems(i + 1).Asset.PurchaseUnit
+            StrDesc = .Lineitems(i + 1).Asset.Description
+            StrPU = .Lineitems(i + 1).Asset.PurchaseUnit
             
             RngItemsRefPnt.Offset(i, 0) = StrDesc & " (" & StrPU & ")"
-            RngItemsRefPnt.Offset(i, 4) = .LineItems(i + 1).Quantity
-            RngItemsRefPnt.Offset(i, 5) = .LineItems(i + 1).Asset.Size1
-            RngItemsRefPnt.Offset(i, 6) = .LineItems(i + 1).Asset.Size2
-            RngItemsRefPnt.Offset(i, 7) = .LineItems(i + 1).Asset.Location
+            RngItemsRefPnt.Offset(i, 4) = .Lineitems(i + 1).Quantity
+            RngItemsRefPnt.Offset(i, 5) = .Lineitems(i + 1).Asset.Size1
+            RngItemsRefPnt.Offset(i, 6) = .Lineitems(i + 1).Asset.Size2
+            RngItemsRefPnt.Offset(i, 7) = .Lineitems(i + 1).Asset.Location
             RngItemsRefPnt.Offset(i, 8) = DeliveryTo
             
-            If .LineItems(i + 1).ReturnReqd Then RngItemsRefPnt.Offset(i, 9) = "Yes"
+            If .Lineitems(i + 1).ReturnReqd Then RngItemsRefPnt.Offset(i, 9) = "Yes"
         Next
     End With
     
