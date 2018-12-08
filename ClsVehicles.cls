@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsVehicles
 ' v0,0 - Initial Version
-' v0,1 - Added GetVehicleType 
+' v0,1 - Added GetVehicleType
 '---------------------------------------------------------------
 ' Date - 08 Dec 18
 '===============================================================

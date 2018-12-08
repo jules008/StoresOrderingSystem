@@ -310,7 +310,7 @@ Private Function BuildLeftFrame() As Boolean
         
         End With
         
-        With .LineItems
+        With .Lineitems
             .NoColumns = MY_ORDER_LINEITEM_NOCOLS
             .Top = MY_ORDER_LINEITEM_TOP
             .Left = MY_ORDER_LINEITEM_LEFT
@@ -382,7 +382,7 @@ Private Function BuildRightFrame() As Boolean
             .Icon.Visible = msoCTrue
         End With
         
-        With .LineItems
+        With .Lineitems
             .NoColumns = MY_ORDER_LINEITEM_NOCOLS
             .Top = MY_ORDER_LINEITEM_TOP
             .Left = MY_ORDER_LINEITEM_LEFT
@@ -550,13 +550,13 @@ Public Function RefreshMyOrderList() As Boolean
         ReDim RowTitles(0 To MY_ORDER_LINEITEM_NOCOLS - 1)
         RowTitles = Split(MY_ORDER_LINEITEM_TITLES, ":")
 
-        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        .Lineitems.Style = GENERIC_LINEITEM_HEADER
         
         For i = 0 To MY_ORDER_LINEITEM_NOCOLS - 1
-            .LineItems.Text 0, i, RowTitles(i), False
+            .Lineitems.Text 0, i, RowTitles(i), False
         Next
         
-        .Lineitems.Style = GENERIC_Lineitem
+        .Lineitems.Style = GENERIC_LINEITEM
 
     End With
 
@@ -644,13 +644,13 @@ Public Function RefreshRecentOrderList() As Boolean
         ReDim RowTitles(0 To RCT_ORDER_LINEITEM_NOCOLS - 1)
         RowTitles = Split(RCT_ORDER_LINEITEM_TITLES, ":")
 
-        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        .Lineitems.Style = GENERIC_LINEITEM_HEADER
         
         For i = 0 To RCT_ORDER_LINEITEM_NOCOLS - 1
-            .LineItems.Text 0, i, RowTitles(i), False
+            .Lineitems.Text 0, i, RowTitles(i), False
         Next
         
-        .LineItems.Style = GENERIC_LINEITEM
+        .Lineitems.Style = GENERIC_LINEITEM
 
     End With
 

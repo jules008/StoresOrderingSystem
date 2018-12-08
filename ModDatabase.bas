@@ -230,38 +230,19 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,394" Then
-        MsgBox "Database needs to be upgraded to v1,394 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,395" Then
+        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    'delete old backup tables
-    DB.Execute "DROP TABLE TblAssetOLD"
-    DB.Execute "DROP TABLE TblVehicleOLD"
-    DB.Execute "DROP TABLE TblVehicleTypeOLD"
-    
-    'back up Station table
-    DB.Execute "SELECT * INTO TblSationOLD FROM TblStation"
-    
-    'Add active column to station table
-    DB.Execute "ALTER TABLE TblStation ADD COLUMN StnActive yesno"
-    
-    'set all stations except S39 to active
-    DB.Execute "UPDATE TblStation SET StnActive = True WHERE StationNo <> 'EC39'"
-    DB.Execute "UPDATE TblStation SET StnActive = True WHERE Division IS NULL OR Division = ''"
-    DB.Execute "INSERT INTO TblStation VALUES (50, 'EC31', 'Sleaford Accom. Pods', 'Church Ln, Sleaford NG34, UK', '1', 'South',-1)"
-    DB.Execute "UPDATE TblStation SET StationType = '1' WHERE StationNo  = 'EC31'"
-    DB.Execute "UPDATE TblStation SET Address = 'Eastgate, Sleaford, NG34 7EE' WHERE StationNo = 'EC31'"
-    
-    'Set null station no to Non-Ops
-    DB.Execute "UPDATE TblStation SET StationNo = 'Non-Ops' WHERE StationNo IS NULL OR StationNo = ''"
+    DB.Execute "INSERT INTO TblReqReason VALUES (8, 7, 'Returned Items')"
     
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v1,395"
+        .Fields(0) = "v1,396"
         .Update
     End With
     
@@ -295,28 +276,17 @@ Public Sub UpdateDBScriptUndo()
     
     Set RstTable = SQLQuery("TblDBVersion")
 
-    If RstTable.Fields(0) <> "v1,395" Then
-        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,396" Then
+        MsgBox "Database needs to be upgraded to v1,396 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    'add dummy tables
-    DB.Execute "CREATE TABLE TblAssetOLD"
-    DB.Execute "CREATE TABLE TblVehicleOLD"
-    DB.Execute "CREATE TABLE TblVehicleTypeOLD"
-    
-    'Restore station table
-    DB.Execute "DROP TABLE TblStation"
-    DB.Execute "SELECT * INTO TblStation FROM TblSationOLD"
-    
-    'delete back up Station table
-    DB.Execute "DROP TABLE TblSationOLD"
-
+    DB.Execute "DELETE TblReqReason WHERE RequestReasonNo = 7"
     
     'version update
     With RstTable
         .Edit
-        .Fields(0) = "v1,394"
+        .Fields(0) = "v1,395"
         .Update
     End With
     

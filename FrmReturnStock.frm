@@ -179,13 +179,13 @@ End Sub
 Private Sub LstFrom_click()
     Dim AllocType As EnumAllocationType
     Dim Person As ClsPerson
-    Dim Persons As clspersons
+    Dim Persons As ClsPersons
     Dim Vehicle As ClsVehicle
     Dim SelVehicleID As Integer
-    Dim SelPersonID As Integer
+    Dim SelPersonID As Double
     
     Set Person = New ClsPerson
-    Set Persons = New clspersons
+    Set Persons = New ClsPersons
     Set Vehicle = New ClsVehicle
     
     AllocType = RetOrder.Lineitems(1).Asset.AllocationType
@@ -220,7 +220,7 @@ Private Sub LstStations_Click()
     Dim ErrNo As Integer
     Dim AssetType As EnumAllocationType
     Dim Vehicle As ClsVehicle
-    Dim Persons As clspersons
+    Dim Persons As ClsPersons
     Dim SelStation As String
     Dim RstCrewMembers As Recordset
     Dim i As Integer
@@ -242,7 +242,7 @@ Restart:
     
     Select Case AssetType
         Case Is = 0
-            Set Persons = New clspersons
+            Set Persons = New ClsPersons
             
             Set RstCrewMembers = Persons.ReturnStationCrew(CInt(SelStation))
             

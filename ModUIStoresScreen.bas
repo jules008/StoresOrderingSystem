@@ -360,7 +360,7 @@ Public Function BuildStoresFrame1() As Boolean
         End With
     End With
     
-    With StoresFrame1.LineItems
+    With StoresFrame1.Lineitems
         .NoColumns = ORDER_LINEITEM_NOCOLS
         .Top = ORDER_LINEITEM_TOP
         .Left = ORDER_LINEITEM_LEFT
@@ -705,13 +705,13 @@ Public Function RefreshOrderList(ClosedOrders As Boolean) As Boolean
         ReDim RowTitles(0 To ORDER_LINEITEM_NOCOLS - 1)
         RowTitles = Split(ORDER_LINEITEM_TITLES, ":")
 
-        .LineItems.Style = GENERIC_LINEITEM_HEADER
+        .Lineitems.Style = GENERIC_LINEITEM_HEADER
         
         For i = 0 To ORDER_LINEITEM_NOCOLS - 1
-            .LineItems.Text 0, i, RowTitles(i), False
+            .Lineitems.Text 0, i, RowTitles(i), False
         Next
         
-        .LineItems.Style = GENERIC_LINEITEM
+        .Lineitems.Style = GENERIC_LINEITEM
 
     End With
     
