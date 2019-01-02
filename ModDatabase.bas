@@ -12,7 +12,7 @@ Attribute VB_Name = "ModDatabase"
 ' v0,8 - Show logged on users
 ' v0,9 - Test DB Ver before roll back
 '---------------------------------------------------------------
-' Date - 13 Nov 18
+' Date - 02 Jan 19
 '===============================================================
 
 Option Explicit
@@ -230,19 +230,23 @@ Public Sub UpdateDBScript()
     Set RstTable = SQLQuery("TblDBVersion")
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,395" Then
-        MsgBox "Database needs to be upgraded to v1,395 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,396" Then
+        MsgBox "Database needs to be upgraded to v1,396 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    DB.Execute "INSERT INTO TblReqReason VALUES (8, 7, 'Returned Items')"
+    DB.Execute "INSERT INTO TblStation VALUES (51, 'Ops', 'USAR', 'Sleaford Road, Waddington, LN5 9FG', '1', NULL ,TRUE)"
+    
+    On Error Resume Next
+    DB.Execute "DROP TABLE TblSationOLD"
+    On Error GoTo error
     
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v1,396"
+        .Fields(0) = "v1,397"
         .Update
     End With
     
@@ -276,17 +280,17 @@ Public Sub UpdateDBScriptUndo()
     
     Set RstTable = SQLQuery("TblDBVersion")
 
-    If RstTable.Fields(0) <> "v1,396" Then
-        MsgBox "Database needs to be upgraded to v1,396 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,397" Then
+        MsgBox "Database needs to be upgraded to v1,397 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    DB.Execute "DELETE TblReqReason WHERE RequestReasonNo = 7"
+    DB.Execute "DELETE FROM TblStation WHERE StationID = 51"
     
     'version update
     With RstTable
         .Edit
-        .Fields(0) = "v1,395"
+        .Fields(0) = "v1,396"
         .Update
     End With
     
@@ -352,14 +356,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Added Return Stock Function" _
+                    & Chr(13) & " - Added USAR as a Station" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "-  Added Return Stock Function - Adds a return stock button on the stores page to allow items to be returned and removed from station allocations" _
+                    & Chr(13) & "-  Added USAR as a Station - Items can now be ordered and allocated to USAR" _
                     & Chr(13) & ""
         .Update
     End With

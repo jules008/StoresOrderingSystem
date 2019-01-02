@@ -26,8 +26,9 @@ Attribute VB_Name = "ModGlobals"
 ' v0,21 - Added Report Settings Buton
 ' v0,22 - Add Return Stock Button
 ' v0,23 - Added Return Allocation Type
+' v0,24 - Added USAR as a station
 '---------------------------------------------------------------
-' Date - 08 Dec 18
+' Date - 02 Jan 19
 '===============================================================
 
 Option Explicit
@@ -40,9 +41,9 @@ Public Const INI_FILE As String = "System.ini"
 Public Const APP_NAME As String = "Stores IT System"
 Public Const TEST_PREFIX As String = "TEST - "
 Public Const FILE_ERROR_LOG As String = "Error.log"
-Public Const VERSION = "1.654"
-Public Const DB_VER = "v1,396"
-Public Const VER_DATE = "08/12/18"
+Public Const VERSION = "1.655"
+Public Const DB_VER = "v1,397"
+Public Const VER_DATE = "02/01/19"
 
 ' ===============================================================
 ' Error Constants
@@ -251,6 +252,7 @@ Enum EnumStationID
     Control = 48
     OpsSupport = 49
     SleafordAccomPods = 50
+    USAR = 51
 End Enum
 
 Enum EnumStnType
