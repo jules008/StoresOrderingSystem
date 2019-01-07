@@ -14,8 +14,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
+' v0,1 - Mark Return Order as closed
 '---------------------------------------------------------------
-' Date - 04 Dec 18
+' Date - 07 Jan 19
 '===============================================================
 Option Explicit
 
@@ -97,6 +98,7 @@ Private Sub BtnReturn_Click()
                     .Requestor = CurrentUser
                     .Lineitems(1).Quantity = 0 - TxtQty
                     .Lineitems(1).ReqReason = ItemReturn
+                    .Status = OrderClosed
                     .DBSave
                 End With
                 
