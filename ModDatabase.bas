@@ -362,6 +362,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
                     & Chr(13) & " - Added USAR as a Station" _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Multiple Item Returns" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
@@ -369,6 +371,8 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
                     & Chr(13) & "-  Added USAR as a Station - Items can now be ordered and allocated to USAR" _
+                    & Chr(13) & "" _
+                    & Chr(13) & " - Multiple Item Returns - Allows multiple items to be returned in one go" _
                     & Chr(13) & ""
         .Update
     End With
