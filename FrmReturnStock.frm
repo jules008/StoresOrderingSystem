@@ -15,14 +15,15 @@ Attribute VB_Exposed = False
 '===============================================================
 ' v0,0 - Initial version
 ' v0,1 - Mark Return Order as closed
+' v0,2 - Return Multiple items
 '---------------------------------------------------------------
-' Date - 07 Jan 19
+' Date - 09 Jan 19
 '===============================================================
 Option Explicit
 
 Private Const StrMODULE As String = "FrmReturnStock"
 
-Dim RetOrder As ClsOrder
+Dim RetLineItem As ClsLineItem
 
 ' ===============================================================
 ' ShowForm
@@ -70,60 +71,55 @@ Private Function FormTerminate() As Boolean
 
     On Error Resume Next
     
-    Set RetOrder = Nothing
+    Set RetLineItem = Nothing
     Unload Me
 
 End Function
 
 ' ===============================================================
-' BtnReturn_Click
-' Moves onto next form
+' BtnAdd_Click
+' Adds LineItem to Return list
 ' ---------------------------------------------------------------
-Private Sub BtnReturn_Click()
-    Dim StrUserName As String
-    
-    Const StrPROCEDURE As String = "BtnReturn_Click()"
+Private Sub BtnAdd_Click()
+    Dim ErrNo As Integer
+
+    Const StrPROCEDURE As String = "BtnAdd_Click()"
 
     On Error GoTo ErrorHandler
 
-        Select Case ValidateForm
+Restart:
+
+    If MainScreen Is Nothing Then Err.Raise SYSTEM_RESTART
+
+    If RetLineItem Is Nothing Then Err.Raise HANDLED_ERROR, , "No Return item "
+           
+    With RetLineItem
+        .Quantity = TxtQty
+        .DBSave
+    End With
     
-            Case Is = FunctionalError
-                Err.Raise HANDLED_ERROR
-            
-            Case Is = FormOK
-                
-                With RetOrder
-                    .OrderDate = Now
-                    .Requestor = CurrentUser
-                    .Lineitems(1).Quantity = 0 - TxtQty
-                    .Lineitems(1).ReqReason = ItemReturn
-                    .Status = OrderClosed
-                    .DBSave
-                End With
-                
-                MsgBox "Return has been successfully processed", vbOKCancel + vbInformation, APP_NAME
-                Hide
-                Unload Me
-                 
-        End Select
-        
+    With FrmReturnList.ReturnOrder
+        .Lineitems.AddItem RetLineItem
+        .DBSave
+    End With
+    
+    Unload Me
+    
 GracefulExit:
 
 Exit Sub
 
 ErrorExit:
 
-    FormTerminate
-    Terminate
+    '***CleanUpCode***
 
 Exit Sub
 
 ErrorHandler:
-    
     If Err.Number >= 1000 And Err.Number <= 1500 Then
-        CustomErrorHandler Err.Number
-        Resume GracefulExit
+        ErrNo = Err.Number
+        CustomErrorHandler (Err.Number)
+        If ErrNo = SYSTEM_RESTART Then Resume Restart Else Resume GracefulExit
     End If
 
     If CentralErrorHandler(StrMODULE, StrPROCEDURE, , True) Then
@@ -190,21 +186,21 @@ Private Sub LstFrom_click()
     Set Persons = New ClsPersons
     Set Vehicle = New ClsVehicle
     
-    AllocType = RetOrder.Lineitems(1).Asset.AllocationType
+    AllocType = RetLineItem.Asset.AllocationType
     
     Select Case AllocType
         Case Is = 0
         
             With LstFrom
                 SelPersonID = .List(.ListIndex, 1)
-                RetOrder.Lineitems(1).ForPerson.DBGet CStr(SelPersonID)
+                RetLineItem.ForPerson.DBGet CStr(SelPersonID)
             End With
             
         Case Is = 1
         
              With LstFrom
                 SelVehicleID = .List(.ListIndex, 0)
-                RetOrder.Lineitems(1).ForVehicle.DBGet CStr(SelVehicleID)
+                RetLineItem.ForVehicle.DBGet CStr(SelVehicleID)
            End With
        
     End Select
@@ -235,7 +231,7 @@ Restart:
     
     If MainScreen Is Nothing Then Err.Raise SYSTEM_RESTART
     
-    AssetType = RetOrder.Lineitems(1).Asset.AllocationType
+    AssetType = RetLineItem.Asset.AllocationType
     
     With LstStations
         .BackColor = COLOUR_4
@@ -293,7 +289,7 @@ Restart:
         
         Case Is = 2
             
-            RetOrder.Lineitems(1).ForStation = Stations(SelStation)
+            RetLineItem.ForStation = Stations(SelStation)
            
     End Select
 
@@ -351,16 +347,12 @@ End Sub
 ' ---------------------------------------------------------------
 Private Function FormInitialise() As Boolean
     Dim i As Integer
-    Dim Lineitem As ClsLineItem
     
     Const StrPROCEDURE As String = "FormInitialise()"
     
     On Error GoTo ErrorHandler
     
-    Set RetOrder = New ClsOrder
-    Set Lineitem = New ClsLineItem
-    
-    RetOrder.Lineitems.AddItem Lineitem
+    Set RetLineItem = New ClsLineItem
     
     LstFrom.Enabled = False
     LstFrom.BackColor = COLOUR_9
@@ -372,17 +364,13 @@ Private Function FormInitialise() As Boolean
     If Not ClearSearch Then Err.Raise HANDLED_ERROR
 
     If Not ShtLists.RefreshAssetList Then Err.Raise HANDLED_ERROR
-    
-    Set Lineitem = Nothing
-    
+       
     FormInitialise = True
 
 Exit Function
 
 ErrorExit:
     
-    Set Lineitem = Nothing
-
     FormTerminate
     Terminate
     
@@ -722,7 +710,7 @@ Private Function GetAsset() As Boolean
     
     If AssetAvail Then
         LocAsset.DBGet (Assets.FindAssetNo(TxtSearch, CmoSize1, CmoSize2))
-        RetOrder.Lineitems(1).Asset = LocAsset
+        RetLineItem.Asset = LocAsset
         AssetType = LocAsset.AllocationType
         
         If Not ShowStations Then Err.Raise HANDLED_ERROR
@@ -918,61 +906,6 @@ ErrorHandler:
     End If
 
 
-    If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
-        Stop
-        Resume
-    Else
-        Resume ErrorExit
-    End If
-End Function
-
-' ===============================================================
-' ProcessReturn
-' Creates a negative order to return stock to Stores
-' ---------------------------------------------------------------
-Private Function ProcessReturn() As Boolean
-    Dim RetOrder As ClsOrder
-    Dim RetLineitem As ClsLineItem
-    Dim Assets As ClsAssets
-    Dim AssetNo As Integer
-    
-    Const StrPROCEDURE As String = "ProcessReturn()"
-
-    On Error GoTo ErrorHandler
-
-    With RetLineitem
-        .Asset = Assets.FindItem(AssetNo)
-    End With
-    
-    With RetOrder
-        
-    
-    
-    End With
-
-
-
-    Set RetOrder = Nothing
-    Set RetLineitem = Nothing
-    Set Assets = Nothing
-    
-    ProcessReturn = True
-
-
-Exit Function
-
-ErrorExit:
-    
-    Set RetOrder = Nothing
-    Set RetLineitem = Nothing
-    Set Assets = Nothing
-    
-    '***CleanUpCode***
-    ProcessReturn = False
-
-Exit Function
-
-ErrorHandler:
     If CentralErrorHandler(StrMODULE, StrPROCEDURE) Then
         Stop
         Resume
