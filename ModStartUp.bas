@@ -201,7 +201,7 @@ End Function
 ' ReadINIFile
 ' Gets start up variables from ini file
 ' ---------------------------------------------------------------
-Private Function ReadINIFile() As Boolean
+Public Function ReadINIFile() As Boolean
     Dim AppFPath As String
     Dim DebugMode As String
     Dim TestMode As String

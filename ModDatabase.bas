@@ -223,11 +223,15 @@ Public Sub UpdateDBScript()
     
     Dim Fld As DAO.Field
     
+    ModStartUp.ReadINIFile
     DBConnect
     
     On Error GoTo error
     
     Set RstTable = SQLQuery("TblDBVersion")
+    
+    Debug.Print "Global Path: " & DB_VER
+    Debug.Print "DB: " & RstTable.Fields(0)
     
     'check preceding DB Version
     If RstTable.Fields(0) <> "v1,396" Then
@@ -275,7 +279,8 @@ Public Sub UpdateDBScriptUndo()
     Dim i As Integer
         
     Dim Fld As DAO.Field
-        
+       
+    ModStartUp.ReadINIFile
     DBConnect
     
     Set RstTable = SQLQuery("TblDBVersion")
