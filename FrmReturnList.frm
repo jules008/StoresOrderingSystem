@@ -244,33 +244,30 @@ End Function
 ' ---------------------------------------------------------------
 Private Sub BtnReturn_Click()
     Dim StrUserName As String
+    Dim LineItem As ClsLineItem
     
     Const StrPROCEDURE As String = "BtnReturn_Click()"
 
     On Error GoTo ErrorHandler
 
-        Select Case ValidateForm
+    With ReturnOrder
+        .OrderDate = Now
+        .Requestor = CurrentUser
+        .Status = OrderClosed
+        .OrderNote = "****RETURN****"
+        For Each LineItem In ReturnOrder.Lineitems
+            With LineItem
+                .Quantity = 0 - .Quantity
+                .ReqReason = ItemReturn
+            End With
+        Next
+        .DBSave
+    End With
     
-            Case Is = FunctionalError
-                Err.Raise HANDLED_ERROR
-            
-            Case Is = FormOK
-                
-                With RetOrder
-                    .OrderDate = Now
-                    .Requestor = CurrentUser
-                    .Lineitems(1).Quantity = 0 - TxtQty
-                    .Lineitems(1).ReqReason = ItemReturn
-                    .Status = OrderClosed
-                    .DBSave
-                End With
-                
-                MsgBox "Return has been successfully processed", vbOKCancel + vbInformation, APP_NAME
-                Hide
-                Unload Me
-                 
-        End Select
-        
+    MsgBox "Return has been successfully processed", vbOKCancel + vbInformation, APP_NAME
+    Hide
+    Unload Me
+                         
 GracefulExit:
 
 Exit Sub

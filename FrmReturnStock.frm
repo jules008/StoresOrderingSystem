@@ -93,17 +93,25 @@ Restart:
 
     If RetLineItem Is Nothing Then Err.Raise HANDLED_ERROR, , "No Return item "
            
-    With RetLineItem
-        .Quantity = TxtQty
-        .DBSave
-    End With
-    
-    With FrmReturnList.ReturnOrder
-        .Lineitems.AddItem RetLineItem
-        .DBSave
-    End With
-    
-    Unload Me
+    Select Case ValidateForm
+
+        Case Is = FunctionalError
+            Err.Raise HANDLED_ERROR
+        
+        Case Is = FormOK
+           
+            With RetLineItem
+                .Quantity = TxtQty
+                .DBSave
+            End With
+            
+            With FrmReturnList.ReturnOrder
+                .Lineitems.AddItem RetLineItem
+                .DBSave
+            End With
+            
+            Unload Me
+    End Select
     
 GracefulExit:
 
