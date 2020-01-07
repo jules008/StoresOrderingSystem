@@ -369,8 +369,6 @@ Public Sub UpdateSysMsg()
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
                     & Chr(13) & "-  Fixed Overflow Error - The number of order item reached 32k and caused an overflow error." _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Multiple Item Returns - Allows multiple items to be returned in one go" _
                     & Chr(13) & ""
         .Update
     End With
