@@ -1,5 +1,5 @@
 Attribute VB_Name = "ModProjectInOut"
-Const EXPORT_FILE_PATH As String = "\\lincsfire.lincolnshire.gov.uk\folderredir$\Documents\julian.turner\Documents\RDS Project\Stores IT Project\Library\Dev\"
+Const EXPORT_FILE_PATH As String = "F:\Development Areas\Stores Ordering System\Library\"
 Const PROJECT_FILE_NAME As String = "Stores IT System v0"
 
 Public Sub ExportModules()
@@ -48,7 +48,7 @@ Public Sub ExportModules()
     ExportDBTables
     
     Application.DisplayAlerts = False
-    ThisWorkbook.SaveAs EXPORT_FILE_PATH & "\" & PROJECT_FILE_NAME, 51
+    ThisWorkbook.SaveAs EXPORT_FILE_PATH & PROJECT_FILE_NAME, 51
     Application.DisplayAlerts = True
     
     Set DlgOpen = Nothing

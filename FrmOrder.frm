@@ -26,8 +26,9 @@ Attribute VB_Exposed = False
 ' v0,6 - 287 issue, tried different Outlook detector
 ' v0,7 - Do not save order if no Lineitems
 ' v0,81 - Centralised the mail messages
+' v0,9 - Changed LineItem No's to Long to prevent overflow
 '---------------------------------------------------------------
-' Date - 19 Dec 17
+' Date - 07 Jan 20
 '===============================================================
 Option Explicit
 
@@ -251,7 +252,7 @@ End Sub
 Private Sub BtnEditItem_Click()
     Const StrPROCEDURE As String = "BtnEditItem_Click()"
 
-    Dim LineitemNo As Integer
+    Dim LineitemNo As Long
     
     On Error GoTo ErrorHandler
     
@@ -314,7 +315,7 @@ End Sub
 Private Sub BtnRemove_Click()
     Const StrPROCEDURE As String = "BtnRemove_Click()"
     
-    Dim LineitemNo As Integer
+    Dim LineitemNo As Long
     
     On Error GoTo ErrorHandler
 
@@ -367,7 +368,7 @@ Private Sub BtnRemoveAll_Click()
     Const StrPROCEDURE As String = "BtnRemoveAll_Click()"
     
     Dim i As Integer
-    Dim LineitemNo As Integer
+    Dim LineitemNo As Long
     
     On Error GoTo ErrorHandler
 

@@ -13,8 +13,9 @@ Attribute VB_Exposed = False
 ' v0,1 - Save Asset with Line item
 ' v0,2 - Force Null if allocation type is not station
 ' v0,3 - Removed Deleted filter from DBSave and cascaded delete to LossReports
+' v0,4 - Changed LineItem No's to Long to prevent overflow
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -26,7 +27,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 Private pDeleted As Date
-Private pLineitemNo As Integer
+Private pLineitemNo As Long
 Private pAsset As ClsAsset
 Private pLossReport As ClsLossReport
 Private pQuantity As Integer
@@ -52,11 +53,11 @@ Public Property Let Deleted(ByVal vNewValue As Date)
 End Property
 
 '---------------------------------------------------------------
-Public Property Get LineitemNo() As Integer
+Public Property Get LineitemNo() As Long
     LineitemNo = pLineitemNo
 End Property
 
-Public Property Let LineitemNo(ByVal vNewValue As Integer)
+Public Property Let LineitemNo(ByVal vNewValue As Long)
     pLineitemNo = vNewValue
 End Property
 

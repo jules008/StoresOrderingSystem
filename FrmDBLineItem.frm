@@ -21,8 +21,9 @@ Attribute VB_Exposed = False
 ' v0,4 - Bug fix Next / Prev Buttons
 ' v0,5 - Stop qty adjust if order issued or closed
 ' v0,6 - Restrict view for Level 1
+' v0,7 - Changed LineItem No's to Long to prevent overflow
 '---------------------------------------------------------------
-' Date - 12 May 17
+' Date - 07 Jan 20
 '===============================================================
 Option Explicit
 
@@ -255,7 +256,7 @@ End Sub
 ' Shows the asset details
 ' ---------------------------------------------------------------
 Private Sub BtnAsset_Click()
-    Dim LineitemNo As Integer
+    Dim LineitemNo As Long
     
     Const StrPROCEDURE As String = "BtnAsset_Click()"
         
