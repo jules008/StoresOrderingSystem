@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,5 - Temporary disable Asset DBsave
 ' v0,6 - Re-enabled Asset DBSave
 ' v0,7 - Added HideFromView property
+' v0,8 - Changed LastNo to Long to prevent overflows
 '---------------------------------------------------------------
-' Date - 01 Nov 17
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -352,7 +353,7 @@ End Sub
 Public Sub DBSave(Optional OWAssetNo As Integer)
     Dim RstAsset As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
 
     Set RstAsset = ModDatabase.SQLQuery("SELECT * FROM TblAsset WHERE AssetNo = " & pAssetNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(AssetNo) FROM TblAsset ")

@@ -17,8 +17,9 @@ Attribute VB_Exposed = False
 ' v0,5 - DBGet now returns deleted orders as well
 ' v0,6 - Added Order Note and Printed Date
 ' v0,7 - Cascade delete to Lineitems and remove delete from DBsave filter
+' v0,8 - Changed LastNo to Long to prevent overflows
 '---------------------------------------------------------------
-' Date - 02 Oct 17
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -177,7 +178,7 @@ End Sub
 Public Sub DBSave()
     Dim RstOrder As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
     Dim Lineitem As ClsLineItem
 
     Set RstOrder = ModDatabase.SQLQuery("SELECT * FROM TblOrder WHERE OrderNo = " & pOrderNo)

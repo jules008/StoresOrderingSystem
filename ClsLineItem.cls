@@ -227,7 +227,7 @@ End Sub
 Public Sub DBSave()
     Dim RstLineitem As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
 
     Set RstLineitem = ModDatabase.SQLQuery("SELECT * FROM TblLineitem WHERE LineitemNo = " & pLineitemNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(LineitemNo) FROM TblLineitem ")

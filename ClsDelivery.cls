@@ -12,8 +12,9 @@ Attribute VB_Exposed = False
 ' v0,0 - Initial Version
 ' v0,1 - Change SupplierName to SupplierID
 ' V0,2 - Re-Write for Supplier Functionality
+' v0,3 - Changed LastNo to Long to prevent overflows
 '---------------------------------------------------------------
-' Date - 10 Jul 17
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -113,7 +114,7 @@ End Sub
 Public Sub DBSave()
     Dim RstDelivery As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
 
     Set RstDelivery = ModDatabase.SQLQuery("SELECT * FROM TblDelivery WHERE DeliveryNo = " & pDeliveryNo)
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(DeliveryNo) FROM TblDelivery")

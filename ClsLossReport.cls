@@ -10,8 +10,9 @@ Attribute VB_Exposed = False
 '===============================================================
 ' Class ClsLossReport
 ' v0,0 - Initial Version
+' v0,1 - Changed LastNo to Long to prevent overflows
 '---------------------------------------------------------------
-' Date - 22 Feb 17
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -200,7 +201,7 @@ End Sub
 Public Sub DBSave()
     Dim RstLossReport As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
 
     Set RstLossReport = ModDatabase.SQLQuery("SELECT * FROM TblLossReport WHERE LossReportNo = " & pLossReportNo & " AND Deleted IS NULL")
     Set RstMaxNo = ModDatabase.SQLQuery("SELECT MAX(LossReportNo) FROM TblLossReport ")

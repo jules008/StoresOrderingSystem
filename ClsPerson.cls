@@ -15,8 +15,9 @@ Attribute VB_Exposed = False
 ' v0,3 - Added Message Read Flag
 ' v0,41 - Log on and Log Off from DB
 ' v0,5 - Fixed bug preventing Alford being selected
+' v0,6 - Changed LastNo to Long to prevent overflows
 '---------------------------------------------------------------
-' Date - 15 May 18
+' Date - 07 Jan 20
 '===============================================================
 ' Methods
 '---------------------------------------------------------------
@@ -217,7 +218,7 @@ End Sub
 Public Sub DBSave()
     Dim RstPerson As Recordset
     Dim RstMaxNo As Recordset
-    Dim LastNo As Integer
+    Dim LastNo As Long
 
     Set RstPerson = ModDatabase.SQLQuery("SELECT * FROM TblPerson WHERE crewno = '" & pCrewNo & "' AND Deleted IS NULL")
 
