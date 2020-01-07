@@ -361,16 +361,14 @@ Public Sub UpdateSysMsg()
         .Fields("SystemMessage") = "Version " & VERSION & " - What's New" _
                     & Chr(13) & "(See Release Notes on Support tab for further information)" _
                     & Chr(13) & "" _
-                    & Chr(13) & " - Added USAR as a Station" _
-                    & Chr(13) & "" _
-                    & Chr(13) & " - Multiple Item Returns" _
+                    & Chr(13) & " - Fixed Overflow Error" _
                     & Chr(13) & ""
         
         .Fields("ReleaseNotes") = "Software Version: " & VERSION _
                     & Chr(13) & "Database Version: " & DB_VER _
                     & Chr(13) & "Date: " & VER_DATE _
                     & Chr(13) & "" _
-                    & Chr(13) & "-  Added USAR as a Station - Items can now be ordered and allocated to USAR" _
+                    & Chr(13) & "-  Fixed Overflow Error - The number of order item reached 32k and caused an overflow error." _
                     & Chr(13) & "" _
                     & Chr(13) & " - Multiple Item Returns - Allows multiple items to be returned in one go" _
                     & Chr(13) & ""
