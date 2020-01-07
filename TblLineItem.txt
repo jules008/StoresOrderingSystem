@@ -1,4 +1,4 @@
-LineItemNo,  dbInteger
+LineItemNo,  dbLong
 OrderNo,  dbLong
 Deleted,  dbDate
 Quantity,  dbInteger

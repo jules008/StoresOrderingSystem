@@ -1,5 +1,5 @@
 Attribute VB_Name = "ModProjectInOut"
-Const EXPORT_FILE_PATH As String = "F:\Development Areas\Stores Ordering System\Library\"
+Const EXPORT_FILE_PATH As String = "e:\Development Areas\Stores Ordering System\Library\"
 Const PROJECT_FILE_NAME As String = "Stores IT System v0"
 
 Public Sub ExportModules()

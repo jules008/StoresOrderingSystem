@@ -234,23 +234,19 @@ Public Sub UpdateDBScript()
     Debug.Print "DB: " & RstTable.Fields(0)
     
     'check preceding DB Version
-    If RstTable.Fields(0) <> "v1,396" Then
-        MsgBox "Database needs to be upgraded to v1,396 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,397" Then
+        MsgBox "Database needs to be upgraded to v1,397 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    DB.Execute "INSERT INTO TblStation VALUES (51, 'Ops', 'USAR', 'Sleaford Road, Waddington, LN5 9FG', '1', NULL ,TRUE)"
-    
-    On Error Resume Next
-    DB.Execute "DROP TABLE TblSationOLD"
-    On Error GoTo error
-    
+    DB.Execute "ALTER TABLE TblLineItem ALTER LineItemNo long"
+       
     'update DB Version
     Set RstTable = SQLQuery("TblDBVersion")
     
     With RstTable
         .Edit
-        .Fields(0) = "v1,397"
+        .Fields(0) = "v1,398"
         .Update
     End With
     
@@ -285,17 +281,17 @@ Public Sub UpdateDBScriptUndo()
     
     Set RstTable = SQLQuery("TblDBVersion")
 
-    If RstTable.Fields(0) <> "v1,397" Then
-        MsgBox "Database needs to be upgraded to v1,397 to continue", vbOKOnly + vbCritical
+    If RstTable.Fields(0) <> "v1,398" Then
+        MsgBox "Database needs to be upgraded to v1,398 to continue", vbOKOnly + vbCritical
         Exit Sub
     End If
     
-    DB.Execute "DELETE FROM TblStation WHERE StationID = 51"
+    DB.Execute "ALTER TABLE TblLineItem ALTER LineItemNo Integer"
     
     'version update
     With RstTable
         .Edit
-        .Fields(0) = "v1,396"
+        .Fields(0) = "v1,397"
         .Update
     End With
     
